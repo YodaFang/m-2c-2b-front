@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/custom-ui/select"
 
 type CountriesList = {
     flag: string,

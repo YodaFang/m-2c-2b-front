@@ -1,9 +1,9 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Dialog, DialogContent, DialogClose,  DialogTitle, } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogClose,  DialogTitle, } from "@/components/custom-ui/dialog"
 import Image from 'next/image'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { Input } from '@/components/custom-ui/input'
+import { Button } from '@/components/custom-ui/button'
 import { Close } from '@/lib/icon'
 
 const WelcomePopupTwo = () => {

@@ -7,7 +7,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/custom-ui/dialog"
 import { Close } from '@/lib/icon'
 
 const AboutVideo = () => {

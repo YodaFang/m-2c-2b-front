@@ -1,6 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import Rating from "@/components/ui/rating";
+import { Button } from "@/components/custom-ui/button";
+import Rating from "@/components/custom-ui/rating";
 import calcluteDiscount from "@/lib/calcluteDiscount";
 import { addToCart } from "@/lib/features/AddToCartSlice";
 import { addToWishlist } from "@/lib/features/AddToWishlistSlice";

@@ -1,6 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import Tooltip from "@/components/ui/tooltip";
+import { Button } from "@/components/custom-ui/button";
+import Tooltip from "@/components/custom-ui/tooltip";
 import { Eye, Heart, Shuffle } from "@/lib/icon";
 import currencyFormatter from "currency-formatter";
 import Image from "next/image";

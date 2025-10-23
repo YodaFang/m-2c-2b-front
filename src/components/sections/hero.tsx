@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/custom-ui/button'
 import { ArrowUp } from '@/lib/icon'
 import Link from 'next/link'
 import { motion } from "framer-motion";

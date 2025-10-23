@@ -1,12 +1,12 @@
 "use client";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/custom-ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/custom-ui/select";
 import { Close, Search } from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import { ProductType } from "@/types/productType";

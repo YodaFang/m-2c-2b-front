@@ -2,9 +2,9 @@
 import React from 'react'
 import Image from 'next/image'
 import currencyFormatter from 'currency-formatter';
-import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger, } from "@/components/custom-ui/dialog"
 import { Close } from '@/lib/icon'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/custom-ui/button'
 import { useAppSelector } from '@/lib/reduxHooks'
 import calcluteDiscount from '@/lib/calcluteDiscount'
 import { useDispatch } from 'react-redux';

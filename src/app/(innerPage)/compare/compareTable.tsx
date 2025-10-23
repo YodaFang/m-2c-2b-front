@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Close, Eye } from '@/lib/icon'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/custom-ui/button'
 import ProductQuickView, { ProductQuickViewType } from '@/components/sections/shopDetails/productQuickView'
 import calcluteDiscount from '@/lib/calcluteDiscount'
 import currencyFormatter from 'currency-formatter';

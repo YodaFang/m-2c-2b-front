@@ -1,7 +1,7 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, } from "@/components/custom-ui/dialog"
+import { Input } from '@/components/custom-ui/input'
+import { Button } from '@/components/custom-ui/button'
 
 const CouponCodeForm = () => {
     return (

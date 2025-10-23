@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight } from '@/lib/icon'
 import Image from 'next/image'
-import Title from '@/components/ui/title'
+import Title from '@/components/custom-ui/title'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import { Navigation } from 'swiper/modules'

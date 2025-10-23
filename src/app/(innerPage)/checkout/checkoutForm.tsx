@@ -1,12 +1,12 @@
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/custom-ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/custom-ui/select";
+import { Textarea } from "@/components/custom-ui/textarea";
 import RegisterForm from "./registerForm";
 
 const CheckoutForm = () => {

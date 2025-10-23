@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@/components/ui/accordion"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@/components/custom-ui/accordion"
 import { getFaqData } from '@/lib/data'
 import { FaqDataType } from '@/db/faqData'
 

@@ -1,9 +1,9 @@
 'use client'
 import React from 'react'
 import Image from 'next/image'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/custom-ui/table"
 import currencyFormatter from 'currency-formatter';
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/custom-ui/button'
 import { Close } from '@/lib/icon'
 import { useAppSelector } from '@/lib/reduxHooks'
 import calcluteDiscount from '@/lib/calcluteDiscount'

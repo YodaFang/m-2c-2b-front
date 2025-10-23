@@ -5,7 +5,7 @@ import BlogCard from '@/components/sections/blogs/blogCard'
 import InstagramGallery from '@/components/sections/instagramGallery'
 import Newsletter from '@/components/sections/newsletter'
 import PageHeader from '@/components/sections/pageHeader'
-import Pagination from '@/components/ui/pagination'
+import Pagination from '@/components/custom-ui/pagination'
 import { getBlogData } from '@/lib/data'
 import { BlogType } from '@/types/blogType'
 

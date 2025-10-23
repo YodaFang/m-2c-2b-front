@@ -1,9 +1,9 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/custom-ui/button";
+import { Checkbox } from "@/components/custom-ui/checkbox";
+import { Dialog, DialogContent, DialogTitle } from "@/components/custom-ui/dialog";
+import { Input } from "@/components/custom-ui/input";
+import { Label } from "@/components/custom-ui/label";
 import Link from "next/link";
 import { useState } from "react";
 import SocialLoginButtons from "./socialLoginButtons";
