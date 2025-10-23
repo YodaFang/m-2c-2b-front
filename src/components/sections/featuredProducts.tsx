@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/custom-ui/tabs";
 import Card, { CardFooter, CardHeader, CardIcons, CardImg, CardTitle, CardPriceEnhanced, CardLabel, CardDiscount } from "@/components/custom-ui/card";
-import Title from "@/components/custom-ui/title";
+import Title from "@/components/ui/title";
 import Link from "next/link";
 import { ProductType } from "@/types/productType";
 import { getProductsData } from "@/lib/data";

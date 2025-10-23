@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/custom-ui/button";
 import { Checkbox } from "@/components/custom-ui/checkbox";
-import { Dialog, DialogContent, DialogTitle } from "@/components/custom-ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/custom-ui/input";
 import { Label } from "@/components/custom-ui/label";
 import Link from "next/link";

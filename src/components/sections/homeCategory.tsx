@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
-import Title from "@/components/custom-ui/title";
+import Title from "@/components/ui/title";
 import { CategoryType } from "@/db/categoriesData";
 
 const HomeCategory = ({ categories }: { categories: CategoryType[] }) => {

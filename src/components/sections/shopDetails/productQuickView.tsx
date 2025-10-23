@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from "@/components/custom-ui/dialog";
+} from "@/components/ui/dialog";
 import { Close } from "@/lib/icon";
 import Image from "next/image";
 import Link from "next/link";

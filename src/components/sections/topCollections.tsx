@@ -7,7 +7,7 @@ import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLab
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
 import 'swiper/css';
-import Title from '@/components/custom-ui/title'
+import Title from '@/components/ui/title'
 import { ProductType } from '@/types/productType'
 
 const TopCollections = ({data}:{data:ProductType[]}) => {

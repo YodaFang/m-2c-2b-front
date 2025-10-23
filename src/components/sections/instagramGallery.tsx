@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/custom-ui/button'
 import { Instagram } from '@/lib/icon'
 import { getGalleryData } from '@/lib/data'
-import Title from '@/components/custom-ui/title'
+import Title from '@/components/ui/title'
 import { GalleryType } from '@/db/galleryData'
 
 const InstagramGallery = async () => {

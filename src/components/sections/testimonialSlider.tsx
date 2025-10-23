@@ -4,7 +4,7 @@ import { StarFill } from '@/lib/icon'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css';
 import { Autoplay, Navigation } from 'swiper/modules'
-import Title from '@/components/custom-ui/title'
+import Title from '@/components/ui/title'
 import { testimonialType } from '@/db/testimonialsData'
 
 const TestimonialSlider = ({ testimonials }: { testimonials: testimonialType[] }) => {

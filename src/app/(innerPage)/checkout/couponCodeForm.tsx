@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, } from "@/components/custom-ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
 import { Input } from '@/components/custom-ui/input'
 import { Button } from '@/components/custom-ui/button'
 

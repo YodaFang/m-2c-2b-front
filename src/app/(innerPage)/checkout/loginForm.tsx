@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from "@/components/custom-ui/dialog";
+} from "@/components/ui/dialog";
 import { Input } from "@/components/custom-ui/input";
 import { Label } from "@/components/custom-ui/label";
 import Link from "next/link";
