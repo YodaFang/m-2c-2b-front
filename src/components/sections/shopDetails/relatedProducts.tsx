@@ -1,4 +1,4 @@
-import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from '@/components/ui/card';
+import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from '@/components/ui-cus/card';
 import { getProductsData } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { ProductType } from '@/types/productType';

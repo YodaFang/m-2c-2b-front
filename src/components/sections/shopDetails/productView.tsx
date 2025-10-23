@@ -17,8 +17,8 @@ import Card, {
   CardLabel,
   CardPriceEnhanced,
   CardTitle,
-} from "@/components/ui/card";
-import Pagination from "@/components/ui/pagination";
+} from "@/components/ui-cus/card";
+import Pagination from "@/components/ui-cus/pagination";
 import calcluteDiscount from "@/lib/calcluteDiscount";
 import { addToCart } from "@/lib/features/AddToCartSlice";
 import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
