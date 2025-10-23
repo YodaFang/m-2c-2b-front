@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { Separator } from "@/components/custom-ui/separator"
+import { Separator } from "@/components/ui/separator"
 
 const TopHeader = () => {
     return (

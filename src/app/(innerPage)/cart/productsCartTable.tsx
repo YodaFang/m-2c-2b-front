@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/custom-ui/table";
+} from "@/components/ui/table";
 import {
   dicrementProductQuentity,
   incrementProductQuentity,

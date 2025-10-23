@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { Textarea } from '@/components/custom-ui/textarea'
+import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/custom-ui/button'
 import { StarFill, StarOutline } from '@/lib/icon'
 

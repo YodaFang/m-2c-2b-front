@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger, } from "@/components/custom-ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger, } from "@/components/ui/sheet"
 import { menuType } from '@/db/menuList'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'

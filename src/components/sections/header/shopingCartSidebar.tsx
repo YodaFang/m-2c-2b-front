@@ -8,7 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/custom-ui/sheet";
+} from "@/components/ui/sheet";
 import {
   dicrementProductQuentity,
   incrementProductQuentity,

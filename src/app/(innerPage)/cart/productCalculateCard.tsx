@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/custom-ui/button";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/custom-ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAppSelector } from "@/lib/reduxHooks";
 import Link from "next/link";
 import { useState } from "react";
