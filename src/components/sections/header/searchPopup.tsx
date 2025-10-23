@@ -1,5 +1,5 @@
 "use client";
-import { Input } from "@/components/custom-ui/input";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,

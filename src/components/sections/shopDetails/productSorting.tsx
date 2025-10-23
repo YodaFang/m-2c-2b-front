@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/custom-ui/select"
-import { Input } from '@/components/custom-ui/input'
+import { Input } from '@/components/ui/input'
 import { GridView, List, Search } from '@/lib/icon'
 
 interface Props {

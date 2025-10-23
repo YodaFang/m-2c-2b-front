@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/custom-ui/tabs";
-import { Input } from "@/components/custom-ui/input";
+import { Input } from "@/components/ui/input";
 import { FuHomeFill, FuPhone, Location, MapPin, Search } from "@/lib/icon";
 import { LatLngTuple } from "leaflet";
 

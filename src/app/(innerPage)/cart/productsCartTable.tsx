@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/custom-ui/button";
-import { Input } from "@/components/custom-ui/input";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,

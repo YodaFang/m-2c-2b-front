@@ -3,9 +3,9 @@ import React, { useActionState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/custom-ui/button'
-import { Checkbox } from '@/components/custom-ui/checkbox'
-import { Input } from '@/components/custom-ui/input'
-import { Label } from '@/components/custom-ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { loginUser } from './actions'
 
 const LoginForm = () => {

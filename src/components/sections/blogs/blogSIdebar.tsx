@@ -1,4 +1,4 @@
-import { Input } from "@/components/custom-ui/input";
+import { Input } from "@/components/ui/input";
 import { Search } from "@/lib/icon";
 import Image from "next/image";
 import Link from "next/link";

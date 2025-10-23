@@ -3,8 +3,8 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/custom-ui/button';
-import { Input } from '@/components/custom-ui/input';
-import { Label } from '@/components/custom-ui/label';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/custom-ui/textarea';
 import { Call, Email, Location } from '@/lib/icon';
 import { useActionState } from 'react'; // Import useActionState
