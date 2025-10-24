@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/custom-ui/tabs"
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
