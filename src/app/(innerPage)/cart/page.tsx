@@ -1,9 +1,9 @@
 import ProductCalculateCard from "@/app/(innerPage)/cart/productCalculateCard";
 import ProductsCartTable from "@/app/(innerPage)/cart/productsCartTable";
-import InstagramGallery from "@/components/sections/instagramGallery";
-import Newsletter from "@/components/sections/newsletter";
-import PageHeader from "@/components/sections/pageHeader";
-import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
+import InstagramGallery from "@/app/sections/instagramGallery";
+import Newsletter from "@/app/sections/newsletter";
+import PageHeader from "@/app/sections/pageHeader";
+import RelatedProducts from "@/app/sections/shopDetails/relatedProducts";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

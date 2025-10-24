@@ -1,11 +1,11 @@
-import PageHeader from '@/components/sections/pageHeader'
+import PageHeader from '@/app/sections/pageHeader'
 import Image from 'next/image'
 import React from 'react'
 import AboutDetails from './aboutDetails';
-import TestimonialSlider from '@/components/sections/testimonialSlider';
-import PartnerSlider from '@/components/sections/partnerSlider';
-import Newsletter from '@/components/sections/newsletter';
-import InstagramGallery from '@/components/sections/instagramGallery';
+import TestimonialSlider from '@/app/sections/testimonialSlider';
+import PartnerSlider from '@/app/sections/partnerSlider';
+import Newsletter from '@/app/sections/newsletter';
+import InstagramGallery from '@/app/sections/instagramGallery';
 import AboutVideo from './aboutVideo';
 import { Metadata } from 'next'
 import { getPartnerData, getTestimonialsData } from '@/lib/data';

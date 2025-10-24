@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import InstagramGallery from '@/components/sections/instagramGallery'
+import InstagramGallery from '@/app/sections/instagramGallery'
 import { Button } from '@/components/custom-ui/button'
 import { ArrowUp } from '@/lib/icon'
 import { Metadata } from 'next'

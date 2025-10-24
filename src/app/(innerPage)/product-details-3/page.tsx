@@ -1,12 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
-import ProductDetailsTabView from '@/components/sections/shopDetails/productDetailsTabView'
-import ProductShortInfo from '@/components/sections/shopDetails/productShortInfo'
+import ProductDetailsTabView from '@/app/sections/shopDetails/productDetailsTabView'
+import ProductShortInfo from '@/app/sections/shopDetails/productShortInfo'
 import ProductPreviewTwo from '@/app/(innerPage)/product-details-3/productPreviewTwo'
 import { ChevronRight } from '@/lib/icon'
-import RelatedProducts from '@/components/sections/shopDetails/relatedProducts'
-import Newsletter from '@/components/sections/newsletter'
-import InstagramGallery from '@/components/sections/instagramGallery'
+import RelatedProducts from '@/app/sections/shopDetails/relatedProducts'
+import Newsletter from '@/app/sections/newsletter'
+import InstagramGallery from '@/app/sections/instagramGallery'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

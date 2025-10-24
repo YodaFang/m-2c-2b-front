@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-import ProductSorting from "@/components/sections/shopDetails/productSorting";
+import ProductSorting from "@/app/sections/shopDetails/productSorting";
 import Card, {
   CardDiscount,
   CardFooter,
@@ -17,7 +17,7 @@ import Card, {
   CardLabel,
   CardPriceEnhanced,
   CardTitle,
-} from "@/components/custom-ui/card";
+} from "@/app/sections/productCard";
 import Pagination from "@/components/custom-ui/pagination";
 import calcluteDiscount from "@/lib/calcluteDiscount";
 import { addToCart } from "@/lib/features/AddToCartSlice";

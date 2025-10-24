@@ -3,7 +3,6 @@ import localFont from 'next/font/local'
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import { Toaster } from "react-hot-toast";
-// import WelcomePopup from "@/components/sections/welcomePopup";
 
 const satoshi = localFont({
   src: [

@@ -1,4 +1,4 @@
-import BlogSIdebar from "@/components/sections/blogs/blogSIdebar";
+import BlogSIdebar from "@/app/sections/blogs/blogSIdebar";
 import { Facebook, Instagram, Linkedin, Twitter } from "@/lib/icon";
 import Image from "next/image";
 import Link from "next/link";

@@ -1,10 +1,10 @@
 
 import React from 'react'
 import { Metadata } from 'next'
-import PageHeader from '@/components/sections/pageHeader'
-import ProductsView from '@/components/sections/shopDetails/productView'
-import Newsletter from '@/components/sections/newsletter'
-import InstagramGallery from '@/components/sections/instagramGallery'
+import PageHeader from '@/app/sections/pageHeader'
+import ProductsView from '@/app/sections/shopDetails/productView'
+import Newsletter from '@/app/sections/newsletter'
+import InstagramGallery from '@/app/sections/instagramGallery'
 import { getProductsData } from '@/lib/data'
 
 export const metadata: Metadata = {

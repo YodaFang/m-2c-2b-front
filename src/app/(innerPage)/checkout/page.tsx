@@ -1,8 +1,8 @@
 import CheckoutForm from "@/app/(innerPage)/checkout/checkoutForm";
 import CheckoutPayment from "@/app/(innerPage)/checkout/checkoutPayment";
-import InstagramGallery from "@/components/sections/instagramGallery";
-import Newsletter from "@/components/sections/newsletter";
-import PageHeader from "@/components/sections/pageHeader";
+import InstagramGallery from "@/app/sections/instagramGallery";
+import Newsletter from "@/app/sections/newsletter";
+import PageHeader from "@/app/sections/pageHeader";
 import { Metadata } from "next";
 import CouponCodeForm from "./couponCodeForm";
 import LoginForm from "./loginForm";

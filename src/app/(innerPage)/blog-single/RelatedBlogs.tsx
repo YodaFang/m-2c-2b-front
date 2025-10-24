@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import BlogCard from '@/components/sections/blogs/blogCard'
+import BlogCard from '@/app/sections/blogs/blogCard'
 import { getBlogData } from '@/lib/data'
 import { BlogType } from '@/types/blogType'
 

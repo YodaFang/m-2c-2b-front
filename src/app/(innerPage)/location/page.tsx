@@ -1,6 +1,6 @@
 import React from 'react'
-import Newsletter from '@/components/sections/newsletter'
-import InstagramGallery from '@/components/sections/instagramGallery'
+import Newsletter from '@/app/sections/newsletter'
+import InstagramGallery from '@/app/sections/instagramGallery'
 import MapContainer from './mapContainer'
 import { Metadata } from 'next'
 

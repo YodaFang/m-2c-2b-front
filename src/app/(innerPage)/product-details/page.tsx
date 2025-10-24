@@ -1,9 +1,9 @@
-import InstagramGallery from "@/components/sections/instagramGallery";
-import Newsletter from "@/components/sections/newsletter";
-import ProductDetailsTabView from "@/components/sections/shopDetails/productDetailsTabView";
-import ProductPreview from "@/components/sections/shopDetails/productPreview";
-import ProductShortInfo from "@/components/sections/shopDetails/productShortInfo";
-import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
+import InstagramGallery from "@/app/sections/instagramGallery";
+import Newsletter from "@/app/sections/newsletter";
+import ProductDetailsTabView from "@/app/sections/shopDetails/productDetailsTabView";
+import ProductPreview from "@/app/sections/shopDetails/productPreview";
+import ProductShortInfo from "@/app/sections/shopDetails/productShortInfo";
+import RelatedProducts from "@/app/sections/shopDetails/relatedProducts";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

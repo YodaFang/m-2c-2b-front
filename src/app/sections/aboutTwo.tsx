@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
-import Title from '../ui/title'
-import { Button } from '../ui/button'
+import Title from '@/components/ui/title'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowUp } from '@/lib/icon'
 

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Metadata } from 'next'
-import PageHeader from '@/components/sections/pageHeader'
-import Newsletter from '@/components/sections/newsletter'
-import InstagramGallery from '@/components/sections/instagramGallery'
+import PageHeader from '@/app/sections/pageHeader'
+import Newsletter from '@/app/sections/newsletter'
+import InstagramGallery from '@/app/sections/instagramGallery'
 import { getPrivacyPolicyData } from '@/lib/data'
 import { PrivacyPolicType } from '@/db/privacyPolicyData'
 

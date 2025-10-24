@@ -1,4 +1,4 @@
-import PageHeader from '@/components/sections/pageHeader'
+import PageHeader from '@/app/sections/pageHeader'
 
 import React from 'react'
 import ContactForm from './contactForm'

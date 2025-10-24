@@ -17,9 +17,10 @@ import {
   useContext,
   useState,
 } from "react";
-import ProductQuickView from "../sections/shopDetails/productQuickView";
-import { ProductShortInfoPropsType } from "../sections/shopDetails/productShortInfo";
-import Tooltip from "./tooltip";
+import Tooltip from "@/components/custom-ui/tooltip";
+import ProductQuickView from "./shopDetails/productQuickView";
+import { ProductShortInfoPropsType } from "./shopDetails/productShortInfo";
+
 
 interface CardPropsType {
   children?: ReactNode;

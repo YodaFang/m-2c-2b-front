@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
       "lucide-react",
       "@/lib/icon",
       "@/components/ui",
-      "@/components/sections",
+      "@/components/custom-ui",
     ],
   },
   compiler: {

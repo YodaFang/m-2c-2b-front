@@ -1,9 +1,9 @@
 import React from 'react'
 import { Metadata } from 'next'
-import InstagramGallery from '@/components/sections/instagramGallery'
-import Newsletter from '@/components/sections/newsletter'
-import PageHeader from '@/components/sections/pageHeader'
-import ProductsView from '@/components/sections/shopDetails/productView'
+import InstagramGallery from '@/app/sections/instagramGallery'
+import Newsletter from '@/app/sections/newsletter'
+import PageHeader from '@/app/sections/pageHeader'
+import ProductsView from '@/app/sections/shopDetails/productView'
 import { getProductsData } from '@/lib/data'
 import { ProductType } from '@/types/productType'
 
