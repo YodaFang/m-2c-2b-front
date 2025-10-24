@@ -17,7 +17,6 @@ const BlogSlider = ({ blogs }: { blogs: BlogType[] }) => {
         function updateOffset() {
             if (containerRef.current) {
                 const rect = containerRef.current.getBoundingClientRect();
-                console.log(rect)
                 setSlidesOffset(rect.left + 15);
             }
         }

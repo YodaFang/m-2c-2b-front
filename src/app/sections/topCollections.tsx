@@ -18,7 +18,6 @@ const TopCollections = ({data}:{data:ProductType[]}) => {
         function updateOffset() {
             if (containerRef.current) {
                 const rect = containerRef.current.getBoundingClientRect();
-                console.log(rect)
                 setSlidesOffset(rect.left + 15);
             }
         }

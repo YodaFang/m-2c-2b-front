@@ -242,7 +242,7 @@ export const products: ProductsType = {
         },
         {
             "id": 3,
-            "title": "Modern Tolik Chair",
+            "title": "Modern Tolik Chair",
             "description": "",
             "price": 199,
             "currency": "USD",

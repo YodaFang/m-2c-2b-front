@@ -29,74 +29,17 @@ export const menuList: menuType[] = [
     {
         "id": 1,
         "label": "Home",
-        "path": "#",
-        "dropdownList": [
-            {
-                "id": 1,
-                "label": "Home-1",
-                "path": `https://furnisy.vercel.app/`,
-            },
-            {
-                "id": 2,
-                "label": "Home-2",
-                "path": `https://furnisy-home-2.vercel.app/`,
-            },
-            {
-                "id": 3,
-                "label": "Home-3",
-                "path": `https://furnisy-home-3.vercel.app/`,
-            },
-        ]
+        "path": "/"
     },
     {
         "id": 2,
         "label": "Shop",
-        "path": "#",
-        "dropdownList": [
-            {
-                "id": 1,
-                "label": "Shop-1",
-                "path": "/shop",
-            },
-            {
-                "id": 2,
-                "label": "Shop-2",
-                "path": "/shop-2",
-            },
-            {
-                "id": 3,
-                "label": "Shop-3",
-                "path": "/shop-3",
-            },
-        ]
+        "path": "/shop",
     },
     {
         "id": 4,
         "label": "Blog",
-        "path": "#",
-        "dropdownList": [
-            {
-                "id": 1,
-                "label": "blog-1",
-                "path": "/blog",
-            },
-            {
-                "id": 2,
-                "label": "blog-2",
-                "path": "/blog-2",
-            },
-            {
-                "id": 3,
-                "label": "blog-3",
-                "path": "/blog-3",
-            },
-            {
-                "id": 4,
-                "label": "blog-single",
-                "path": "/blog-single",
-            },
-
-        ]
+        "path": "/blog-2",
     },
     {
         "id": 5,

@@ -16,7 +16,6 @@ const HomeCategory = ({ categories }: { categories: CategoryType[] }) => {
         function updateOffset() {
             if (containerRef.current) {
                 const rect = containerRef.current.getBoundingClientRect();
-                console.log(rect)
                 setSlidesOffset(rect.left + 15);
             }
         }
