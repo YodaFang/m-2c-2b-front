@@ -133,11 +133,11 @@ const ProductShortInfo = ({
             <li
               key={index}
               onClick={() => setSelectColor(color)}
-              className={`w-5 h-5 rounded-full cursor-pointer relative after:absolute after:left-1/2 after:top-1/2 after:-translate-y-1/2 after:-translate-x-1/2 after:w-7 after:h-7 after:rounded-full ${
-                color === selectColor
-                  ? "after:border after:border-[#E5E2E1]"
-                  : ""
-              }`}
+              className={`w-5 h-5 rounded-full cursor-pointer transition-all duration-200
+              ${color === selectColor
+                  ? "ring-2 ring-offset-3 ring-primary scale-110"  // ✅ 被选中时外圈+放大一点
+                  : "hover:scale-105"
+                }`}
               style={{ backgroundColor: color }}
             ></li>
           ))}
@@ -150,11 +150,10 @@ const ProductShortInfo = ({
             <li
               key={index}
               onClick={() => setSelectSize(size)}
-              className={`w-7 h-7 rounded-[4px] cursor-pointer border border-[#E5E2E1] uppercase flex justify-center items-center text-sm leading-[171%] ${
-                size === selectSize
-                  ? "bg-primary text-white"
-                  : "text-gray-1-foreground"
-              }`}
+              className={`w-7 h-7 rounded-[4px] cursor-pointer border border-[#E5E2E1] uppercase flex justify-center items-center text-sm leading-[171%] ${size === selectSize
+                ? "bg-primary text-white"
+                : "text-gray-1-foreground"
+                }`}
             >
               {size}
             </li>
