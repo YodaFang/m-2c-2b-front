@@ -75,7 +75,7 @@ const StickyHeader = ({ children, topHeaderContent, top = '0px' }: StickyHeaderP
             <div id='top-header' ref={topHeaderRef}>
                 {topHeaderContent}
             </div>
-            <div ref={mainHeaderRef} className='lg:h-25 h-16 bg-home-bg-1 [.header-pinned_&]:shadow-md'>
+            <div ref={mainHeaderRef} className='[.header-pinned_&]:shadow-md'>
                 {children}
             </div>
         </header>

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import toast from "react-hot-toast";
+import { toast } from "@/components/custom-ui/toast";
 
 type CompareType = {
     id: string | number,

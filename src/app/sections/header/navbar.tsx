@@ -17,7 +17,7 @@ const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts
                             <li key={item.id} className=" group">
                                 <Link
                                     href={item.path}
-                                    className="py-5 text-gray-1-foreground flex items-center gap-1 capitalize group-hover:text-secondary-foreground transition-all duration-500"
+                                    className="text-gray-1-foreground flex items-center gap-1 capitalize group-hover:text-secondary-foreground transition-all duration-500"
                                 >
                                     {item.label}
                                     {(item.dropdownList || item.megaMenu) && (

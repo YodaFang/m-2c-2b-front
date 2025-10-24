@@ -59,7 +59,7 @@ const ProductsView = ({
 
   return (
     <>
-      <div className="container lg:pt-25 lg:pb-25 pt-15 pb-15">
+      <div className="container pt-15 pb-15">
         {isCategoryShow && (
           <div className="mb-7.5">
             <ProductsCategory />
