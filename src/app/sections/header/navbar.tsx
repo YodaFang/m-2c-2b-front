@@ -3,8 +3,7 @@ import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import MobileMenu from "./mobileMenu";
 import MegaMenu from "./megaMenu";
-import { menuType } from "@/db/menuList";
-import { ProductType } from "@/types/productType";
+import { menuType, ProductType } from "@/lib/data";
 
 const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts: ProductType[] }) => {
     return (

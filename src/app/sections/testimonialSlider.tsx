@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css';
 import { Autoplay, Navigation } from 'swiper/modules'
 import Title from '@/components/ui/title'
-import { testimonialType } from '@/db/testimonialsData'
+import { testimonialType } from '@/lib/data'
 
 const TestimonialSlider = ({ testimonials }: { testimonials: testimonialType[] }) => {
     return (

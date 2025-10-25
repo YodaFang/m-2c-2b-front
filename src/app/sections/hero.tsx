@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css';
 import { Autoplay, Pagination } from 'swiper/modules'
-import { HeroDataType } from '@/db/heroData'
+import { HeroDataType } from '@/lib/data'
 
 
 const Hero = ({ data }: { data: HeroDataType[] }) => {

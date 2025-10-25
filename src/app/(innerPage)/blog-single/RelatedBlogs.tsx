@@ -2,10 +2,9 @@ import React from 'react'
 import Image from 'next/image'
 import BlogCard from '@/app/sections/blogs/blogCard'
 import { getBlogData } from '@/lib/data'
-import { BlogType } from '@/types/blogType'
 
 const RelatedBlogs = async () => {
-    const blogData: BlogType[] = await getBlogData();
+    const blogData = await getBlogData();
     return (
         <section className={'lg:pt-25 lg:pb-25 pt-15 pb-15'}>
             <div className='container'>

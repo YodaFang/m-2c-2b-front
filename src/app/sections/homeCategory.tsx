@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
 import Title from "@/components/ui/title";
-import { CategoryType } from "@/db/categoriesData";
+import { CategoryType } from "@/lib/data";
 
 const HomeCategory = ({ categories }: { categories: CategoryType[] }) => {
     const containerRef = useRef<HTMLDivElement>(null);

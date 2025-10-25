@@ -5,10 +5,9 @@ import { Button } from '@/components/custom-ui/button'
 import { Instagram } from '@/lib/icon'
 import { getGalleryData } from '@/lib/data'
 import Title from '@/components/ui/title'
-import { GalleryType } from '@/db/galleryData'
 
 const InstagramGallery = async () => {
-    const galleryData: GalleryType[] = await getGalleryData();
+    const galleryData = await getGalleryData();
     return (
         <section className='lg:pt-25 pt-15 lg:pb-25 pb-15'>
             <div className='container'>

@@ -4,7 +4,6 @@ import PageHeader from '@/app/sections/pageHeader'
 import Newsletter from '@/app/sections/newsletter'
 import InstagramGallery from '@/app/sections/instagramGallery'
 import { getPrivacyPolicyData } from '@/lib/data'
-import { PrivacyPolicType } from '@/db/privacyPolicyData'
 
 export const metadata: Metadata = {
     title: "Privacy Policy",
@@ -12,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 const PrivacyPolicy = async () => {
-    const privacyPolicyData: PrivacyPolicType[] = await getPrivacyPolicyData();
+    const privacyPolicyData = await getPrivacyPolicyData();
     return (
         <main>
             <PageHeader pageTitle='Privacy Policy' currentPage='Privacy Policy' />

@@ -1,10 +1,9 @@
 import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from '@/app/sections/productCard';
 import { getProductsData } from '@/lib/data';
 import { cn } from '@/lib/utils';
-import { ProductType } from '@/types/productType';
 
 const RelatedProducts = async ({ className }: { className?: string }) => {
-    const { featuredProducts }: { featuredProducts: ProductType[] } = await getProductsData();
+    const { featuredProducts } = await getProductsData();
     return (
         <section className={cn('lg:pt-25 lg:pb-25 pt-15 pb-15', className)}>
             <div className='container'>

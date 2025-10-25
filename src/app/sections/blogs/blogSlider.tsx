@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import { Navigation } from 'swiper/modules'
 import BlogCard from './blogCard'
-import { BlogType } from '@/types/blogType'
+import { BlogType } from '@/lib/data'
 
 const BlogSlider = ({ blogs }: { blogs: BlogType[] }) => {
     const containerRef = useRef<HTMLDivElement>(null);

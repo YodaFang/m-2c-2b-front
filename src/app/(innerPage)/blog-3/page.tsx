@@ -8,7 +8,6 @@ import Newsletter from '@/app/sections/newsletter'
 import PageHeader from '@/app/sections/pageHeader'
 import Pagination from '@/components/custom-ui/pagination'
 import { getBlogData } from '@/lib/data'
-import { BlogType } from '@/types/blogType'
 
 export const metadata: Metadata = {
     title: "Blog",
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
 }
 
 const BlogThree = async () => {
-    const blogData: BlogType[] = await getBlogData();
+    const blogData = await getBlogData();
     return (
         <main>
             <PageHeader pageTitle='Blog-3' currentPage='Blog-3' />

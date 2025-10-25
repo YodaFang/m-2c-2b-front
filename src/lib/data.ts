@@ -1,171 +1,216 @@
-import { cache } from "react";
-import { adsData } from "@/db/adsData";
-import { menuList } from "@/db/menuList";
-import { categoriesOneData } from "@/db/categoriesData";
-import { blogData } from "@/db/blogData";
-import { faqData } from "@/db/faqData";
-import { galleryDataOne } from "@/db/galleryData";
-import { partnerData } from "@/db/partnerData";
-import { privacyPolicyData } from "@/db/privacyPolicyData";
-import { termsAndConditionsData } from "@/db/termsAndConditionsData";
-import { testimonialData } from "@/db/testimonialsData";
-import { heroData } from "@/db/heroData";
-import { products } from "@/db/products";
+import 'server-only';
+import { get } from '@/lib/apiClient';
 
-const baseUrl = 'https://furnisy.vercel.app';
+const LONG_CACHE_TIME = 3600;
 
-export const getHeroData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/hero-content`);
-            if (!res.ok) throw new Error('Failed to fetch hero data');
-            return res.json();
-        }
-        return heroData;
-    } catch (error) {
-        throw new Error('Error in getHeroData: ' + (error instanceof Error ? error.message : String(error)));
+/**
+ * 获取首页 Hero 内容，缓存 1 小时。
+ */
+// 假设 HeroDataType 是你的数据类型
+export const getHeroData = () =>
+    get<HeroDataType[]>('api/hero-content', LONG_CACHE_TIME);
+
+/**
+ * 获取广告数据，缓存 1 小时。
+ */
+export const getAdsData = () =>
+    get<AdsDataType[]>('api/ads', LONG_CACHE_TIME);
+
+/**
+ * 获取产品数据，缓存 10 分钟 (600秒)，假定产品更新可能较频繁。
+ */
+// 假设 ProductDataType[] 是你的数据类型
+export const getProductsData = () =>
+    get<ProductsType>('api/products');
+
+/**
+ * 获取菜单数据，缓存 1 小时。
+ */
+export const getMenuData = () =>
+    get<menuType[]>('api/menu', LONG_CACHE_TIME);
+
+/**
+ * 获取分类数据，缓存 1 小时。
+ */
+export const getCategoriesData = () =>
+    get<CategoryType[]>('api/categories');
+
+/**
+ * 获取博客数据，缓存 30 分钟 (1800秒)。
+ */
+export const getBlogData = () =>
+    get<BlogType[]>('api/blogs');
+
+/**
+ * 获取 FAQ 数据，缓存 1 周，假定 FAQ 极少变动。
+ */
+export const getFaqData = () =>
+    get<FaqDataType[]>('api/faq', LONG_CACHE_TIME);
+
+/**
+ * 获取画廊数据。
+ */
+export const getGalleryData = () =>
+    get<GalleryType[]>('api/gallery', LONG_CACHE_TIME);
+
+/**
+ * 获取合作伙伴数据。
+ */
+export const getPartnerData = () =>
+    get<partnerType[]>('api/partners', LONG_CACHE_TIME);
+
+/**
+ * 获取隐私政策数据，缓存 1 周。
+ */
+export const getPrivacyPolicyData = () =>
+    get<PrivacyPolicType[]>('api/privacy-policy', LONG_CACHE_TIME);
+
+/**
+ * 获取条款与条件数据，缓存 1 周。
+ */
+export const getTermsAndConditionsData = () =>
+    get<TermsAndConditionsType[]>('api/terms-and-conditions', LONG_CACHE_TIME);
+
+/**
+ * 获取客户评价数据。
+ */
+export const getTestimonialsData = () =>
+    get<testimonialType[]>('api/testimonials', LONG_CACHE_TIME);
+
+
+export type BlogType = {
+    "id": number | string,
+    "title": string,
+    "thumbnail": string,
+    "date": string,
+    "category": string,
+    "description": string,
+    "author"?: {
+        "name": string
     }
-});
+}
 
-export const getAdsData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/ads`);
-            if (!res.ok) throw new Error('Failed to fetch ads data');
-            return res.json();
-        }
-        return adsData;
-    } catch (error) {
-        throw new Error('Error in getAdsData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export type ProductType = {
+    "id": number | string,
+    "title": string,
+    "description": string,
+    "price": number,
+    "currency": string,
+    "discountPercentage": number,
+    "rating": number,
+    "totalRating": string,
+    "stock": number,
+    "brand": string,
+    "label": string,
+    "category": string,
+    "thumbnail": string,
+    "colors": {
+        "code": string,
+        "image": string
+    }[],
+    "filter": string,
+    "images": String[],
+    "cardSize"?: string,
+    "isSlider"?: boolean,
+    "adsInfo"?: {
+        "id": number | string,
+        "discountPercentage": number,
+        "banner": string,
+    }[],
+    "size"?:[""]
+}
 
-export const getProductsData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/products`);
-            if (!res.ok) throw new Error('Failed to fetch featured products');
-            return res.json();
-        }
-        return products;
-    } catch (error) {
-        throw new Error('Error in getFeaturedData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export type AdsDataType = {
+    id: number;
+    thumbnail: string;
+    video_src: string;
+}
 
-export const getMenuData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/menu`);
-            if (!res.ok) throw new Error('Failed to fetch menu data');
-            return res.json();
-        }
-        return menuList;
-    } catch (error) {
-        throw new Error('Error in getMenuData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export type CategoryType = {
+    "id": number | string,
+    "categoryImg": string,
+    "categoryName": string,
+    "value"?: string,
+}
 
-export const getCategoriesData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/categories`);
-            if (!res.ok) throw new Error('Failed to fetch categories data');
-            return res.json();
-        }
-        return categoriesOneData;
-    } catch (error) {
-        throw new Error('Error in getCategoriesData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export interface FaqDataType {
+    id: string;
+    title: string;
+    ans: string
+}
 
-export const getBlogData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/blogs`);
-            if (!res.ok) throw new Error('Failed to fetch blog data');
-            return res.json();
-        }
-        return blogData;
-    } catch (error) {
-        throw new Error('Error in getBlogData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export interface GalleryType {
+    id:number;
+    thumbnail:string;
+    title:string
+}
 
-export const getFaqData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/faq`);
-            if (!res.ok) throw new Error('Failed to fetch FAQ data');
-            return res.json();
-        }
-        return faqData;
-    } catch (error) {
-        throw new Error('Error in getFaqData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export type HeroDataType = {
+    id: number | string,
+    title: string,
+    description: string,
+    thumbnail: string,
+}
 
-export const getGalleryData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/gallery`);
-            if (!res.ok) throw new Error('Failed to fetch gallery data');
-            return res.json();
-        }
-        return galleryDataOne;
-    } catch (error) {
-        throw new Error('Error in getGalleryData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export type MegamenuType = {
+    "id": string | number;
+    "menus": {
+        "id": string | number;
+        "title"?: string;
+        "items": {
+            "id": string | number;
+            "label": string;
+            "path": string;
+            "img"?: string;
+        }[]
 
-export const getPartnerData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/partners`);
-            if (!res.ok) throw new Error('Failed to fetch partner data');
-            return res.json();
-        }
-        return partnerData;
-    } catch (error) {
-        throw new Error('Error in getPartnerData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+    }[]
+}
 
-export const getPrivacyPolicyData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/privacy-policy`);
-            if (!res.ok) throw new Error('Failed to fetch privacy policy data');
-            return res.json();
-        }
-        return privacyPolicyData;
-    } catch (error) {
-        throw new Error('Error in getPrivacyPolicyData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export type menuType = {
+    "id": string | number;
+    "label": string;
+    "path": string;
+    "dropdownList"?: {
+        "id": string | number;
+        "label": string;
+        "path": string;
+    }[];
+    "megaMenu"?: MegamenuType[]
+}
 
-export const getTermsAndConditionsData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/terms-and-conditions`);
-            if (!res.ok) throw new Error('Failed to fetch terms and conditions data');
-            return res.json();
-        }
-        return termsAndConditionsData;
-    } catch (error) {
-        throw new Error('Error in getTermsAndConditionsData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export interface partnerType {
+    id: number;
+    logo: string
+}
 
-export const getTestimonialsData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/testimonials`);
-            if (!res.ok) throw new Error('Failed to fetch testimonials data');
-            return res.json();
-        }
-        return testimonialData;
-    } catch (error) {
-        throw new Error('Error in getTestimonialsData: ' + (error instanceof Error ? error.message : String(error)));
-    }
-});
+export interface PrivacyPolicType {
+    title: string,
+    description: string,
+    details: {
+        label: string,
+        content: string
+    }[]
+}
+
+interface ProductsType {
+    topCollections: ProductType[];
+    featuredProducts: ProductType[]
+}
+
+export interface TermsAndConditionsType {
+    title: string,
+    description: string,
+    details: {
+        label: string,
+        content: string
+    }[]
+}
+
+export interface testimonialType {
+    id: number;
+    userName: string;
+    userImage: string;
+    position: string;
+    review: string
+}

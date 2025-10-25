@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { ArrowLeft, ArrowRight } from '@/lib/icon';
 import { Navigation } from 'swiper/modules';
-import { partnerType } from '@/db/partnerData';
+import { partnerType } from '@/lib/data';
 
 const PartnerSlider = ({ partners, className }: { className?: string; partners: partnerType[] }) => {
   return (

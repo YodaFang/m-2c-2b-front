@@ -10,7 +10,7 @@ import {
   jsonLdScript,
   ProductInfo,
   BreadcrumbItem,
-} from "@/utils/seo";
+} from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Furnisy - E-Commerce Template",

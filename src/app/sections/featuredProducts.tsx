@@ -3,11 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/custom-ui
 import Card, { CardFooter, CardHeader, CardIcons, CardImg, CardTitle, CardPriceEnhanced, CardLabel, CardDiscount } from "@/app/sections/productCard";
 import Title from "@/components/ui/title";
 import Link from "next/link";
-import { ProductType } from "@/types/productType";
 import { getProductsData } from "@/lib/data";
 
 const FeaturedProducts = async () => {
-    const { featuredProducts }: { featuredProducts: ProductType[] } = await getProductsData();
+    const { featuredProducts } = await getProductsData();
     let filterList: string[] = ["Best Sellers", "New arrivals", "featured"];
 
     return (

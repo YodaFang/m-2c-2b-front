@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-fade";
-import { AdsDataType } from "@/db/adsData";
+import { AdsDataType } from "@/lib/data";
 
 const AdsSlider = ({ data }: { data: AdsDataType[] }) => {
     const [playingVideoId, setPlayingVideoId] = useState<number | null>(null);

@@ -4,7 +4,6 @@ import PageHeader from '@/app/sections/pageHeader'
 import React from 'react'
 import { Metadata } from 'next'
 import { getTermsAndConditionsData } from '@/lib/data'
-import { TermsAndConditionsType } from '@/db/termsAndConditionsData'
 
 export const metadata: Metadata = {
     title: "Terms & Conditions",
@@ -12,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 const TermsConditions = async () => {
-    const termsAndConditionsData: TermsAndConditionsType[] = await getTermsAndConditionsData();
+    const termsAndConditionsData = await getTermsAndConditionsData();
     return (
         <main>
             <PageHeader pageTitle='Terms & Conditions' currentPage='Terms & Conditions' />

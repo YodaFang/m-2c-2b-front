@@ -2,10 +2,9 @@ import React from 'react'
 import Image from 'next/image'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@/components/custom-ui/accordion"
 import { getFaqData } from '@/lib/data'
-import { FaqDataType } from '@/db/faqData'
 
 const FaqSection = async () => {
-    const faqData:FaqDataType[] = await getFaqData();
+    const faqData = await getFaqData();
     return (
         <section className='container lg:py-25 py-15'>
             <h5 className='text-gray-1-foreground'>Frequently Asked Questions</h5>

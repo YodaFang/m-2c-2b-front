@@ -5,7 +5,6 @@ import Newsletter from '@/app/sections/newsletter'
 import PageHeader from '@/app/sections/pageHeader'
 import ProductsView from '@/app/sections/shopDetails/productView'
 import { getProductsData } from '@/lib/data'
-import { ProductType } from '@/types/productType'
 
 export const metadata: Metadata = {
   title: "Category",
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 const page = async () => {
-  const { featuredProducts }: { featuredProducts: ProductType[] } = await getProductsData();
+  const { featuredProducts } = await getProductsData();
   return (
     <main>
       <PageHeader pageTitle='' currentPage='Category' />
