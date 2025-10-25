@@ -12,11 +12,6 @@ import Hero from '@/app/sections/hero'
 import AboutTwo from '@/app/sections/aboutTwo'
 import { getAdsData, getBlogData, getCategoriesData, getHeroData, getProductsData, getTestimonialsData } from '@/lib/data'
 
-export const metadata: Metadata = {
-  title: "Home",
-  description: "Welcome to our furniture store."
-}
-
 const Home = async () => {
   const categoriesData = await getCategoriesData();
   const blogData = await getBlogData();

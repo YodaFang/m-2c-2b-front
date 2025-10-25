@@ -74,6 +74,11 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning={true} suppressContentEditableWarning={true}>
+      <head>
+        {jsonLdScript(organizationJson)}
+        {jsonLdScript(breadcrumbJson)}
+        {jsonLdScript(productJson)}
+      </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <StoreProvider>
@@ -81,9 +86,6 @@ export default function RootLayout({
             <Toaster position="top-right" />
           </StoreProvider>
         </ThemeProvider>
-        {jsonLdScript(organizationJson)}
-        {jsonLdScript(breadcrumbJson)}
-        {jsonLdScript(productJson)}
       </body>
     </html>
   );
