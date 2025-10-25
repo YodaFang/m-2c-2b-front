@@ -6,7 +6,7 @@ import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger, } from 
 import { Close } from '@/lib/icon'
 import { Button } from '@/components/custom-ui/button'
 import { useAppSelector } from '@/lib/reduxHooks'
-import calcluteDiscount from '@/lib/calcluteDiscount'
+import calcluteDiscount from '@/lib/utils'
 import { useDispatch } from 'react-redux';
 import { addToCart } from '@/lib/features/AddToCartSlice';
 import Link from 'next/link';

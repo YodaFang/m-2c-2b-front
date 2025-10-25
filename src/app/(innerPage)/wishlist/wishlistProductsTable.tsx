@@ -6,7 +6,7 @@ import currencyFormatter from 'currency-formatter';
 import { Button } from '@/components/custom-ui/button'
 import { Close } from '@/lib/icon'
 import { useAppSelector } from '@/lib/reduxHooks'
-import calcluteDiscount from '@/lib/calcluteDiscount'
+import calcluteDiscount from '@/lib/utils'
 import { addToCart } from '@/lib/features/AddToCartSlice';
 import { useDispatch } from 'react-redux';
 import { removeToWishlist } from '@/lib/features/AddToWishlistSlice';

@@ -19,7 +19,7 @@ import Card, {
   CardTitle,
 } from "@/app/sections/productCard";
 import Pagination from "@/components/custom-ui/pagination";
-import calcluteDiscount from "@/lib/calcluteDiscount";
+import calcluteDiscount from "@/lib/utils";
 import { addToCart } from "@/lib/features/AddToCartSlice";
 import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
 import { addToCompare } from "@/lib/features/CompareProductsSlice";

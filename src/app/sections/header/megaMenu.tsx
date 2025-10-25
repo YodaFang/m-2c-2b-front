@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/custom-ui/button'
 import { MegamenuType } from '@/db/menuList'
-import calcluteDiscount from '@/lib/calcluteDiscount'
+import calcluteDiscount from '@/lib/utils'
 import currencyFormatter from 'currency-formatter';
 import { cn } from '@/lib/utils'
 import { ProductType } from '@/types/productType'

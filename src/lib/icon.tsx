@@ -1,4 +1,3 @@
-import { cn } from "./utils"
 
 const Heart = ({ className, strokeWidth = 1 }: { className?: string, strokeWidth?: number }) => {
     return (

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Close, Eye } from '@/lib/icon'
 import { Button } from '@/components/custom-ui/button'
 import ProductQuickView, { ProductQuickViewType } from '@/app/sections/shopDetails/productQuickView'
-import calcluteDiscount from '@/lib/calcluteDiscount'
+import calcluteDiscount from '@/lib/utils'
 import currencyFormatter from 'currency-formatter';
 import { useAppDispatch, useAppSelector } from '@/lib/reduxHooks'
 import { addToCart } from '@/lib/features/AddToCartSlice'
