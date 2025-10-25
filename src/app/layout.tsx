@@ -3,9 +3,14 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import { Toaster } from "@/components/custom-ui/toast";
-import { DefaultSeo } from "next-seo";
-import defaultSEOConfig from "@/app/next-seo.config";
-
+import {
+  generateOrganizationJsonLd,
+  generateBreadcrumbJsonLd,
+  generateProductJsonLd,
+  jsonLdScript,
+  ProductInfo,
+  BreadcrumbItem,
+} from "@/utils/seo";
 
 export const metadata: Metadata = {
   title: "Furnisy - E-Commerce Template",
@@ -41,16 +46,44 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const organizationJson = generateOrganizationJsonLd({
+    name: "Furnisy",
+    url: "https://furnisy.com",
+    logo: "https://furnisy.com/logo.png",
+    sameAs: ["https://facebook.com/furnisy", "https://instagram.com/furnisy"],
+  });
+
+  // Breadcrumb 数据，可动态生成
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { position: 1, name: "Home", item: "https://furnisy.com" },
+    { position: 2, name: "Products", item: "https://furnisy.com/products" },
+  ];
+  const breadcrumbJson = generateBreadcrumbJsonLd(breadcrumbItems);
+
+  // 示例商品数据，可动态传入每个页面
+  const exampleProduct: ProductInfo = {
+    name: "Modern Wooden Chair",
+    description: "High-quality modern chair made of oak wood.",
+    image: ["https://furnisy.com/images/chair.jpg"],
+    sku: "CHAIR-123",
+    price: "129.99",
+    currency: "EUR",
+    url: "https://furnisy.com/products/wooden-chair",
+  };
+  const productJson = generateProductJsonLd(exampleProduct);
+
   return (
     <html lang="en" suppressHydrationWarning={true} suppressContentEditableWarning={true}>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <DefaultSeo {...defaultSEOConfig} />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <StoreProvider>
             {children}
-            <Toaster position="top-right"/>
+            <Toaster position="top-right" />
           </StoreProvider>
         </ThemeProvider>
+        {jsonLdScript(organizationJson)}
+        {jsonLdScript(breadcrumbJson)}
+        {jsonLdScript(productJson)}
       </body>
     </html>
   );
