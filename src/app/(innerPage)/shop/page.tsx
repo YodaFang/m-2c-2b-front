@@ -6,6 +6,7 @@ import ProductsView from '@/app/sections/shopDetails/productView'
 import Newsletter from '@/app/sections/newsletter'
 import InstagramGallery from '@/app/sections/instagramGallery'
 import { getProductsData } from '@/lib/data'
+import { listProducts } from "@/data/products"
 
 export const metadata: Metadata = {
     title: "Shop",
@@ -13,6 +14,9 @@ export const metadata: Metadata = {
 }
 
 const ShopOne = async () => {
+    console.log("ShopOne >>>>>>>>>>>>>>>>>>")
+    const products = await listProducts({});
+    console.log(products);
     const { featuredProducts } = await getProductsData();
     return (
         <main>
@@ -27,7 +31,6 @@ const ShopOne = async () => {
             <Newsletter />
             <InstagramGallery />
         </main>
-
     )
 }
 

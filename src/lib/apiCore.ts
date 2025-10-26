@@ -1,6 +1,6 @@
 import 'server-only';
 
-const API_URL = process.env.API_BASE_URL || 'http://localhost:3000';
+const API_URL = process.env.API_BASE_URL || 'http://localhost:8000';
 
 export interface RequestConfig extends RequestInit {
     // Next.js 扩展的缓存选项
