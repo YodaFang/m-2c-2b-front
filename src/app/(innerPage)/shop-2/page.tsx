@@ -4,7 +4,7 @@ import PageHeader from '@/app/sections/pageHeader'
 import ProductsView from '@/app/sections/shopDetails/productView'
 import Newsletter from '@/app/sections/newsletter'
 import InstagramGallery from '@/app/sections/instagramGallery'
-import { getProductsData } from '@/lib/data'
+import { listProducts } from '@/data/products'
 
 export const metadata: Metadata = {
     title: "Shop",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 const ShopTwo = async () => {
-     const { featuredProducts } = await getProductsData();
+    const { products: featuredProducts } = await listProducts({});
     return (
         <main>
             <PageHeader pageTitle='Shop-2' currentPage='Shop-2' />

@@ -3,12 +3,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/custom-ui/button'
 import { MegamenuType } from '@/db/menuList'
-import calcluteDiscount from '@/lib/utils'
 import currencyFormatter from 'currency-formatter';
 import { cn } from '@/lib/utils'
-import { ProductType } from '@/types/productType'
+import { Product } from "@/lib/data";
 
-const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredProducts: ProductType[] }) => {
+const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredProducts: Product[] }) => {
 
     return (
         <div className='absolute z-50 left-0 bg-home-bg-1 flex lg:flex-row flex-col justify-between w-full transition-all duration-500 lg:h-0 h-auto overflow-hidden lg:group-hover:h-[400px] shadow-lg rounded-b-lg'>
@@ -45,21 +44,22 @@ const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredPr
                 })}
             <div className='lg:py-7.5 py-3 flex flex-col gap-3 '>
                 {
-                    featuredProducts.slice(0, 3).map(({ id, title, thumbnail, price, discountPercentage }) => {
-                        const finalPrice = discountPercentage ? calcluteDiscount(price, discountPercentage) : price;
+                    featuredProducts?.slice(0, 3).map(({ id, title, thumbnail, handle, discountPercentage, variants }) => {
+                        const orgPrice = variants[0].price.original;
+                        const finalPrice = variants[0].price.calculated;
 
                         return (
                             <div key={id} className='flex items-center gap-3'>
-                                <Link href={'/product-details'} className='inline-block overflow-hidden bg-slate-100 max-h-[900px] group/img'>
+                                <Link href={`/product/${handle}`} className='inline-block overflow-hidden bg-slate-100 max-h-[900px] group/img'>
                                     <Image width={80} height={80} sizes='100vw' src={thumbnail} alt='img' className='group-hover/img:scale-110 transition-all duration-500 rounded-[4px]' />
                                 </Link>
                                 <div className='max-w-[200px]'>
-                                    <Link href={"/product-details"} className='text-gray-1-foreground hover:text-secondary-foreground transition-all duration-500 capitalize line-clamp-2'>
+                                    <Link href={`/product/${handle}`} className='text-gray-1-foreground hover:text-secondary-foreground transition-all duration-500 capitalize line-clamp-2'>
                                         {title}
                                     </Link>
                                     <p className='text-gray-1-foreground text-sm'>
-                                        {discountPercentage ? <del className='text-gray-2-foreground font-normal'>{currencyFormatter.format(price, { code: 'USD' })}</del> : null} {' '}
-                                        <span>{currencyFormatter.format(finalPrice, { code: 'USD' })}</span> USD
+                                        {discountPercentage ? <del className='text-gray-2-foreground font-normal'>{currencyFormatter.format(orgPrice, { code: 'RON' })}</del> : null} {' '}
+                                        <span>{currencyFormatter.format(finalPrice, { code: 'RON' })}</span> RON
                                     </p>
                                 </div>
                             </div>

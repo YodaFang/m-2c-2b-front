@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/custom-ui/button";
 import Tooltip from "@/components/custom-ui/tooltip";
-import { Eye, Heart, Shuffle } from "@/lib/icon";
+import { Eye, Heart } from "@/lib/icon";
 import currencyFormatter from "currency-formatter";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,15 +19,12 @@ import Card, {
   CardTitle,
 } from "@/app/sections/productCard";
 import Pagination from "@/components/custom-ui/pagination";
-import calcluteDiscount from "@/lib/utils";
 import { addToCart } from "@/lib/features/AddToCartSlice";
 import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
-import { addToCompare } from "@/lib/features/CompareProductsSlice";
 import { useAppDispatch } from "@/lib/reduxHooks";
-import { ProductType } from "@/types/productType";
+import { Product } from "@/lib/data";
 import ProductQuickView from "./productQuickView";
 import ProductsCategory from "./productsCategory";
-import { ProductShortInfoPropsType } from "./productShortInfo";
 import ShopSidebar from "./shopSidebar";
 
 type ProductsViewPropsType = {
@@ -35,7 +32,7 @@ type ProductsViewPropsType = {
   isSortingProductTop: boolean;
   isGridDefaultView: boolean;
   isSidebarCategoryHide: boolean;
-  data: ProductType[];
+  data: Product[];
 };
 
 const ProductsView = ({
@@ -47,14 +44,7 @@ const ProductsView = ({
 }: ProductsViewPropsType) => {
   const [isGridView, setIsGridView] = useState<boolean>(isGridDefaultView);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [product, setProduct] = useState<ProductShortInfoPropsType>({
-    id: 0,
-    thumbnail: "",
-    price: 0,
-    discountPercentage: 0,
-    title: "",
-    stock: 0,
-  });
+  const [product, setProduct] = useState<Product>(data[0]);
   const dispatch = useAppDispatch();
 
   return (
@@ -102,7 +92,7 @@ const ProductsView = ({
                         <CardIcons product={prd} />
                       </CardHeader>
                       <CardFooter>
-                        <CardTitle path="/product-details">
+                        <CardTitle path={`/product/${prd.handle}`}>
                           {prd.title}
                         </CardTitle>
                         <CardPriceEnhanced
@@ -116,23 +106,11 @@ const ProductsView = ({
               </div>
             ) : (
               <div className="flex flex-col gap-7.5 mt-7.5">
-                {data.map(
-                  ({
-                    category,
-                    discountPercentage,
-                    id,
-                    price,
-                    thumbnail,
-                    title,
-                    colors,
-                    stock,
-                  }) => {
-                    const finalPrice = discountPercentage
-                      ? calcluteDiscount(price, discountPercentage)
-                      : price;
+                {data.map((p) => {
+                    const finalPrice = p.price
                     return (
                       <div
-                        key={id}
+                        key={p.id}
                         className="grid sm:grid-cols-[32.2%_auto] grid-cols-1 items-center gap-7.5"
                       >
                         <div className="bg-[#F2F2F2] rounded-xl">
@@ -140,17 +118,17 @@ const ProductsView = ({
                             width={341}
                             height={400}
                             sizes="100vw"
-                            src={thumbnail}
+                            src={p.thumbnail}
                             alt="img"
                             className="w-full rounded-xl"
                           />
                         </div>
                         <div>
                           <Link
-                            href={"/product-details"}
+                            href={`/product/${p.handle}`}
                             className="text-[clamp(1.25rem,1.0769rem+0.7692vw,2rem)] leading-[131%] text-secondary-foreground font-medium capitalize line-clamp-1 multiline-hover inline-flex"
                           >
-                            {title}
+                            {p.title}
                           </Link>
                           <p className="text-gray-1-foreground leading-[155%] mt-2.5">
                             Elevate your dining experience with the Baxter
@@ -158,16 +136,16 @@ const ProductsView = ({
                             and timeless craftsmanship.
                           </p>
                           <p className="text-secondary-foreground lg:text-2xl md:text-xl text-lg font-medium mt-5">
-                            {discountPercentage ? (
+                            {p.discountPercentage ? (
                               <del className="text-gray-3-foreground font-normal">
-                                {currencyFormatter.format(price, {
-                                  code: "USD",
+                                {currencyFormatter.format(p.org_price, {
+                                  code: "RON",
                                 })}
                               </del>
                             ) : null}{" "}
                             <span>
                               {currencyFormatter.format(finalPrice, {
-                                code: "USD",
+                                code: "RON",
                               })}
                             </span>{" "}
                             USD
@@ -178,13 +156,9 @@ const ProductsView = ({
                               onClick={() =>
                                 dispatch(
                                   addToCart({
-                                    id,
-                                    thumbnail,
+                                    variantId: p.id,
                                     quantity: 1,
-                                    price: finalPrice,
-                                    color: "red",
-                                    size: "m",
-                                    title,
+
                                   })
                                 )
                               }
@@ -200,17 +174,7 @@ const ProductsView = ({
                               <div
                                 onClick={() =>
                                   dispatch(
-                                    addToWishlist({
-                                      id,
-                                      date: "May 14, 2025",
-                                      price,
-                                      discountPercentage,
-                                      thumbnail,
-                                      title,
-                                      color: colors[0]?.code || "",
-                                      size: "xl",
-                                      stock,
-                                    })
+                                    addToWishlist(p)
                                   )
                                 }
                                 className="w-9 h-9 rounded-sm flex items-center justify-center border-[1.5px] border-primary text-secondary-foreground cursor-pointer hover:bg-primary hover:text-white transition-all duration-500"
@@ -226,46 +190,11 @@ const ProductsView = ({
                               <div
                                 onClick={() => {
                                   setIsDialogOpen(true),
-                                    setProduct({
-                                      id,
-                                      thumbnail,
-                                      price,
-                                      discountPercentage,
-                                      title,
-                                      stock,
-                                    });
+                                    setProduct(p);
                                 }}
                                 className="w-9 h-9 rounded-sm flex items-center justify-center border-[1.5px] border-primary text-secondary-foreground cursor-pointer hover:bg-primary hover:text-white transition-all duration-500"
                               >
                                 <Eye className="w-5 h-5" strokeWidth={0.5} />
-                              </div>
-                            </Tooltip>
-                            <Tooltip
-                              text={"Compare Products"}
-                              className="bg-primary text-white"
-                              arrowCalss="bg-primary"
-                            >
-                              <div
-                                onClick={() =>
-                                  dispatch(
-                                    addToCompare({
-                                      id,
-                                      price,
-                                      discountPercentage,
-                                      thumbnail,
-                                      title,
-                                      stock,
-                                      color: colors[0]?.code || "",
-                                      size: "xl",
-                                    })
-                                  )
-                                }
-                                className="w-9 h-9 rounded-sm flex items-center justify-center border-[1.5px] border-primary text-secondary-foreground cursor-pointer hover:bg-primary hover:text-white transition-all duration-500"
-                              >
-                                <Shuffle
-                                  className="w-5 h-5"
-                                  strokeWidth={0.5}
-                                />
                               </div>
                             </Tooltip>
                           </div>

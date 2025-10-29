@@ -1,9 +1,9 @@
 import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from '@/app/sections/productCard';
-import { getProductsData } from '@/lib/data';
+import { listProducts } from '@/data/products';
 import { cn } from '@/lib/utils';
 
 const RelatedProducts = async ({ className }: { className?: string }) => {
-    const { featuredProducts } = await getProductsData();
+    const { products: featuredProducts } = await listProducts({});
     return (
         <section className={cn('lg:pt-25 lg:pb-25 pt-15 pb-15', className)}>
             <div className='container'>
@@ -20,7 +20,7 @@ const RelatedProducts = async ({ className }: { className?: string }) => {
                                         <CardIcons product={prd} />
                                     </CardHeader>
                                     <CardFooter>
-                                        <CardTitle path="/product-details">{prd.title}</CardTitle>
+                                        <CardTitle path={`/product/${prd.handle}`}>{prd.title}</CardTitle>
                                         <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} />
                                     </CardFooter>
                                 </Card>

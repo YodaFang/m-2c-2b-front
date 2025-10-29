@@ -3,10 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/custom-ui
 import Card, { CardFooter, CardHeader, CardIcons, CardImg, CardTitle, CardPriceEnhanced, CardLabel, CardDiscount } from "@/app/sections/productCard";
 import Title from "@/components/ui/title";
 import Link from "next/link";
-import { getProductsData } from "@/lib/data";
+import { listProducts } from "@/data/products";
 
 const FeaturedProducts = async () => {
-    const { featuredProducts } = await getProductsData();
+    const { products: featuredProducts } = await listProducts({});
     let filterList: string[] = ["Best Sellers", "New arrivals", "featured"];
 
     return (
@@ -41,8 +41,8 @@ const FeaturedProducts = async () => {
                             </Link>
                         </div>
 
-                        {filterList.map((filter, index) => {
-                            const filteredData = featuredProducts.filter((prd) => prd.filter === filter);
+                        {filterList?.map((filter, index) => {
+                            const filteredData = featuredProducts;
                             return (
                                 <TabsContent key={index} value={filter}>
                                     <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-x-5 gap-y-10">
@@ -56,7 +56,7 @@ const FeaturedProducts = async () => {
                                                         <CardIcons product={prd} />
                                                     </CardHeader>
                                                     <CardFooter>
-                                                        <CardTitle path="/product-details">{prd.title}</CardTitle>
+                                                        <CardTitle path={`/product/${prd.handle}`}>{prd.title}</CardTitle>
                                                         <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} />
                                                     </CardFooter>
                                                 </Card>

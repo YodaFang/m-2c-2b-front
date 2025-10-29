@@ -8,9 +8,9 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
 import 'swiper/css';
 import Title from '@/components/ui/title'
-import { ProductType } from '@/types/productType'
+import { Product } from "@/lib/data";
 
-const TopCollections = ({data}:{data:ProductType[]}) => {
+const TopCollections = ({ data }: { data: Product[] }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [slidesOffset, setSlidesOffset] = useState(0);
 
@@ -65,7 +65,7 @@ const TopCollections = ({data}:{data:ProductType[]}) => {
                     modules={[Navigation]}
 
                 >
-                    {data.map((prd) => {
+                    {data?.map((prd) => {
                         return (
                             <SwiperSlide key={prd.id}>
                                 <Card key={prd.id}>
@@ -76,8 +76,8 @@ const TopCollections = ({data}:{data:ProductType[]}) => {
                                         <CardIcons product={prd} />
                                     </CardHeader>
                                     <CardFooter>
-                                        <CardTitle path="/product-details">{prd.title}</CardTitle>
-                                        <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} />
+                                        <CardTitle path={`/product/${prd.handle}`}>{prd.title}</CardTitle>
+                                        <CardPriceEnhanced price={prd.variants[0].price.calculated} discountPercentage={prd.discountPercentage} />
                                     </CardFooter>
                                 </Card>
                             </SwiperSlide>

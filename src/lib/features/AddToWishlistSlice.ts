@@ -1,21 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "@/components/custom-ui/toast";
-
-interface Product {
-    id: string | number;
-    price: number;
-    discountPercentage?: number;
-    title: string;
-    thumbnail: string;
-    date: string;
-    color: string;
-    size: string;
-    stock: number;
-}
+import { WishlistItem, Product } from "@/lib/data";
 
 // Load initial state from local storage
-const loadStateFromLocalStorage = (): Product[] => {
+const loadStateFromLocalStorage = (): WishlistItem[] => {
     try {
         if (typeof window === "undefined" || !window.localStorage) {
             console.warn("localStorage is not available");
@@ -33,7 +22,7 @@ const loadStateFromLocalStorage = (): Product[] => {
 };
 
 // Save state to local storage
-const saveStateToLocalStorage = (state: Product[]) => {
+const saveStateToLocalStorage = (state: WishlistItem[]) => {
     try {
         const serializedState = JSON.stringify(state);
         localStorage.setItem("wishlist", serializedState);
@@ -43,7 +32,7 @@ const saveStateToLocalStorage = (state: Product[]) => {
 };
 
 const initialState = {
-    products: loadStateFromLocalStorage(),
+    wishlist: loadStateFromLocalStorage(),
 };
 
 const AddToWishlistSlice = createSlice({
@@ -51,22 +40,29 @@ const AddToWishlistSlice = createSlice({
     initialState,
     reducers: {
         addToWishlist: (state, action: PayloadAction<Product>) => {
-            const itemInCart = state.products.find((item) => item.id === action?.payload.id);
-            if (itemInCart) {
-                toast.success('The Product already has');
+            const product = action?.payload;
+            if(!product) return;
+            const item = state.wishlist.find((item) => item.productId === product.id);
+            if (item) {
+                toast.success('The Product already existed in Wishlist');
                 return;
             } else {
-                toast.success('Add To Wishlist Successfully');
-                state.products.push({
-                    ...action.payload,
+                state.wishlist.push({
+                    id: "id",
+                    productId: product.id,
+                    product,
+                    title: product.title,
+                    thumbnail: product.thumbnail,
+                    created_at: new Date().toLocaleDateString(),
                 });
-                saveStateToLocalStorage(state.products);
+                saveStateToLocalStorage(state.wishlist);
+                toast.success('Add To Wishlist Successfully');
             }
         },
         removeToWishlist: (state, action) => {
-            const itemsInCart = state.products.filter((item) => item.id !== action.payload);
-            state.products = itemsInCart;
-            saveStateToLocalStorage(state.products);
+            const items = state.wishlist.filter((item) => item.productId !== action.payload);
+            state.wishlist = items;
+            saveStateToLocalStorage(state.wishlist);
         }
     }
 });

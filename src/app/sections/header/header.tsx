@@ -1,4 +1,5 @@
-import { getMenuData, getProductsData } from "@/lib/data"
+import { getMenuData } from "@/lib/data"
+import { listProducts } from "@/data/products"
 import { User } from '@/lib/icon'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,7 +12,7 @@ import TopHeader from './topHeader'
 
 const Header = async () => {
     const menuList = await getMenuData();
-    const { featuredProducts } = await getProductsData();
+    const { products: featuredProducts } = await listProducts({});
     return (
         <StickyHeader topHeaderContent={<TopHeader />}>
             <div className='py-2 bg-secondary [.header-pinned_&]:shadow-md'>

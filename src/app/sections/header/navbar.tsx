@@ -3,9 +3,9 @@ import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import MobileMenu from "./mobileMenu";
 import MegaMenu from "./megaMenu";
-import { menuType, ProductType } from "@/lib/data";
+import { menuType, Product } from "@/lib/data";
 
-const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts: ProductType[] }) => {
+const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts: Product[] }) => {
     return (
         <>
             <MobileMenu data={data} featuredProducts={featuredProducts} />

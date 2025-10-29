@@ -9,24 +9,14 @@ import { Close } from "@/lib/icon";
 import Image from "next/image";
 import Link from "next/link";
 import ProductShortInfo from "./productShortInfo";
+import { Product } from "@/lib/data";
 
 export type ProductQuickViewType = {
   isDialogOpen: boolean;
   setIsDialogOpen: (open: boolean) => void;
-  product: {
-    id: string | number;
-    thumbnail: string;
-    title: string;
-    description?: string;
-    price: number;
-    discountPercentage: number;
-    rating?: number;
-    totalRating?: string;
-    stock: number;
-    category?: string;
-    tags?: [""];
-  };
+  product: Product;
 };
+
 const ProductQuickView = ({
   isDialogOpen,
   setIsDialogOpen,
@@ -53,19 +43,14 @@ const ProductQuickView = ({
               alt="img"
             />
             <Link
-              href="/product-details"
+              href={`/product/${product.handle}`}
               className="block w-full bg-primary text-white text-center text-xl font-medium leading-[150%] py-[15px] px-7.5 absolute bottom-0 left-0 cursor-pointer"
             >
               View Details
             </Link>
           </div>
           <ProductShortInfo
-            id={product.id}
-            thumbnail={product.thumbnail}
-            title={product?.title}
-            price={product.price}
-            discountPercentage={product.discountPercentage}
-            stock={product.stock}
+            product={product}
           />
         </div>
       </DialogContent>

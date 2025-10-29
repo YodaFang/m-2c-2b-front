@@ -1,13 +1,12 @@
 "use client";
 import { addToCart } from "@/lib/features/AddToCartSlice";
 import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
-import { addToCompare } from "@/lib/features/CompareProductsSlice";
-import { Eye, Heart, ShopCart, Shuffle } from "@/lib/icon";
+import { Eye, Heart, ShopCart } from "@/lib/icon";
 import { useAppDispatch } from "@/lib/reduxHooks";
 import { cn } from "@/lib/utils";
-import { ProductType } from "@/types/productType";
+import { Product } from "@/lib/data";
 import currencyFormatter from "currency-formatter";
-import Image from "next/image";
+import Thumbnail from "@/components/custom-ui/thumbnail";
 import Link from "next/link";
 import {
   createContext,
@@ -19,8 +18,6 @@ import {
 } from "react";
 import Tooltip from "@/components/custom-ui/tooltip";
 import ProductQuickView from "./shopDetails/productQuickView";
-import { ProductShortInfoPropsType } from "./shopDetails/productShortInfo";
-
 
 interface CardPropsType {
   children?: ReactNode;
@@ -70,8 +67,6 @@ export function CardHeader({ children, className }: CardPropsType) {
 
 export function CardImg({
   src,
-  height,
-  width,
   className,
 }: {
   src: string;
@@ -81,101 +76,37 @@ export function CardImg({
 }) {
   const context = useContext(CardContext);
   const currentImage = context ? context.currentImage : "";
-
-  return (
-    <div className={cn("overflow-hidden rounded-xl", className)}>
-      <Image
-        src={currentImage || src}
-        height={height}
-        width={width}
-        sizes="100vw"
-        style={{ width: "100%", height: "auto" }}
-        alt="img"
-        className="mx-auto hover:scale-110 transition-all duration-700 rounded-xl"
-      />
-    </div>
-  );
+  return <Thumbnail className={className} thumbnail={currentImage || src} size="medium" />
 }
 
 // Enhanced CardIcons with built-in functionality
 interface CardIconsProps extends CardPropsType {
-  product?: ProductType;
+  product: Product;
 }
 
 export function CardIcons({ children, className, product }: CardIconsProps) {
   const dispatch = useAppDispatch();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [quickViewProduct, setQuickViewProduct] =
-    useState<ProductShortInfoPropsType>({
-      id: 0,
-      thumbnail: "",
-      price: 0,
-      discountPercentage: 0,
-      title: "",
-      stock: 0,
-    });
 
   const defaultActions = product && {
     handleWishlist: () => {
       if (product) {
         dispatch(
-          addToWishlist({
-            id: product.id,
-            date: new Date().toLocaleDateString(),
-            price: product.price,
-            discountPercentage: product.discountPercentage,
-            thumbnail: product.thumbnail,
-            title: product.title,
-            color: product.colors?.[0]?.code,
-            size: "xl",
-            stock: product.stock,
-          })
+          addToWishlist(product)
         );
       }
     },
     handleQuickView: () => {
       if (product) {
         setIsDialogOpen(true);
-        setQuickViewProduct({
-          id: product.id,
-          thumbnail: product.thumbnail,
-          title: product.title,
-          price: product.price,
-          discountPercentage: product.discountPercentage,
-          stock: product.stock,
-        });
       }
     },
     handleAddToCart: () => {
       if (product) {
-        const finalPrice = product.discountPercentage
-          ? product.price - (product.price * product.discountPercentage) / 100
-          : product.price;
         dispatch(
           addToCart({
-            id: product.id,
-            price: finalPrice,
+            variantId: product.id,
             quantity: 1,
-            thumbnail: product.thumbnail,
-            title: product.title,
-            color: product.colors?.[0]?.code,
-            size: "xl",
-          })
-        );
-      }
-    },
-    handleCompare: () => {
-      if (product) {
-        dispatch(
-          addToCompare({
-            id: product.id,
-            price: product.price,
-            discountPercentage: product.discountPercentage,
-            thumbnail: product.thumbnail,
-            title: product.title,
-            stock: product.stock,
-            color: product.colors?.[0]?.code,
-            size: "xl",
           })
         );
       }
@@ -242,23 +173,10 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
           </span>
         </button>
       </Tooltip>
-
-      {/* Compare */}
-      <Tooltip text={"Compare"}>
-        <button
-          aria-label="Compare"
-          onClick={defaultActions?.handleCompare}
-          className="w-7.5 h-7.5 bg-background flex justify-center items-center rounded-full lg:opacity-0 lg:group-hover:opacity-100 delay-300 transform lg:translate-y-full lg:group-hover:translate-y-0 transition-all duration-300"
-        >
-          <span className="flex justify-center items-center w-full h-full rounded-full text-gray-1-foreground hover:bg-primary hover:text-white transition-all duration-300">
-            <Shuffle className="size-4" />
-          </span>
-        </button>
-      </Tooltip>
       <ProductQuickView
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
-        product={quickViewProduct}
+        product={product}
       />
     </div>
   );

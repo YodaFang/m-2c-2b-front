@@ -150,7 +150,7 @@ const ShopSidebar = ({
             Best Sellers
           </strong>
           <div className="mt-5 flex flex-col gap-5">
-            {bestProducts.map(({ id, price, thumbnail, title }) => {
+            {bestProducts.map(({ id, price, thumbnail, title, handle }) => {
               return (
                 <div key={id} className="flex items-center gap-5">
                   <Image
@@ -163,7 +163,7 @@ const ShopSidebar = ({
                   />
                   <div>
                     <Link
-                      href={"/product-details"}
+                      href={`/product/${handle}`}
                       className="capitalize text-gray-1-foreground font-medium hover:text-secondary-foreground transition-all duration-500"
                     >
                       {title}

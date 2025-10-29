@@ -8,11 +8,11 @@ import { cn } from '@/lib/utils'
 import { Close } from '@/lib/icon'
 import { usePathname } from 'next/navigation'
 import MegaMenu from './megaMenu'
-import { ProductType } from '@/types/productType'
+import { Product } from '@/lib/data'
 import HeaderExtraInfo from './headerExtraInfo'
 
 
-const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProducts: ProductType[] }) => {
+const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProducts: Product[] }) => {
     const pathName = usePathname()
     const [dropDownActive, setDropDownActive] = useState<boolean | string | number>(false)
     const [open, setOpen] = useState(false)

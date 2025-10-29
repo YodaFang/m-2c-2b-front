@@ -1,18 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "@/components/custom-ui/toast";
+import { Cart, CartItem } from "@/lib/data";
 
-interface Product {
-    id: string | number;
-    quantity: number;
-    price: number;
-    title: string;
-    thumbnail: string;
-    color: string;
-    size: string;
-}
-
-const loadStateFromLocalStorage = (): Product[] => {
+const loadCart = (): CartItem[] => {
     try {
         if (typeof window === "undefined" || !window.localStorage) {
             console.warn("localStorage is not available");
@@ -29,53 +20,40 @@ const loadStateFromLocalStorage = (): Product[] => {
     }
 };
 
-const saveStateToLocalStorage = (state: Product[]) => {
-    try {
-        const serializedState = JSON.stringify(state);
-        localStorage.setItem("cart", serializedState);
-    } catch (err) {
-        console.error("Could not save state", err);
-    }
-};
-
 const initialState = {
-    products: loadStateFromLocalStorage(),
+    items: loadCart(),
 };
 
 const AddToCartSlice = createSlice({
     name: "addToCart",
     initialState,
     reducers: {
-        addToCart: (state, action: PayloadAction<Product>) => {
-            toast.success('Add To Cart Successfully');
-            const itemInCart = state.products.find((item) => item.id === action.payload.id);
+        addToCart: (state, action: PayloadAction<{ variantId: string | number, quantity: number }>) => {
+            const itemInCart = state.items.find((item) => item.variant_id === action.payload.variantId);
             if (itemInCart) {
                 itemInCart.quantity += action.payload.quantity;
             } else {
-                state.products.push({
+                state.items.push({
                     ...action.payload,
-                });
+                } as any);
             }
-            saveStateToLocalStorage(state.products);
+            toast.success('Add To Cart Successfully');
         },
         removeToCart: (state, action) => {
-            const itemsInCart = state.products.filter(
-                (item) => item.id !== action.payload
+            const itemsInCart = state.items.filter(
+                (item) => item.variant_id !== action.payload
             );
-            state.products = itemsInCart;
-            saveStateToLocalStorage(state.products);
         },
         incrementProductQuentity: (state, action: PayloadAction<{ id: number | string }>) => {
-            const itemInCart = state.products.find(
+            const itemInCart = state.items.find(
                 (item) => item.id === action.payload.id
             );
             if (itemInCart) {
                 itemInCart.quantity += 1;
             }
-            saveStateToLocalStorage(state.products);
         },
         dicrementProductQuentity: (state, action: PayloadAction<{ id: number | string }>) => {
-            const itemInCart = state.products.find(
+            const itemInCart = state.items.find(
                 (item) => item.id === action.payload.id
             );
             if (itemInCart) {
@@ -84,7 +62,6 @@ const AddToCartSlice = createSlice({
                 }
                 itemInCart.quantity -= 1;
             }
-            saveStateToLocalStorage(state.products);
         },
     },
 });

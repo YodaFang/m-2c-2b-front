@@ -10,14 +10,15 @@ import TestimonialSlider from '@/app/sections/testimonialSlider'
 import TopCollections from '@/app/sections/topCollections'
 import Hero from '@/app/sections/hero'
 import AboutTwo from '@/app/sections/aboutTwo'
-import { getAdsData, getBlogData, getCategoriesData, getHeroData, getProductsData, getTestimonialsData } from '@/lib/data'
+import { getAdsData, getBlogData, getCategoriesData, getHeroData, getTestimonialsData } from '@/lib/data'
+import { listProducts } from '@/data/products'
 
 const Home = async () => {
   const categoriesData = await getCategoriesData();
   const blogData = await getBlogData();
   const testimonialData = await getTestimonialsData();
   const ads = await getAdsData()
- const { topCollections } = await getProductsData();
+  const { products: topCollections } = await listProducts({});
   const heroData = await getHeroData()
 
   return (

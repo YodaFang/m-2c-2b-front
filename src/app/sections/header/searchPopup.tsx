@@ -9,13 +9,13 @@ import {
 } from "@/components/custom-ui/select";
 import { Close, Search } from "@/lib/icon";
 import { cn } from "@/lib/utils";
-import { ProductType } from "@/types/productType";
+import { Product } from "@/lib/data";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-const SearchPopup = ({ data }: { data: ProductType[] }) => {
+const SearchPopup = ({ data }: { data: Product[] }) => {
   const [searchInput, setSearchInput] = useState("");
-  const [searchProducts, setSearchProducts] = useState<ProductType[]>([]);
+  const [searchProducts, setSearchProducts] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
   const [isInteractingWithSelect, setIsInteractingWithSelect] = useState(false);

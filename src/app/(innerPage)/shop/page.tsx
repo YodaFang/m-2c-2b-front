@@ -5,7 +5,6 @@ import PageHeader from '@/app/sections/pageHeader'
 import ProductsView from '@/app/sections/shopDetails/productView'
 import Newsletter from '@/app/sections/newsletter'
 import InstagramGallery from '@/app/sections/instagramGallery'
-import { getProductsData } from '@/lib/data'
 import { listProducts } from "@/data/products"
 
 export const metadata: Metadata = {
@@ -14,10 +13,7 @@ export const metadata: Metadata = {
 }
 
 const ShopOne = async () => {
-    console.log("ShopOne >>>>>>>>>>>>>>>>>>")
-    const products = await listProducts({});
-    console.log(products);
-    const { featuredProducts } = await getProductsData();
+    const {products} = await listProducts({});
     return (
         <main>
             <PageHeader pageTitle='Shop' currentPage='Shop' />
@@ -26,7 +22,7 @@ const ShopOne = async () => {
                 isSortingProductTop={true}
                 isGridDefaultView={true}
                 isSidebarCategoryHide={false}
-                data={featuredProducts.slice(0, 15)}
+                data={products.slice(0, 15)}
             />
             <Newsletter />
             <InstagramGallery />
