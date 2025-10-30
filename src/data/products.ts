@@ -34,7 +34,7 @@ export const listProducts = unstable_cache(
     pageParam?: number
     queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
     regionId?: string
-  }) => {
+  } = {}) => {
     const limit = queryParams?.limit || 12
     const _pageParam = Math.max(pageParam, 1)
     const offset = (_pageParam - 1) * limit
@@ -78,7 +78,7 @@ export const listCollectionsProducts = unstable_cache(
     pageParam?: number
     queryParams?: HttpTypes.FindParams & HttpTypes.StoreCollectionListParams
     regionId?: string
-  }) => {
+  } = {}) => {
     const limit = queryParams?.limit || 12
     const _pageParam = Math.max(pageParam, 1)
     const offset = (_pageParam - 1) * limit
@@ -136,7 +136,7 @@ export const getProductsByIds = unstable_cache(
   },
   ['cache-medusa-get-products-by-ids'],
   {
-    revalidate: 600, // 10 分钟
+    revalidate: 30,
   }
 );
 

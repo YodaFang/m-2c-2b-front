@@ -1,79 +1,72 @@
-'use client';
-import Image from "next/image";
-import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import { Autoplay } from "swiper/modules";
-import Title from "@/components/ui/title";
-import { CategoryType } from "@/lib/data";
+'use client'
 
-const HomeCategory = ({ categories }: { categories: CategoryType[] }) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [slidesOffset, setSlidesOffset] = useState(0);
+import Image from "next/image"
+import Link from "next/link"
+import { useRef, useEffect, useState } from "react"
+import Title from "@/components/ui/title"
+import { CategoryType } from "@/lib/data"
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
 
+export default function HomeCategory({ categories }: { categories: CategoryType[] }) {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [slidesPerView, setSlidesPerView] = useState(4)
+
+    // 自动根据屏幕宽度调整显示数量
     useEffect(() => {
-        function updateOffset() {
-            if (containerRef.current) {
-                const rect = containerRef.current.getBoundingClientRect();
-                setSlidesOffset(rect.left + 15);
-            }
+        const handleResize = () => {
+            const width = window.innerWidth
+            if (width < 640) setSlidesPerView(1)
+            else if (width < 768) setSlidesPerView(2)
+            else if (width < 1024) setSlidesPerView(3)
+            else if (width < 1280) setSlidesPerView(4)
+            else setSlidesPerView(5)
         }
-        updateOffset();
-        window.addEventListener('resize', updateOffset);
-        return () => window.removeEventListener('resize', updateOffset);
-    }, []);
+        handleResize()
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
+    }, [])
 
     return (
-        <div className="lg:mt-25 lg:mb-25 mt-15 mb-15">
+        <div className="bg-home-bg-2 py-15">
             <div className="container text-center" ref={containerRef}>
                 <Title>Shop by Category</Title>
-                <p className="text-gray-1-foreground leading-[150%] font-light mt-1">Discover everything you need through the categories!</p>
+                <p className="text-gray-1-foreground leading-[150%] font-light mt-1">
+                    Discover everything you need through the categories!
+                </p>
             </div>
-            <div className="">
-                <Swiper
-                    slidesOffsetBefore={slidesOffset}
-                    spaceBetween={20}
-                    breakpoints={{
-                        320: {
-                            slidesPerView: 1.5,
-                        },
-                        640: {
-                            slidesPerView: 2.5,
-                        },
-                        768: {
-                            slidesPerView: 3.5,
-                        },
-                        1024: {
-                            slidesPerView: 4.5,
-                        },
-                        1280: {
-                            slidesPerView: 5.3472,
-                        },
-                        1536: {
-                            slidesPerView: 5.3472,
-                        },
+
+            <div className="relative mt-8">
+                <Carousel
+                    opts={{
+                        align: "start",
+                        slidesToScroll: 1,
+                        loop: true,
                     }}
-                    // autoplay
-                    grabCursor
-                    modules={[Autoplay]}
-                    className="lg:mt-11 mt-5"
+                    className="w-full"
                 >
-                    {categories.map(({ categoryName, id, categoryImg }) => {
-                        return (
-                            <SwiperSlide key={id}>
+                    <CarouselContent className="-ml-2">
+                        {categories.map(({ id, categoryName, categoryImg }) => (
+                            <CarouselItem
+                                key={id}
+                                className={`pl-2 basis-[calc(100%/${slidesPerView})]`}
+                            >
                                 <div className="text-center">
                                     <Link
                                         href={`/category?name=${categoryName}`}
-                                        className="block max-h-[400px] overflow-hidden mb-5 rounded-[15px]"
+                                        className="block overflow-hidden mb-5 rounded-[15px]"
                                     >
                                         <Image
                                             width={340}
                                             height={400}
-                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                             src={categoryImg}
-                                            alt="img"
-                                            className="w-full h-full min-h-[300px] max-h-[400px] object-cover hover:scale-105 transition-all duration-500 rounded-[15px] aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] xl:aspect-[3/4]"
+                                            alt={categoryName}
+                                            className="w-full h-full object-cover hover:scale-105 transition-all duration-500 rounded-[15px] aspect-[4/5] sm:aspect-[3/4]"
                                         />
                                     </Link>
                                     <Link
@@ -83,13 +76,14 @@ const HomeCategory = ({ categories }: { categories: CategoryType[] }) => {
                                         {categoryName}
                                     </Link>
                                 </div>
-                            </SwiperSlide>
-                        );
-                    })}
-                </Swiper>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+
+                    <CarouselPrevious className="left-0" />
+                    <CarouselNext className="right-0" />
+                </Carousel>
             </div>
         </div>
-    );
-};
-
-export default HomeCategory;
+    )
+}

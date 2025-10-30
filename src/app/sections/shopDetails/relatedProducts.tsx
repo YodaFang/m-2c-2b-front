@@ -1,4 +1,4 @@
-import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from '@/app/sections/productCard';
+import ProductCart from "@/app/sections/product-card"
 import { listProducts } from '@/data/products';
 import { cn } from '@/lib/utils';
 
@@ -12,18 +12,7 @@ const RelatedProducts = async ({ className }: { className?: string }) => {
                     {
                         featuredProducts.slice(0, 4).map((prd) => {
                             return (
-                                <Card key={prd.id}>
-                                    <CardHeader>
-                                        <CardImg src={prd.thumbnail} height={400} width={340} />
-                                        <CardLabel isLabel={prd.label ? prd.label : false}>{prd.label}</CardLabel>
-                                        <CardDiscount isDiscountTrue={prd.discountPercentage ? prd.discountPercentage : false}>-{prd.discountPercentage}%</CardDiscount>
-                                        <CardIcons product={prd} />
-                                    </CardHeader>
-                                    <CardFooter>
-                                        <CardTitle path={`/product/${prd.handle}`}>{prd.title}</CardTitle>
-                                        <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} />
-                                    </CardFooter>
-                                </Card>
+                                <ProductCart key={prd.id} product={prd} />
                             )
                         })
                     }

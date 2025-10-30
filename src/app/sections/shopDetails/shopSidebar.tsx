@@ -1,8 +1,6 @@
 import { Button } from "@/components/custom-ui/button";
-import { Close } from "@/lib/icon";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import PriceRangeSlider from "./priceRangeSlider";
 
 export const categoriesDataSidebar = [
@@ -83,29 +81,21 @@ const ShopSidebar = ({
 }: {
   isSidebarCategoryHide?: boolean;
 }) => {
-  const [isSidebarActive, setIsSidebatActive] = useState(false);
   return (
     <aside className="relative">
       <Button
         size={"sm"}
         className="lg:hidden inline-flex"
-        onClick={() => setIsSidebatActive(true)}
       >
         Filter
       </Button>
       <div
-        className={`bg-background max-w-[340px] pr-5 py-7.5 absolute top-0 z-40 lg:static lg:max-w-full lg:pr-0 lg:py-0 transition-all duration-500 ${
-          isSidebarActive ? "left-0" : "-left-[150%] lg:left-0"
+        className={`max-w-[340px] pr-5 py-7.5 absolute top-0 z-40 lg:static lg:max-w-full lg:pr-0 lg:py-0 transition-all duration-500 ${
+          "left-0"
         }`}
       >
-        <div
-          className="text-gray-1-foreground absolute right-5 lg:hidden"
-          onClick={() => setIsSidebatActive(false)}
-        >
-          <Close className="size-5" />
-        </div>
         {isSidebarCategoryHide || (
-          <div className="pb-10 border-b border-b-[#999796]">
+          <div className="p-4 border-b border-b-[#999796]">
             <strong className="font-medium text-xl text-secondary-foreground uppercase">
               Categories
             </strong>
@@ -144,38 +134,6 @@ const ShopSidebar = ({
               </li>
             ))}
           </ul>
-        </div>
-        <div className="mt-10 pb-10">
-          <strong className="font-medium text-xl text-secondary-foreground uppercase">
-            Best Sellers
-          </strong>
-          <div className="mt-5 flex flex-col gap-5">
-            {bestProducts.map(({ id, price, thumbnail, title, handle }) => {
-              return (
-                <div key={id} className="flex items-center gap-5">
-                  <Image
-                    width={90}
-                    height={70}
-                    sizes="100vw"
-                    src={thumbnail}
-                    alt="img"
-                    className="rounded-sm"
-                  />
-                  <div>
-                    <Link
-                      href={`/product/${handle}`}
-                      className="capitalize text-gray-1-foreground font-medium hover:text-secondary-foreground transition-all duration-500"
-                    >
-                      {title}
-                    </Link>
-                    <p className="text-secondary-foreground mt-1 font-medium">
-                      ${price.toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
         <div className="mt-10 pb-10">
           <strong className="font-medium text-xl text-secondary-foreground uppercase">

@@ -6,11 +6,11 @@ import Link from "next/link";
 import { listProducts } from "@/data/products";
 
 const FeaturedProducts = async () => {
-    const { products: featuredProducts } = await listProducts({});
+    const { products: featuredProducts } = await listProducts();
     let filterList: string[] = ["Best Sellers", "New arrivals", "featured"];
 
     return (
-        <section className="bg-home-bg-1 lg:pt-25 lg:pb-25 pt-15 pb-15">
+        <section className="lg:pt-25 lg:pb-25 pt-15 pb-15">
             <div className="container">
                 <Title>Featured Products</Title>
                 <p className="text-gray-1-foreground mt-3 leading-[166.667%]">
@@ -48,7 +48,7 @@ const FeaturedProducts = async () => {
                                     <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-x-5 gap-y-10">
                                         {filteredData.map((prd) => {
                                             return (
-                                                <ProductCart product={prd} isFeatured />
+                                                <ProductCart key={prd.id} product={prd} isFeatured />
                                             );
                                         }
                                         )}

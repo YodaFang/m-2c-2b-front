@@ -16,10 +16,10 @@ const Hero = ({ data }: { data: HeroDataType[] }) => {
             <Swiper
                 grabCursor
                 loop
-                // autoplay={{
-                //     delay: 5000,
-                //     disableOnInteraction: false,
-                // }}
+                autoplay={{
+                    delay: 5000,
+                    disableOnInteraction: false,
+                }}
                 speed={1000}
                 pagination={{
                     el: '.hero-pagination',

@@ -24,7 +24,7 @@ export default async function ProductCard({
 
     <div
       data-testid="product-wrapper"
-      className="flex flex-col justify-between gap-2 relative w-full h-full p-2 overflow-hidden bg-white shadow-borders-base rounded-lg group-hover:shadow-[0_0_0_4px_rgba(0,0,0,0.1)] transition-shadow ease-in-out duration-150"
+      className="flex flex-col justify-between gap-2 relative w-full h-full p-2 overflow-hidden border bg-white shadow-borders-base rounded-lg hover:shadow-[0_0_0_4px_rgba(0,0,0,0.1)] transition-shadow ease-in-out duration-150"
     >
       <AppLink href={`/product/${product.handle}`}>
         <div className="w-full">
