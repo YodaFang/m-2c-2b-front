@@ -29,6 +29,7 @@ const ProductDetailsThree = () => {
                 </div>
                 <div className='grid lg:grid-cols-[51%_auto] md:grid-cols-2 grid-cols-1 items-start xl:gap-15 gap-10'>
                     <ProductPreviewTwo />
+                    { /* 
                     <ProductShortInfo
                         id={1}
                         price={219}
@@ -37,6 +38,7 @@ const ProductDetailsThree = () => {
                         stock={99}
                         discountPercentage={0}
                     />
+                    */}
                 </div>
                 <ProductDetailsTabView className='justify-center border-b-0' />
             </div>

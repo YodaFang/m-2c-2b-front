@@ -3,12 +3,17 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
-export function AppLink({ className, ...props }: React.ComponentProps<typeof Link>) {
+interface AppLinkProps extends React.ComponentProps<typeof Link> {
+  underline?: boolean
+}
+
+export function AppLink({ className, underline, ...props }: AppLinkProps) {
   return (
     <Link
       {...props}
       className={cn(
-        "transition-colors underline",
+        "transition-colors",
+        { "underline": underline },
         className
       )}
     />

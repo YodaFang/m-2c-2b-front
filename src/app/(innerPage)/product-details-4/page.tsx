@@ -30,6 +30,7 @@ const ProductDetailsFour = () => {
         <div className='grid lg:grid-cols-[49.296%_auto] md:grid-cols-2 grid-cols-1 items-start gap-10'>
           <ProductPreviewThree />
           <div className='md:mt-[73px] sticky top-0'>
+            { /* 
             <ProductInfo
               id={1}
               price={219}
@@ -38,6 +39,7 @@ const ProductDetailsFour = () => {
               stock={99}
               discountPercentage={0}
             />
+            */}
           </div>
         </div>
         <ProductDetailsTabView className='justify-center border-b-0' />

@@ -6,21 +6,19 @@ import currencyFormatter from 'currency-formatter';
 import { Button } from '@/components/custom-ui/button'
 import { Close } from '@/lib/icon'
 import { useAppSelector } from '@/lib/reduxHooks'
-import calcluteDiscount from '@/lib/utils'
 import { addToCart } from '@/lib/features/AddToCartSlice';
 import { useDispatch } from 'react-redux';
 import { removeToWishlist } from '@/lib/features/AddToWishlistSlice';
 import Link from 'next/link';
 
 const WishlistProductsTable = () => {
-    const products = useAppSelector((product) => product.addToWishlist.products)
-    const dispatch = useDispatch()
+    const wishlist = useAppSelector((store) => store.addToWishlist.wishlist.filter((item) => item.product));
+    const dispatch = useDispatch();
 
     return (
         <div className='container lg:pt-25 lg:pb-25 pt-15 pb-15' >
             {
-                products.length ?
-
+                wishlist.length ?
                     <Table className='min-w-[1000px]'>
                         <TableHeader className='border-b-[1.5px] border-b-[#E5E2E1]'>
                             <TableRow className='pb-5'>
@@ -33,9 +31,9 @@ const WishlistProductsTable = () => {
                         </TableHeader>
                         <TableBody className='border-b-[1.5px] border-b-[#E5E2E1]'>
                             {
-                                products.map(({ color, id, price, size, stock, thumbnail, title, discountPercentage }) => {
-                                    const finalPrice = discountPercentage ? calcluteDiscount(price, discountPercentage) : price;
-
+                                wishlist.map(({ product }) => {
+                                    if (!product) return null;
+                                    const { id, price, org_price, thumbnail, title, discountPercentage } = product;
                                     return (
                                         <TableRow key={id}>
                                             <TableCell className="px-0 py-5 min-[1400px]:w-[570px] lg:w-[500px] w-[350px]">
@@ -48,23 +46,19 @@ const WishlistProductsTable = () => {
                                             </TableCell>
                                             <TableCell className='px-0 py-5 min-[1400px]:w-[300px] lg:w-[220px] w-[150px]'>
                                                 <p className='text-lg text-secondary-foreground font-medium '>
-                                                    {discountPercentage ? <del className='text-gray-3-foreground font-normal'>{currencyFormatter.format(price, { code: 'USD' })}</del> : null} {' '}
-                                                    <span>{currencyFormatter.format(finalPrice, { code: 'USD' })}</span>
+                                                    {discountPercentage ? <del className='text-gray-3-foreground font-normal'>{currencyFormatter.format(org_price, { code: 'RON' })}</del> : null} {' '}
+                                                    <span>{currencyFormatter.format(price, { code: 'RON' })}</span>
                                                 </p>
                                             </TableCell>
                                             <TableCell className="px-0 py-5 min-[1400px]:w-[300px] lg:w-[220px] w-[150px]">
-                                                {
-                                                    stock ?
-                                                        <p className='text-[#66995C] text-lg font-medium'>In Stock</p>
-                                                        :
-                                                        <p className='text-lg font-medium'>Stock Out</p>
-                                                }
+
+                                                <p className='text-[#66995C] text-lg font-medium'>In Stock</p>
                                             </TableCell>
                                             <TableCell className="px-0 py-5 ">
                                                 <div className='flex items-center gap-15'>
                                                     <Button
-                                                        onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
-                                                        
+                                                        onClick={() => dispatch(addToCart({ variantId: product.id, quantity: 1 }))}
+
                                                         className='lg:py-3 lg:px-6 lg:text-lg'
                                                     >
                                                         Add To cart

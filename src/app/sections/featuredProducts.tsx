@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/custom-ui/tabs";
-import Card, { CardFooter, CardHeader, CardIcons, CardImg, CardTitle, CardPriceEnhanced, CardLabel, CardDiscount } from "@/app/sections/productCard";
+import ProductCart from "@/app/sections/product-card" 
 import Title from "@/components/ui/title";
 import Link from "next/link";
 import { listProducts } from "@/data/products";
@@ -48,18 +48,7 @@ const FeaturedProducts = async () => {
                                     <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-x-5 gap-y-10">
                                         {filteredData.map((prd) => {
                                             return (
-                                                <Card key={prd.id}>
-                                                    <CardHeader>
-                                                        <CardImg src={prd.thumbnail} height={400} width={340} />
-                                                        <CardLabel isLabel={prd.label ? prd.label : false}>{prd.label}</CardLabel>
-                                                        <CardDiscount isDiscountTrue={prd.discountPercentage ? prd.discountPercentage : false}>-{prd.discountPercentage}%</CardDiscount>
-                                                        <CardIcons product={prd} />
-                                                    </CardHeader>
-                                                    <CardFooter>
-                                                        <CardTitle path={`/product/${prd.handle}`}>{prd.title}</CardTitle>
-                                                        <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} />
-                                                    </CardFooter>
-                                                </Card>
+                                                <ProductCart product={prd} isFeatured />
                                             );
                                         }
                                         )}

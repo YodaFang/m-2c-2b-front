@@ -6,7 +6,6 @@ import { useAppDispatch } from "@/lib/reduxHooks";
 import { cn } from "@/lib/utils";
 import { Product } from "@/lib/data";
 import currencyFormatter from "currency-formatter";
-import Thumbnail from "@/components/custom-ui/thumbnail";
 import Link from "next/link";
 import {
   createContext,
@@ -18,6 +17,7 @@ import {
 } from "react";
 import Tooltip from "@/components/custom-ui/tooltip";
 import ProductQuickView from "./shopDetails/productQuickView";
+import Thumbnail from "@/components/custom-ui/thumbnail";
 
 interface CardPropsType {
   children?: ReactNode;

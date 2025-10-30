@@ -8,7 +8,7 @@ const TopHeader = () => {
             <div className='container'>
                 <div className='flex justify-between items-center'>
                     <div className='flex items-center gap-[11px]'>
-                        <p className='text-sm leading-[150%] text-primary-foreground'>15% Off First Order - <AppLink href="/register">Sign Up</AppLink> Today</p>
+                        <p className='text-sm leading-[150%] text-primary-foreground'>15% Off First Order - <AppLink href="/register" underline>Sign Up</AppLink> Today</p>
                     </div>
                     <div className='flex items-center gap-5'>
                         <AppLink href={"#"} className='text-sm text-primary-foreground block leading-[150%] '>info@furnisy.com</AppLink>

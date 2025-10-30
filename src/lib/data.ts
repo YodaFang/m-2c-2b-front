@@ -392,6 +392,7 @@ export interface WishlistItem {
     variantId?: string | number;
     variant?: Variant;
     title: string;
+    subtitle?: string;
     thumbnail: string;
     created_at?: string
 }
