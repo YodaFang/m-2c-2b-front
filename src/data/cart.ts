@@ -9,18 +9,11 @@ import {
   getCacheOptions,
   getCacheTag,
   getCartId,
-  removeCartId,
   setCartId,
+  removeCartId,
 } from "./cookies"
-import { getRegion } from "./regions"
 
-export async function retrieveCart(id?: string) {
-  const cartId = id || (await getCartId())
-
-  if (!cartId) {
-    return null
-  }
-
+export async function retrieveCart(cartId: string) {
   const headers = {
     ...(await getAuthHeaders()),
   }
@@ -29,61 +22,43 @@ export async function retrieveCart(id?: string) {
     ...(await getCacheOptions("carts")),
   }
 
-  return await sdk.client
+  return sdk.client
     .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${cartId}`, {
       credentials: "include",
       method: "GET",
       query: {
         fields:
-          "*items, *region, *items.product, *items.variant, +items.thumbnail, +items.metadata, *promotions, *company, *company.approval_settings, *customer, *approvals, +completed_at, *approval_status",
+          "*items, *region, *items.product, *items.variant, +items.thumbnail, +items.metadata, *promotions, *customer, +completed_at",
       },
       headers,
       next,
       cache: "force-cache",
     })
     .then(({ cart }) => {
-      return cart
+      return mapMedusaCartToCart(cart);
     })
     .catch(() => {
       return null
     })
 }
 
-export async function getOrSetCart(countryCode: string) {
-  let cart = await retrieveCart()
-  const region = await getRegion(countryCode)
 
-  if (!region) {
-    throw new Error(`Region not found for country code: ${countryCode}`)
-  }
+export async function createCart(items?: { variant_id: string, quantity: number }[]) {
 
   const headers = {
     ...(await getAuthHeaders()),
   }
 
-  if (!cart) {
-    const body = {
-      region_id: region.id,
-    }
+  const cartResp = await sdk.store.cart.create({ items: items ?? [] }, {
+    fields:
+      "*items, *region, *items.product, *items.variant, +items.thumbnail, +items.metadata, *promotions, *customer, +completed_at",
+  }, headers)
+  const cartCacheTag = await getCacheTag("carts")
+  revalidateTag(cartCacheTag)
 
-    const cartResp = await sdk.store.cart.create(body, {}, headers)
-
-    setCartId(cartResp.cart.id)
-
-    const cartCacheTag = await getCacheTag("carts")
-    revalidateTag(cartCacheTag)
-
-    cart = await retrieveCart()
-  }
-
-  if (cart && cart?.region_id !== region.id) {
-    await sdk.store.cart.update(cart.id, { region_id: region.id }, {}, headers)
-    const cartCacheTag = await getCacheTag("carts")
-    revalidateTag(cartCacheTag)
-  }
-
-  return cart
+  return mapMedusaCartToCart(cartResp.cart);
 }
+
 
 export async function updateCart(data: HttpTypes.StoreUpdateCart) {
   const cartId = await getCartId()
@@ -103,35 +78,30 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart) {
       revalidateTag(fullfillmentCacheTag)
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
-      return cart
+      return mapMedusaCartToCart(cart);
     })
 }
 
-export async function addToCart({
+export async function addItemToCart({
+  cartId,
   variantId,
   quantity,
-  countryCode,
 }: {
+  cartId: string
   variantId: string
   quantity: number
-  countryCode: string
 }) {
   if (!variantId) {
     throw new Error("Missing variant ID when adding to cart")
-  }
-
-  const cart = await getOrSetCart(countryCode)
-  if (!cart) {
-    throw new Error("Error retrieving or creating cart")
   }
 
   const headers = {
     ...(await getAuthHeaders()),
   }
 
-  await sdk.store.cart
+  return await sdk.store.cart
     .createLineItem(
-      cart.id,
+      cartId,
       {
         variant_id: variantId,
         quantity,
@@ -139,27 +109,22 @@ export async function addToCart({
       {},
       headers
     )
-    .then(async () => {
+    .then(async ({cart}) => {
       const fullfillmentCacheTag = await getCacheTag("fulfillment")
       revalidateTag(fullfillmentCacheTag)
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
+      return mapMedusaCartToCart(cart);
     })
 }
 
 export async function addToCartBulk({
+  cartId,
   lineItems,
-  countryCode,
 }: {
+  cartId: string
   lineItems: HttpTypes.StoreAddCartLineItem[]
-  countryCode: string
 }) {
-  const cart = await getOrSetCart(countryCode)
-
-  if (!cart) {
-    throw new Error("Error retrieving or creating cart")
-  }
-
   const headers = {
     "Content-Type": "application/json",
     ...(await getAuthHeaders()),
@@ -171,7 +136,7 @@ export async function addToCartBulk({
   }
 
   await fetch(
-    `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cart.id}/line-items/bulk`,
+    `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/carts/${cartId}/line-items/bulk`,
     {
       method: "POST",
       headers,
@@ -187,18 +152,17 @@ export async function addToCartBulk({
 }
 
 export async function updateLineItem({
+  cartId,
   lineId,
   data,
 }: {
+  cartId: string
   lineId: string
   data: HttpTypes.StoreUpdateCartLineItem
 }) {
   if (!lineId) {
     throw new Error("Missing lineItem ID when updating line item")
   }
-
-  const cartId = await getCartId()
-
   if (!cartId) {
     throw new Error("Missing cart ID when updating line item")
   }
@@ -217,12 +181,10 @@ export async function updateLineItem({
     })
 }
 
-export async function deleteLineItem(lineId: string) {
+export async function deleteLineItem(cartId: string, lineId: string) {
   if (!lineId) {
     throw new Error("Missing lineItem ID when deleting line item")
   }
-
-  const cartId = await getCartId()
   if (!cartId) {
     throw new Error("Missing cart ID when deleting line item")
   }
@@ -248,7 +210,7 @@ export async function emptyCart() {
   }
 
   for (const item of cart.items || []) {
-    await deleteLineItem(item.id)
+    await deleteLineItem(cart.id, item.id)
   }
 
   const cartCacheTag = await getCacheTag("carts")
@@ -445,30 +407,270 @@ export async function placeOrder(
   )
 }
 
-/**
- * Updates the countrycode param and revalidates the regions cache
- * @param regionId
- * @param countryCode
- */
-export async function updateRegion(countryCode: string, currentPath: string) {
-  const cartId = await getCartId()
-  const region = await getRegion(countryCode)
 
-  if (!region) {
-    throw new Error(`Region not found for country code: ${countryCode}`)
-  }
+function mapMedusaCartToCart(medusaCart: HttpTypes.StoreCart): Cart {
+  return {
+    id: medusaCart.id,
+    customer_id: medusaCart.customer_id,
+    email: medusaCart.email,
+    currency_code: medusaCart.currency_code,
+    shipping_address: medusaCart.shipping_address
+      ? mapMedusaAddress(medusaCart.shipping_address)
+      : undefined,
+    billing_address: medusaCart.billing_address
+      ? mapMedusaAddress(medusaCart.billing_address)
+      : undefined,
+    items: (medusaCart.items || []).map(mapMedusaLineItemToCartItem),
+    shipping_methods: (medusaCart.shipping_methods || []).map(mapMedusaShippingMethod),
+    payment_collection: medusaCart.payment_collection
+      ? mapMedusaPaymentCollection(medusaCart.payment_collection)
+      : undefined,
+    item_total: medusaCart.item_total,
+    subtotal: medusaCart.subtotal,
+    total: medusaCart.total,
+    tax_total: medusaCart.tax_total,
+    discount_total: medusaCart.discount_total,
+    shipping_total: medusaCart.shipping_total,
+    gift_card_total: medusaCart.gift_card_total,
+  };
+}
 
-  if (cartId) {
-    await updateCart({ region_id: region.id })
-    const cartCacheTag = await getCacheTag("carts")
-    revalidateTag(cartCacheTag)
-  }
+function mapMedusaAddress(addr: HttpTypes.StoreCartAddress): Address {
+  return {
+    id: addr.id,
+    first_name: addr.first_name,
+    last_name: addr.last_name,
+    phone: addr.phone,
+    company: addr.company,
+    address_1: addr.address_1 ?? "",
+    address_2: addr.address_2,
+    city: addr.city ?? "",
+    province: addr.province,
+    postal_code: addr.postal_code ?? "",
+  };
+}
 
-  const regionCacheTag = await getCacheTag("regions")
-  revalidateTag(regionCacheTag)
+function mapMedusaLineItemToCartItem(item: HttpTypes.StoreCartLineItem): CartItem {
+  return {
+    id: item.id,
+    quantity: item.quantity,
+    product_id: item.product?.id ?? "",
+    product_title: item.title,
+    product_subtitle: item.subtitle,
+    product_handle: item.product?.handle ?? "",
+    thumbnail: item.product?.thumbnail ?? "",
+    variant_id: item.variant_id,
+    variant_title: item.variant_title,
+    variant_sku: item.variant?.sku ?? "",
+    unit_price: item.unit_price,
+    total: item.total ?? 0,
+    subtotal: item.subtotal ?? 0,
+    tax_total: item.tax_total ?? 0,
+    discount_total: item.discount_total,
+    requires_shipping: item.requires_shipping,
+    is_discountable: item.is_discountable,
+    is_tax_inclusive: item.is_tax_inclusive,
+    tax_lines: (item.tax_lines || []).map(mapMedusaTaxLine),
+    adjustments: (item.adjustments || []).map(mapMedusaAdjustment),
+  };
+}
 
-  const productsCacheTag = await getCacheTag("products")
-  revalidateTag(productsCacheTag)
+function mapMedusaTaxLine(tax: any): TaxLine {
+  return {
+    id: tax.id,
+    description: tax.description,
+    rate: tax.rate,
+    code: tax.code,
+    total: tax.total,
+    subtotal: tax.subtotal,
+  };
+}
 
-  redirect(`/${countryCode}${currentPath}`)
+function mapMedusaAdjustment(adj: any): Adjustment {
+  return {
+    id: adj.id,
+    code: adj.code,
+    amount: adj.amount,
+    description: adj.description,
+    promotion_id: adj.promotion_id,
+    provider_id: adj.provider_id,
+  };
+}
+
+function mapMedusaShippingMethod(method: any): ShippingMethod {
+  return {
+    id: method.id,
+    name: method.name,
+    description: method.description,
+    amount: method.amount,
+    is_tax_inclusive: method.is_tax_inclusive,
+    shipping_option_id: method.shipping_option_id,
+    tax_lines: (method.tax_lines || []).map(mapMedusaTaxLine),
+    adjustments: (method.adjustments || []).map(mapMedusaAdjustment),
+    total: method.total,
+    subtotal: method.subtotal,
+    tax_total: method.tax_total,
+  };
+}
+
+function mapMedusaPaymentCollection(pc: any): PaymentCollection {
+  return {
+    id: pc.id,
+    currency_code: pc.currency_code,
+    amount: pc.amount,
+    authorized_amount: pc.authorized_amount,
+    captured_amount: pc.captured_amount,
+    refunded_amount: pc.refunded_amount,
+    status: pc.status,
+    payment_providers: pc.payment_providers,
+    payments: pc.payments,
+    payment_sessions: pc.payment_sessions,
+  };
+}
+
+export interface Cart {
+  id: string,
+  customer_id?: string
+  email?: string
+  currency_code?: string
+  shipping_address?: Address
+  billing_address?: Address
+  items: CartItem[]
+  shipping_methods: ShippingMethod[]
+  payment_collection?: PaymentCollection
+  created_at?: string
+  updated_at?: string
+
+  // totals
+  item_total: number
+  subtotal: number
+  total: number
+  tax_total: number
+  discount_total?: number
+  shipping_total?: number
+  gift_card_total?: number
+  promotions?: Promotion[]
+}
+
+export interface PaymentProvider {
+  id: string
+  is_enabled: boolean
+}
+
+export interface Address {
+  id?: string
+  first_name?: string
+  last_name?: string
+  phone?: string
+  company?: string
+  address_1: string
+  address_2?: string
+  city: string
+  province?: string
+  postal_code: string
+}
+
+export interface CartItem {
+  id: string
+  quantity: number
+  product_id: string
+  product_title: string
+  product_subtitle?: string
+  product_handle: string
+  thumbnail: string
+  variant_id?: string
+  variant_title?: string
+  variant_sku?: string
+
+  unit_price: number
+  total: number
+  subtotal: number
+  tax_total: number
+  discount_total?: number
+
+  requires_shipping: boolean
+  is_discountable?: boolean
+  is_tax_inclusive?: boolean
+
+  tax_lines?: TaxLine[]
+  adjustments?: Adjustment[]
+}
+
+export interface TaxLine {
+  id: string
+  description?: string
+  rate: number
+  code?: string
+  total: number
+  subtotal: number
+}
+
+export interface Adjustment {
+  id: string
+  code: string
+  amount: number
+  description?: string
+  promotion_id?: string
+  provider_id?: string
+}
+
+export interface ShippingMethod {
+  id: string
+  name: string
+  description?: string
+  amount: number
+  is_tax_inclusive: boolean
+  shipping_option_id?: string
+
+  tax_lines?: TaxLine[]
+  adjustments?: Adjustment[]
+
+  total: number
+  subtotal: number
+  tax_total: number
+}
+
+export interface PaymentCollection {
+  id: string
+  currency_code: string
+  amount: number
+  authorized_amount: number
+  captured_amount: number
+  refunded_amount: number
+  status: 'pending' | 'authorized' | 'canceled' | 'completed'
+
+  payment_providers?: { id: string }[]
+  payments?: Payment[]
+  payment_sessions?: PaymentSession[]
+}
+
+export interface Payment {
+  id: string
+  amount: number
+  authorized_amount: number
+  captured_amount: number
+  refunded_amount: number
+  currency_code: string
+  provider_id: string
+}
+
+export interface PaymentSession {
+  id: string
+  amount: number
+  currency_code: string
+  provider_id: string
+  status: 'pending' | 'authorized' | 'canceled'
+}
+
+export interface Promotion {
+  id: string
+  code: string
+  is_automatic: boolean
+  application_method: PromotionMethod
+}
+
+export interface PromotionMethod {
+  type: 'fixed' | 'percentage'
+  value: string
+  currency_code?: string
 }

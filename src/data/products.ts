@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { unstable_cache } from 'next/cache'
 import { sdk } from "@/lib/medusaClient"
 import { getAuthHeaders } from "./cookies"
@@ -208,11 +210,44 @@ export interface Variant {
   updated_at?: string,
 }
 
+
 function transformMedusaProduct(medusaProduct: HttpTypes.StoreProduct): Product {
-  // 获取第一个 variant 的价格作为产品价格（如果有多个 variant，你可以根据业务逻辑调整）
-  const firstVariant = medusaProduct.variants?.[0]
-  const calculatedPrice = firstVariant?.calculated_price?.calculated_amount || 0
-  const originalPrice = firstVariant?.calculated_price?.original_amount || calculatedPrice
+  let lowestCalculatedPrice: number = 0;
+  let originalPrice: number = 0;
+
+  const variants =
+    medusaProduct.variants?.map((variant: HttpTypes.StoreProductVariant) => {
+      const variantPrice = variant.calculated_price?.calculated_amount ?? 0;
+      if ((!lowestCalculatedPrice && variantPrice) || variantPrice < lowestCalculatedPrice) {
+        lowestCalculatedPrice = variantPrice;
+        originalPrice = variant.calculated_price?.original_amount || lowestCalculatedPrice;
+      }
+
+      return {
+        id: variant.id,
+        title: variant.title,
+        sku: variant.sku || "",
+        barcode: variant.barcode || "",
+        ean: variant.ean || "",
+        material: variant.material || "",
+        weight: variant.weight?.toString() || "",
+        length: variant.length?.toString() || "",
+        height: variant.height?.toString() || "",
+        width: variant.width?.toString() || "",
+        options:
+          variant.options?.map((opt) => ({
+            id: opt.id,
+            option_id: opt.option_id || "",
+            value: opt.value,
+          })) || [],
+        price: {
+          calculated: variant.calculated_price?.calculated_amount || 0,
+          original: variant.calculated_price?.original_amount || 0,
+        },
+        created_at: variant.created_at || undefined,
+        updated_at: variant.updated_at || undefined,
+      };
+    }) || [];
 
   return {
     id: medusaProduct.id,
@@ -220,63 +255,46 @@ function transformMedusaProduct(medusaProduct: HttpTypes.StoreProduct): Product 
     subtitle: medusaProduct.subtitle || undefined,
     description: medusaProduct.description || "",
     handle: medusaProduct.handle,
-    discountPercentage: originalPrice > calculatedPrice
-      ? Math.round(((originalPrice - calculatedPrice) / originalPrice) * 100)
-      : undefined,
+    discountPercentage:
+      originalPrice > lowestCalculatedPrice
+        ? Math.round(((originalPrice - lowestCalculatedPrice) / originalPrice) * 100)
+        : undefined,
     org_price: originalPrice,
-    price: calculatedPrice,
-    rating: undefined, // Medusa 默认不提供评分，需自行扩展
+    price: lowestCalculatedPrice,
+    rating: undefined,
     totalRating: undefined,
-    brand: medusaProduct.metadata?.brand as string || undefined,
-    label: medusaProduct.metadata?.label as string || undefined,
+    brand: (medusaProduct.metadata?.brand as string) || undefined,
+    label: (medusaProduct.metadata?.label as string) || undefined,
     type: medusaProduct.type?.value || undefined,
     thumbnail: medusaProduct.thumbnail || "",
     collection_id: medusaProduct.collection_id || "",
     origin_country: medusaProduct.origin_country || undefined,
     created_at: medusaProduct.created_at || undefined,
     updated_at: medusaProduct.updated_at || undefined,
-    images: medusaProduct.images?.map((img) => ({
-      id: img.id,
-      url: img.url,
-      pos: undefined, // Medusa 默认不提供 pos，需自行扩展
-      variant_id: undefined,
-    })) || [],
-    variants: medusaProduct.variants?.map((variant) => ({
-      id: variant.id,
-      title: variant.title,
-      sku: variant.sku || "",
-      barcode: variant.barcode || "",
-      ean: variant.ean || "",
-      material: variant.material || "",
-      weight: variant.weight?.toString() || "",
-      length: variant.length?.toString() || "",
-      height: variant.height?.toString() || "",
-      width: variant.width?.toString() || "",
-      options: variant.options?.map((opt) => ({
-        id: opt.id,
-        option_id: opt.option_id || '',
-        value: opt.value,
+    images:
+      medusaProduct.images?.map((img) => ({
+        id: img.id,
+        url: img.url,
+        pos: undefined,
+        variant_id: undefined,
       })) || [],
-      price: {
-        calculated: variant.calculated_price?.calculated_amount || 0,
-        original: variant.calculated_price?.original_amount || 0,
-      },
-      created_at: variant.created_at || undefined,
-      updated_at: variant.updated_at || undefined,
-    })) || [],
-    options: medusaProduct.options?.map((option) => ({
-      id: option.id,
-      title: option.title,
-      values: option.values?.map((val) => ({
-        id: val.id,
-        value: val.value,
+    variants,
+    options:
+      medusaProduct.options?.map((option) => ({
+        id: option.id,
+        title: option.title,
+        values:
+          option.values?.map((val) => ({
+            id: val.id,
+            value: val.value,
+          })) || [],
       })) || [],
-    })) || [],
-    tags: medusaProduct.tags?.map((tag) => ({
-      id: tag.id,
-      value: tag.value,
-      as_label: tag.metadata?.as_label as boolean || undefined,
-    })) || [],
+    tags:
+      medusaProduct.tags?.map((tag) => ({
+        id: tag.id,
+        value: tag.value,
+        as_label: (tag.metadata?.as_label as boolean) || undefined,
+      })) || [],
     collection: medusaProduct.collection || null,
-  }
+  };
 }

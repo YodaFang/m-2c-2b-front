@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
+    qualities: [60, 80, 100],
   },
   experimental: {
     // missingSuspenseWithCSRBailout: false,

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
+import QueryProvider from "./query-provider";
 import { Toaster } from "@/components/custom-ui/toast";
 import {
   generateOrganizationJsonLd,
@@ -81,10 +82,12 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-home-bg-1 text-foreground antialiased">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <StoreProvider>
-            {children}
+          <QueryProvider>
+            <StoreProvider>
+              {children}
+            </StoreProvider>
             <Toaster position="top-right" />
-          </StoreProvider>
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

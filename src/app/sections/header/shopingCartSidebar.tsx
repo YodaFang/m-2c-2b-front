@@ -27,7 +27,7 @@ const ShopingCartSidebar = () => {
   const [isClient, setIsClient] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
-  const products = useAppSelector((state) => state.addToCart.items);
+  const products = useAppSelector((state) => state.addToCart.items) ?? [];
 
   const totalPrice = products.reduce(
     (total, product) => total + product.unit_price * product.quantity,

@@ -11,67 +11,67 @@ const LONG_CACHE_TIME = 3600;
  */
 // 假设 HeroDataType 是你的数据类型
 export const getHeroData = () =>
-    get<HeroDataType[]>('api/hero-content', LONG_CACHE_TIME);
+    get<HeroDataType[]>('api-fake/hero-content', LONG_CACHE_TIME);
 
 /**
  * 获取广告数据，缓存 1 小时。
  */
 export const getAdsData = () =>
-    get<AdsDataType[]>('api/ads', LONG_CACHE_TIME);
+    get<AdsDataType[]>('api-fake/ads', LONG_CACHE_TIME);
 
 /**
  * 获取菜单数据，缓存 1 小时。
  */
 export const getMenuData = () =>
-    get<menuType[]>('api/menu', LONG_CACHE_TIME);
+    get<menuType[]>('api-fake/menu', LONG_CACHE_TIME);
 
 /**
  * 获取分类数据，缓存 1 小时。
  */
 export const getCategoriesData = () =>
-    get<CategoryType[]>('api/categories');
+    get<CategoryType[]>('api-fake/categories');
 
 /**
  * 获取博客数据，缓存 30 分钟 (1800秒)。
  */
 export const getBlogData = () =>
-    get<BlogType[]>('api/blogs');
+    get<BlogType[]>('api-fake/blogs');
 
 /**
  * 获取 FAQ 数据，缓存 1 周，假定 FAQ 极少变动。
  */
 export const getFaqData = () =>
-    get<FaqDataType[]>('api/faq', LONG_CACHE_TIME);
+    get<FaqDataType[]>('api-fake/faq', LONG_CACHE_TIME);
 
 /**
  * 获取画廊数据。
  */
 export const getGalleryData = () =>
-    get<GalleryType[]>('api/gallery', LONG_CACHE_TIME);
+    get<GalleryType[]>('api-fake/gallery', LONG_CACHE_TIME);
 
 /**
  * 获取合作伙伴数据。
  */
 export const getPartnerData = () =>
-    get<partnerType[]>('api/partners', LONG_CACHE_TIME);
+    get<partnerType[]>('api-fake/partners', LONG_CACHE_TIME);
 
 /**
  * 获取隐私政策数据，缓存 1 周。
  */
 export const getPrivacyPolicyData = () =>
-    get<PrivacyPolicType[]>('api/privacy-policy', LONG_CACHE_TIME);
+    get<PrivacyPolicType[]>('api-fake/privacy-policy', LONG_CACHE_TIME);
 
 /**
  * 获取条款与条件数据，缓存 1 周。
  */
 export const getTermsAndConditionsData = () =>
-    get<TermsAndConditionsType[]>('api/terms-and-conditions', LONG_CACHE_TIME);
+    get<TermsAndConditionsType[]>('api-fake/terms-and-conditions', LONG_CACHE_TIME);
 
 /**
  * 获取客户评价数据。
  */
 export const getTestimonialsData = () =>
-    get<testimonialType[]>('api/testimonials', LONG_CACHE_TIME);
+    get<testimonialType[]>('api-fake/testimonials', LONG_CACHE_TIME);
 
 
 export interface Product {

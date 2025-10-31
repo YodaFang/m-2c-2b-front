@@ -1,7 +1,5 @@
 "use server"
 
-import "server-only"
-
 import { cookies as nextCookies } from "next/headers"
 
 export const getAuthHeaders = async (): Promise<

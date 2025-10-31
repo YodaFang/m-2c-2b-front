@@ -54,8 +54,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 const ProductDetail = async (props: Props) => {
   const params = await props.params
-  const pricedProduct = await getProductByHandle(params.handle)
-  if (!pricedProduct) {
+  const product = await getProductByHandle(params.handle)
+  if (!product) {
     notFound()
   }
   return (
@@ -64,7 +64,7 @@ const ProductDetail = async (props: Props) => {
         <div className="grid lg:grid-cols-[40.9%_auto] md:grid-cols-2 grid-cols-1 xl:gap-15 gap-10 lg:mt-25 mt-15">
           <ProductPreview />
           <ProductShortInfo
-            product={pricedProduct}
+            product={product}
           />
         </div>
         <ProductDetailsTabView />

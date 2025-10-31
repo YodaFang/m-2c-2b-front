@@ -1,4 +1,4 @@
-"use server"
+import 'server-only';
 
 import { sdk } from "@/lib/medusaClient"
 import { HttpTypes } from "@medusajs/types"
