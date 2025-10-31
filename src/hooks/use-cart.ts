@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Cart, AddCartItem, retrieveCart, createCart, updateCart, addItemToCart, addToCartBulk } from "@/api/cart";
+import { Cart, AddCartItem, retrieveCart, createCart, updateCart, addItemToCart, addToCartBulk, updateLineItem, deleteLineItem } from "@/api/cart";
 
 /**
  * Hook: 获取当前购物车
@@ -12,7 +12,7 @@ export const useGetCart = () => {
 
   useEffect(() => {
     const syncCartId = () => {
-      const storedId = localStorage.getItem("common::cart_id");
+      const storedId = getCartId();
       setCartId(storedId);
     };
     syncCartId(); // 初始化执行
@@ -47,46 +47,17 @@ export const useCreateCart = () => {
     mutationFn: async (itemData) => {
       const data = (!Array.isArray(itemData) && itemData) ? [itemData] : undefined
       const cart = data ? await createCart(data) : await createCart();
-
       if (cart) {
         // 更新 localStorage
-        localStorage.setItem("common::cart_id", cart.id);
+        setCartId(cart.id);
         // 刷新当前 tab 的 useGetCart 数据
-        queryClient.invalidateQueries({ queryKey: ["useGetCart", cart.id] });
+        queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
       }
 
       return cart;
     },
     onError: (err) => {
       console.error("Failed to create cart:", err);
-    },
-  });
-
-  return {
-    handler: mutation.mutateAsync,
-    ...mutation,
-  };
-};
-
-export const useUpdateCart = () => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation<
-    Cart | undefined,
-    Error,
-    any
-  >({
-    mutationFn: async (data) => {
-      const cartId = localStorage.getItem("common::cart_id");
-      if (!cartId) return;
-      const cart = await updateCart(cartId, data);
-      if (cart) {
-        queryClient.invalidateQueries({ queryKey: ["useGetCart", cart.id] });
-      }
-
-      return cart;
-    },
-    onError: (err) => {
-      console.error("Failed to update cart:", err);
     },
   });
 
@@ -104,7 +75,7 @@ export const useAddToCart = () => {
     AddCartItem | AddCartItem[]
   >({
     mutationFn: async (itemData) => {
-      const cartId = localStorage.getItem("common::cart_id");
+      const cartId = getCartId();
       if (!cartId) return;
       Array.isArray(itemData) ? await addToCartBulk(cartId, itemData) : await addItemToCart(cartId, itemData);
       return;
@@ -122,3 +93,88 @@ export const useAddToCart = () => {
     ...mutation,
   };
 };
+
+export const useUpdateCartItem = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation<
+    void | undefined,
+    Error,
+    { itemId: string, quantity: number }
+  >({
+    mutationFn: async (itemData) => {
+      const cartId = getCartId();
+      if (!cartId) return;
+      await updateLineItem(cartId, itemData.itemId, itemData.quantity);
+      return;
+    },
+    onError: (err) => {
+      console.error("Failed to update lineitem:", err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+    }
+  });
+
+  return {
+    handler: mutation.mutateAsync,
+    ...mutation,
+  };
+};
+
+export const useDeleteCartItem = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation<
+    void | undefined,
+    Error,
+    { itemId: string }
+  >({
+    mutationFn: async (itemData) => {
+      const cartId = getCartId();
+      if (!cartId) return;
+      await deleteLineItem(cartId, itemData.itemId);
+      return;
+    },
+    onError: (err) => {
+      console.error("Failed to delete lineitem:", err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+    }
+  });
+
+  return {
+    handler: mutation.mutateAsync,
+    ...mutation,
+  };
+};
+
+export const useUpdateCart = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation<
+    Cart | undefined,
+    Error,
+    any
+  >({
+    mutationFn: async (data) => {
+      const cartId = getCartId();
+      if (!cartId) return;
+      const cart = await updateCart(cartId, data);
+      if (cart) {
+        queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+      }
+      return cart;
+    },
+    onError: (err) => {
+      console.error("Failed to update cart:", err);
+    },
+  });
+
+  return {
+    handler: mutation.mutateAsync,
+    ...mutation,
+  };
+};
+
+
+const getCartId = () => localStorage.getItem("common::cart_id");
+const setCartId = (cartId: string) => localStorage.setItem("common::cart_id", cartId);

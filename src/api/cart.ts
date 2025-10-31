@@ -21,11 +21,10 @@ export async function retrieveCart(cartId: string) {
 
   return sdk.client
     .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${cartId}`, {
-      credentials: "include",
       method: "GET",
       query: {
         fields:
-          "*items, *region, *items.product, *items.variant, +items.thumbnail, +items.metadata, *promotions, *customer, +completed_at",
+          "*items, +items.thumbnail, +items.metadata, *promotions, *customer, +completed_at",
       },
       headers,
       next,
@@ -43,7 +42,10 @@ export async function createCart(items?: AddCartItem[]) {
     ...(await getAuthHeaders()),
   }
 
-  const cartResp = await sdk.store.cart.create({ items: items ?? [] }, {}, headers)
+  const cartResp = await sdk.store.cart.create({ items: items ?? [] }, {
+    fields:
+      "*items, +items.thumbnail, +items.metadata, *promotions, *customer, +completed_at"
+  }, headers)
   const cartCacheTag = await getCacheTag("carts")
   revalidateTag(cartCacheTag)
 
@@ -129,28 +131,17 @@ export async function addToCartBulk(cartId: string, items: AddCartItem[]) {
     })
 }
 
-export async function updateLineItem({
-  cartId,
-  lineId,
-  data,
-}: {
-  cartId: string
-  lineId: string
-  data: HttpTypes.StoreUpdateCartLineItem
-}) {
-  if (!lineId) {
-    throw new Error("Missing lineItem ID when updating line item")
-  }
-  if (!cartId) {
-    throw new Error("Missing cart ID when updating line item")
-  }
-
+export async function updateLineItem(
+  cartId: string,
+  lineId: string,
+  quantity: number,
+) {
   const headers = {
     ...(await getAuthHeaders()),
   }
 
   await sdk.store.cart
-    .updateLineItem(cartId, lineId, data, {}, headers)
+    .updateLineItem(cartId, lineId, { quantity }, {}, headers)
     .then(async () => {
       const fullfillmentCacheTag = await getCacheTag("fulfillment")
       revalidateTag(fullfillmentCacheTag)
@@ -160,13 +151,6 @@ export async function updateLineItem({
 }
 
 export async function deleteLineItem(cartId: string, lineId: string) {
-  if (!lineId) {
-    throw new Error("Missing lineItem ID when deleting line item")
-  }
-  if (!cartId) {
-    throw new Error("Missing cart ID when deleting line item")
-  }
-
   const headers = {
     ...(await getAuthHeaders()),
   }
@@ -415,11 +399,11 @@ function mapMedusaLineItemToCartItem(item: HttpTypes.StoreCartLineItem): CartIte
     product_id: item.product?.id ?? "",
     product_title: item.title,
     product_subtitle: item.subtitle,
-    product_handle: item.product?.handle ?? "",
-    thumbnail: item.product?.thumbnail ?? "",
+    product_handle: item.product_handle ?? "",
+    thumbnail: item.thumbnail ?? "",
     variant_id: item.variant_id,
     variant_title: item.variant_title,
-    variant_sku: item.variant?.sku ?? "",
+    variant_sku: item.variant_sku ?? "",
     unit_price: item.unit_price,
     total: item.total ?? 0,
     subtotal: item.subtotal ?? 0,
