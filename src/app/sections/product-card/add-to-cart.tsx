@@ -1,36 +1,89 @@
-"use client"
+'use client'
+
 import { useState } from "react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { LoadingButton } from "@/components/custom-ui/loading-button"
 import { ShoppingBag } from "@/lib/icon"
-import { Product } from "@/data/products";
+import useApp from "@/hooks/use-app"
 
-const PreviewAddToCart = ({
-  product,
-}: {
-  product: Product
-}) => {
-  const [isAdding, setIsAdding] = useState(false)
+const AddToCartItem = ({ product }: { product: any }) => {
+  const { addItem } = useApp();
 
-  const handleAddToCart = async () => {
-    if (!product?.variants?.[0]?.id) return null
+  // 控制 Dropdown 的打开状态（可用于点击或悬浮逻辑）
+  const [open, setOpen] = useState(false);
 
-    setIsAdding(true)
+  // 控制添加状态（loading）
+  const [isAdding, setIsAdding] = useState(false);
 
+  const handleAddToCart = async (variantId: string) => {
+    if (isAdding) return;
+    try {
+      setIsAdding(true);
+      setOpen(false);
+      await addItem(variantId, 1);
+    } catch (err) {
+      console.error("Add to cart failed", err);
+      // 你可以在这里 show toast
+    } finally {
+      setIsAdding(false);
+      setOpen(false);
+    }
+  };
 
-    setIsAdding(false)
+  const hasVariants = product?.variants && product.variants.length > 1;
+  const singleVariant = product?.variants?.[0];
+
+  // 如果只有一个变体，直接按钮（不用 Dropdown）
+  if (!hasVariants) {
+    return (
+      <LoadingButton
+        className="rounded-full p-1 border-none shadow-none"
+        onClick={(e) => {
+          e.preventDefault();
+          // 直接调用 singleVariant.id（可能为 undefined，需要 guard）
+          if (singleVariant?.id) handleAddToCart(singleVariant.id);
+        }}
+        isLoading={isAdding}
+      >
+        <ShoppingBag fill="#fff" />
+      </LoadingButton>
+    );
   }
+
   return (
-    <LoadingButton
-      className="rounded-full p-3 border-none shadow-none"
-      onClick={(e) => {
-        e.preventDefault()
-        handleAddToCart()
-      }}
-      isLoading={isAdding}
-    >
-      <ShoppingBag fill="#fff" />
-    </LoadingButton>
-  )
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <LoadingButton
+          className="rounded-full p-1 border-none shadow-none"
+          aria-expanded={open}
+          isLoading={isAdding}
+        >
+          <ShoppingBag fill="#fff" />
+        </LoadingButton>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent side="top" align="end" className="min-w-[8rem]">
+        {product.variants.map((variant: any) => (
+          <DropdownMenuItem
+            key={variant.id}
+            disabled={isAdding}
+            onSelect={(e) => {
+              e.preventDefault();
+              if (!isAdding) handleAddToCart(variant.id);
+            }}
+            className="flex items-center justify-between cursor-pointer"
+          >
+            <span>{variant.title || "Unnamed variant"}</span>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }
 
-export default PreviewAddToCart
+export default AddToCartItem;

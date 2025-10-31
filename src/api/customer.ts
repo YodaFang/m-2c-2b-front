@@ -4,14 +4,11 @@ import { sdk } from "@/lib/medusaClient"
 import { HttpTypes } from "@medusajs/types"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
-import { retrieveCart, updateCart } from "./cart"
 import {
   getAuthHeaders,
   getCacheOptions,
   getCacheTag,
-  getCartId,
   removeAuthToken,
-  removeCartId,
   setAuthToken,
 } from "./cookies"
 
@@ -91,8 +88,6 @@ export async function signup(_currentState: unknown, formData: FormData) {
     const cacheTag = await getCacheTag("customers")
     revalidateTag(cacheTag)
 
-    await transferCart()
-
     return createdCustomer;
   } catch (error: any) {
     console.log("error", error)
@@ -124,12 +119,6 @@ export async function login(_currentState: unknown, formData: FormData) {
   } catch (error: any) {
     return error.toString()
   }
-
-  try {
-    await transferCart()
-  } catch (error: any) {
-    return error.toString()
-  }
 }
 
 export async function signout(countryCode: string, customerId: string) {
@@ -140,7 +129,6 @@ export async function signout(countryCode: string, customerId: string) {
     console.log(error.toString());
   }
   removeAuthToken()
-  await removeCartId()
 
   const [authCacheTag, customerCacheTag, productsCacheTag, cartsCacheTag] =
     await Promise.all([
@@ -158,8 +146,7 @@ export async function signout(countryCode: string, customerId: string) {
   redirect(`/${countryCode}/account`)
 }
 
-export async function transferCart() {
-  const cartId = await getCartId()
+export async function transferCart(cartId: string) {
 
   if (!cartId) {
     return

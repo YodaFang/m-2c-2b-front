@@ -11,7 +11,7 @@ import TopCollections from '@/app/sections/topCollections'
 import Hero from '@/app/sections/hero'
 import AboutTwo from '@/app/sections/aboutTwo'
 import { getAdsData, getBlogData, getCategoriesData, getHeroData, getTestimonialsData } from '@/lib/data'
-import { listProducts } from '@/data/products'
+import { listProducts } from '@/api/products'
 
 const Home = async () => {
   const categoriesData = await getCategoriesData();

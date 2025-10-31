@@ -1,5 +1,5 @@
 import ProductCart from "@/app/sections/product-card"
-import { listProducts } from '@/data/products';
+import { listProducts } from '@/api/products';
 import { cn } from '@/lib/utils';
 
 const RelatedProducts = async ({ className }: { className?: string }) => {

@@ -1,6 +1,12 @@
 import { AppLink } from "@/components/custom-ui/link"
 import Thumbnail from "@/components/custom-ui//thumbnail"
-import { Product } from "@/data/products";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Product } from "@/api/products";
 import { cn } from "@/lib/utils";
 import PreviewAddToCart from "./add-to-cart"
 
@@ -14,19 +20,14 @@ export default async function ProductCard({
   if (!product) {
     return null
   }
-
   const discounted = product.price < product.org_price;
 
-
-  const inventoryQuantity = 1;
-
   return (
-
     <div
       data-testid="product-wrapper"
-      className="flex flex-col justify-between gap-2 relative w-full h-full p-2 overflow-hidden border bg-white shadow-borders-base rounded-lg hover:shadow-[0_0_0_4px_rgba(0,0,0,0.1)] transition-shadow ease-in-out duration-150"
+      className="flex flex-col justify-between gap-1 relative w-full h-full p-2 overflow-hidden border bg-white shadow-borders-base rounded-lg hover:shadow-[0_0_0_4px_rgba(0,0,0,0.1)] transition-shadow ease-in-out duration-150"
     >
-      <AppLink href={`/product/${product.handle}`}>
+      <AppLink href={`/product/${product.handle}`} underline>
         <div className="w-full">
           <Thumbnail
             thumbnail={product.thumbnail!}
@@ -41,19 +42,19 @@ export default async function ProductCard({
             -{product.discountPercentage!}%
           </div>
         ) : null}
-        <div className="flex flex-col txt-compact-medium">
-          <span className="text-neutral-600 text-xs">BRAND</span>
-          <span className="text-ui-fg-base" data-testid="product-title">
-            {product.title}
-          </span>
-        </div>
+        <span className="text-lg leading-tight line-clamp-2" data-testid="product-title">
+          {product.title}
+        </span>
       </AppLink>
+      <span className="text-neutral-600 text-xs line-clamp-3" data-testid="product-subtitle">
+        {product.subtitle}
+      </span>
       <div className="flex flex-row justify-between">
         <div className="flex flex-col">
           <div className="flex flex-row gap-1">
             {discounted && (
               <span
-                className="line-through text-sm items-center"
+                className="line-through text-sm"
                 data-testid="original-price"
               >
                 {product.org_price} Lei
@@ -66,23 +67,6 @@ export default async function ProductCard({
               data-testid="price"
             >
               {product.price} Lei
-            </span>
-            <span className="text-neutral-600 text-[0.7rem] self-end">Excl. VAT</span>
-          </div>
-          <div className="flex flex-row gap-1 items-center">
-            <span
-              className={cn({
-                "text-green-500": inventoryQuantity && inventoryQuantity > 50,
-                "text-orange-500":
-                  inventoryQuantity &&
-                  inventoryQuantity <= 50 &&
-                  inventoryQuantity > 0,
-              })}
-            >
-              •
-            </span>
-            <span className="text-neutral-600 text-xs">
-              {inventoryQuantity} left
             </span>
           </div>
         </div>

@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/custom-ui
 import ProductCart from "@/app/sections/product-card" 
 import Title from "@/components/ui/title";
 import Link from "next/link";
-import { listProducts } from "@/data/products";
+import { listProducts } from "@/api/products";
 
 const FeaturedProducts = async () => {
     const { products: featuredProducts } = await listProducts();

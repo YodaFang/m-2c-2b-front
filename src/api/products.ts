@@ -187,7 +187,7 @@ export interface ProductOption {
 }
 
 export interface Variant {
-  id: number | string,
+  id: string,
   title: string | null,
   sku: string,
   barcode: string,
@@ -252,7 +252,7 @@ function transformMedusaProduct(medusaProduct: HttpTypes.StoreProduct): Product 
   return {
     id: medusaProduct.id,
     title: medusaProduct.title,
-    subtitle: medusaProduct.subtitle || undefined,
+    subtitle: medusaProduct.subtitle || "",
     description: medusaProduct.description || "",
     handle: medusaProduct.handle,
     discountPercentage:

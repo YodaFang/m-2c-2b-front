@@ -6,7 +6,7 @@ import ProductDetailsTabView from "@/app/sections/shopDetails/productDetailsTabV
 import ProductPreview from "@/app/sections/shopDetails/productPreview";
 import ProductShortInfo from "@/app/sections/shopDetails/productShortInfo";
 import RelatedProducts from "@/app/sections/shopDetails/relatedProducts";
-import { getProductByHandle, listProducts } from "@/data/products";
+import { getProductByHandle, listProducts } from "@/api/products";
 
 
 export const dynamicParams = true

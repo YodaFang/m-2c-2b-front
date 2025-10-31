@@ -1,5 +1,5 @@
 import { getMenuData } from "@/lib/data"
-import { listProducts } from "@/data/products"
+import { listProducts } from "@/api/products"
 import { User } from '@/lib/icon'
 import Image from 'next/image'
 import Link from 'next/link'
