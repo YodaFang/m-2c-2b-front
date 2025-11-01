@@ -46,7 +46,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-group"
       className={cn(
-        "group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 [&>[data-slot=field-group]]:gap-4",
+        "group/field-group @container/field-group flex w-full flex-col gap-4 data-[slot=checkbox-group]:gap-2 [&>[data-slot=field-group]]:gap-3",
         className
       )}
       {...props}
@@ -55,7 +55,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const fieldVariants = cva(
-  "group/field flex w-full gap-3 data-[invalid=true]:text-destructive",
+  "group/field flex w-full data-[invalid=true]:text-destructive",
   {
     variants: {
       orientation: {
@@ -108,20 +108,25 @@ function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function FieldLabel({
+  requiredMark,
   className,
+  children,
   ...props
-}: React.ComponentProps<typeof Label>) {
+}: React.ComponentProps<typeof Label> & { requiredMark?: boolean }) {
   return (
     <Label
       data-slot="field-label"
       className={cn(
-        "group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50",
+        "group/field-label peer/field-label flex w-fit gap-1 leading-snug group-data-[disabled=true]/field:opacity-50 pb-1 pl-1",
         "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-4",
         "has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary dark:has-data-[state=checked]:bg-primary/10",
         className
       )}
       {...props}
-    />
+    >
+      {children}
+      {requiredMark && <span className='text-red-400'>*</span>}
+    </Label>
   )
 }
 
@@ -143,7 +148,7 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="field-description"
       className={cn(
-        "text-muted-foreground text-sm leading-normal font-normal group-has-[[data-orientation=horizontal]]/field:text-balance",
+        "text-muted-foreground text-sm leading-normal font-normal pl-1 pb-1 group-has-[[data-orientation=horizontal]]/field:text-balance",
         "last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&]:-mt-1.5",
         "[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
         className
@@ -226,7 +231,7 @@ function FieldError({
     <div
       role="alert"
       data-slot="field-error"
-      className={cn("text-destructive text-sm font-normal", className)}
+      className={cn("text-destructive text-sm font-normal pl-1", className)}
       {...props}
     >
       {content}

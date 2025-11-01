@@ -33,7 +33,6 @@ export const retrieveCustomer = async (): Promise<HttpTypes.StoreCustomer | null
       },
       headers,
       next,
-      cache: "force-cache",
     })
     .then(({ customer }) => customer as HttpTypes.StoreCustomer)
     .catch(() => null)
@@ -54,7 +53,7 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
   return updateRes
 }
 
-export async function signup(_currentState: unknown, formData: FormData) {
+export async function signup(_currentState: unknown, formData: any) {
   const password = formData.get("password") as string
   const customerForm = {
     email: formData.get("email") as string,
@@ -95,7 +94,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
   }
 }
 
-export async function login(_currentState: unknown, formData: FormData) {
+export async function login(_currentState: unknown, formData: any) {
   const email = formData.get("email") as string
   const password = formData.get("password") as string
 
@@ -123,6 +122,9 @@ export async function login(_currentState: unknown, formData: FormData) {
 
 export async function signout(countryCode: string, customerId: string) {
   try {
+    const headers = {
+    ...(await getAuthHeaders()),
+  }
     await sdk.auth.logout();
   } catch (error: any) {
     console.log("signout error: ");
