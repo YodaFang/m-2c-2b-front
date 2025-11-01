@@ -22,7 +22,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 }) => {
   return (
     <div
-      className={cn("relative w-full overflow-hidden", className, {
+      className={cn("relative overflow-hidden", className, {
         "aspect-[11/14]": isFeatured,
         "aspect-[9/16]": !isFeatured && size !== "square",
         "aspect-[1/1]": size === "square",

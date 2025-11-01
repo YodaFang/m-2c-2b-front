@@ -1,40 +1,39 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/custom-ui/button";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { ShopCart } from "@/lib/icon";
 import {
-  dicrementProductQuentity,
-  incrementProductQuentity,
-  removeToCart,
-} from "@/lib/features/AddToCartSlice";
-import { Close, Minus, Plus, ShopCart } from "@/lib/icon";
-import { useAppDispatch, useAppSelector } from "@/lib/reduxHooks";
+  MinusCircle,
+  PlusCircle,
+  Trash2Icon,
+} from "lucide-react"
 import currencyFormatter from "currency-formatter";
-import Image from "next/image";
+import Thumbnail from "@/components/custom-ui//thumbnail"
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import useApp from "@/hooks/use-app"
 
 const ShopingCartSidebar = () => {
   const pathName = usePathname();
   const [isClient, setIsClient] = useState(false);
   const [open, setOpen] = useState(false);
-  const dispatch = useAppDispatch();
-  const products = useAppSelector((state) => state.addToCart.items) ?? [];
+  const { cartItems, increaseItem, decreaseItem, deleteItem } = useApp();
 
-  const totalPrice = products.reduce(
-    (total, product) => total + product.unit_price * product.quantity,
+  const totalPrice = cartItems.reduce(
+    (total, item) => total + item.total,
     0
   );
-  const totalProducts = products.reduce(
-    (total, product) => total + product.quantity,
+  const totalProducts = cartItems.reduce(
+    (total, item) => total + item.quantity,
     0
   );
 
@@ -59,88 +58,81 @@ const ShopingCartSidebar = () => {
               {totalProducts}
             </span>
           </SheetTrigger>
-          <SheetContent className="sm:max-w-[420px] w-full p-0 [&_.close-orginal]:hidden">
-            <SheetHeader className="bg-[#F5F5F5] px-7.5 py-[31px] flex flex-row justify-between items-center space-y-0">
-              <SheetTitle className="text-secondary-foreground font-inter font-medium uppercase leading-[155%]">
-                Shopping cart({totalProducts})
+          <SheetContent className="sm:max-w-[420px] w-full">
+            <SheetHeader className="bg-home-bg-1 flex flex-row justify-between">
+              <SheetTitle >
+                Shopping cart: {totalProducts} items
               </SheetTitle>
-              <SheetClose className="text-gray-1-foreground mt-0">
-                <Close className="lg:w-7.5 lg:h-7.5 w-5 h-5" />
-              </SheetClose>
             </SheetHeader>
-            <div className="flex flex-col gap-6 p-7.5 max-h-[540px] h-full overflow-y-auto">
-              {products.length ? (
-                products.map(({ id, price, quantity, thumbnail, title }) => (
-                  <div key={id} className="flex items-center gap-4">
-                    <div className="bg-[#F2F2F2] p-2.5 shrink-0">
-                      <Image
-                        width={80}
-                        height={90}
-                        src={thumbnail}
-                        sizes="100vw"
-                        alt="img"
-                        className="h-[90px] w-20 object-cover"
+            <div className="flex-col flex-1 pl-1 pr-4 overflow-y-auto">
+              {cartItems.length ? (
+                cartItems.map(({ id, unit_price: price, quantity, thumbnail, product_title: title, variant_title }) => (
+                  <div key={id} className="flex items-center py-2 border-b-[1px]">
+                    <div className="bg-white shrink-0">
+                      <Thumbnail
+                        className="w-[90] "
+                        thumbnail={thumbnail!}
+                        size="square"
+                        type="preview"
                       />
                     </div>
-                    <div className="shrink">
-                      <b className="lg:text-xl text-lg font-medium text-gray-1-foreground leading-[150%] capitalize line-clamp-1">
+                    <div className="flex flex-col shrink">
+                      <b className="text-sm leading-tight line-clamp-2">
                         {title}
                       </b>
-                      <div className="flex items-center gap-3 mt-2.5 mb-3">
-                        <div className="border-[1.5px] border-[#000] text-secondary-foreground flex items-center gap-2.5 px-2.5 py-1.5">
-                          <span
-                            className="cursor-pointer h-4 w-5 inline-flex items-center justify-center"
-                            onClick={() =>
-                              dispatch(dicrementProductQuentity({ id }))
-                            }
-                          >
-                            <Minus />
-                          </span>
-                          <input
-                            value={quantity}
-                            readOnly
-                            className="outline-none max-w-5 text-center text-sm"
-                          />
-                          <span
-                            className="cursor-pointer h-4 w-5 inline-flex items-center justify-center"
-                            onClick={() =>
-                              dispatch(incrementProductQuentity({ id }))
-                            }
-                          >
-                            <Plus />
-                          </span>
-                        </div>
-                        <span className="text-secondary-foreground text-base">
+                      <div className="flex justify-between">
+                        <span className="text-secondary-foreground text-sm">
+                          {variant_title}
+                        </span>
+                        <span className="text-secondary-foreground text-sm">
                           ${price.toFixed(2)}
                         </span>
                       </div>
-                      <p
-                        onClick={() => dispatch(removeToCart(id))}
-                        className="text-gray-1-foreground capitalize underline decoration-skip-ink-none text-underline-position decoration-[#666564] cursor-pointer leading-[150%] text-base hover:text-secondary-foreground transition-all duration-500"
-                      >
-                        remove
-                      </p>
+                      <div className="flex justify-between">
+                        <div className="flex items-center gap-2.5 px-1.5 py-1">
+                          <button
+                            className="text-neutral-500" 
+                            onClick={() => decreaseItem(id)}
+                          >
+                            <MinusCircle size="21" />
+                          </button>
+                          <input
+                            value={quantity}
+                            readOnly
+                            className="outline-none max-w-4 text-center text-base"
+                          />
+                          <button
+                            className="text-neutral-500" 
+                            onClick={() => increaseItem(id)}
+                          >
+                            <PlusCircle size="21" />
+                          </button>
+                        </div>
+                        <button onClick={() => deleteItem(id)} className="text-neutral-500 text-sm underline">
+                          <Trash2Icon size="18" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="capitalize text-secondary-foreground text-xl">
+                <p className="capitalize text-secondary-foreground text-sm">
                   No Product in cart
                 </p>
               )}
             </div>
-            <SheetFooter className="absolute bottom-7.5 sm:flex-col bg-background w-full">
-              {products.length ? (
+            <SheetFooter className="flex-col bg-background w-full">
+              {cartItems.length ? (
                 <>
-                  <div className="bg-[#F5F5F5] px-7.5 py-4 flex justify-between items-center">
-                    <p className="text-secondary-foreground font-medium leading-[155%]">
+                  <div className="bg-[#F5F5F5] px-5 py-2 flex justify-between items-center">
+                    <p className="text-secondary-foreground font-medium leading">
                       Subtotal:
                     </p>
                     <p className="text-secondary-foreground font-medium">
                       {currencyFormatter.format(totalPrice, { code: "USD" })}
                     </p>
                   </div>
-                  <div className="px-7.5 pt-7.5">
+                  <div className="px-5 py-2">
                     <p className="text-gray-1-foreground text-base">
                       Add{" "}
                       <span className="text-secondary-foreground">$436.00</span>{" "}
@@ -152,7 +144,7 @@ const ShopingCartSidebar = () => {
                     <div className="mt-1.5 w-full h-2 bg-[#F5F5F5] overflow-hidden">
                       <div className="h-full bg-stripes w-4/5 animate-stripes"></div>
                     </div>
-                    <div className="mt-10">
+                    <div className="mt-5">
                       <Button
                         variant={"outline"}
                         size={"sm"}

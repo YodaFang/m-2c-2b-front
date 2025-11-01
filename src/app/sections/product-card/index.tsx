@@ -1,11 +1,5 @@
 import { AppLink } from "@/components/custom-ui/link"
 import Thumbnail from "@/components/custom-ui//thumbnail"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Product } from "@/api/products";
 import { cn } from "@/lib/utils";
 import PreviewAddToCart from "./add-to-cart"
@@ -37,16 +31,16 @@ export default async function ProductCard({
         </div>
         {discounted ? (
           <div
-            className="bg-important px-2 text-important-foreground text-lg font-semibold inline capitalize absolute top-3 left-0"
+            className="bg-destructive px-2 text-important-foreground text-lg font-semibold inline capitalize absolute top-3 left-0"
           >
             -{product.discountPercentage!}%
           </div>
         ) : null}
-        <span className="text-lg leading-tight line-clamp-2" data-testid="product-title">
+        <b className="text-neutral-900 text-base leading-tight line-clamp-2" data-testid="product-title">
           {product.title}
-        </span>
+        </b>
       </AppLink>
-      <span className="text-neutral-600 text-xs line-clamp-3" data-testid="product-subtitle">
+      <span className="text-neutral-700 text-xs line-clamp-3" data-testid="product-subtitle">
         {product.subtitle}
       </span>
       <div className="flex flex-row justify-between">
@@ -54,20 +48,21 @@ export default async function ProductCard({
           <div className="flex flex-row gap-1">
             {discounted && (
               <span
-                className="line-through text-sm"
+                className="line-through text-base text-destructive"
                 data-testid="original-price"
               >
                 {product.org_price} Lei
               </span>
             )}
-            <span
-              className={cn("text-neutral-950 font-medium text-xl ", {
-                "text-important": discounted,
+            <b
+              className={cn({
+                "text-xl text-destructive": discounted,
+                "text-important": !discounted,
               })}
               data-testid="price"
             >
               {product.price} Lei
-            </span>
+            </b>
           </div>
         </div>
         <PreviewAddToCart product={product} />

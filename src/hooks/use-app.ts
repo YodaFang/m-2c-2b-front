@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useRef } from "react";
+import { toast } from "@/components/custom-ui/toast";
 import { useAddToCart, useCreateCart, useGetCart, useUpdateCartItem, useDeleteCartItem } from "./use-cart"
 
 const useApp = () => {
@@ -38,6 +39,7 @@ const useApp = () => {
         creatingPromiseRef.current = createCart({ variant_id: variantId, quantity: count })
           .finally(() => {
             creatingPromiseRef.current = null;
+            toast.success('Add To Cart Successfully');
           });
         return true;
       }
@@ -47,6 +49,7 @@ const useApp = () => {
         return true;
       } else {
         await addCartItem({ variant_id: variantId, quantity: count });
+        toast.success('Add To Cart Successfully');
         return true
       }
     }
@@ -54,13 +57,12 @@ const useApp = () => {
     const exists = cart?.items?.find(i => i.variant_id === variantId);
     if (exists) {
       await increaseItem(exists.id, count);
-      return true;
     } else {
       await addCartItem({ variant_id: variantId, quantity: count });
-      return true;
     }
+    toast.success('Add To Cart Successfully');
+    return true;
   }, [cart, createCart, addCartItem, increaseItem, creatingPromiseRef]);
-
 
   const decreaseItem = useCallback(
     async (itemId: string, count: number = 1) => {
