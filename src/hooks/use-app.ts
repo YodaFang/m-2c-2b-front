@@ -27,6 +27,13 @@ const useApp = () => {
     async (itemId: string) => {
       const item = cart?.items?.find((e) => e.id === itemId);
       if (!item) return false;
+      const ok = await (window as any).confirm({
+        title: "Delete below item from cart?",
+        description: `<b>${item.product_title}</b> <br/> (${item.variant_title})`,
+        confirmText: "Delete",
+        cancelText: "Cancel",
+      });
+      if(!ok) return false;
       await deleteCartItem({ itemId: item.id });
       return true;
     },
