@@ -149,14 +149,14 @@ const ShopingCartSidebar = () => {
                         variant={"outline"}
                         size={"sm"}
                         asChild
-                        className="w-full py-[11px] lg:text-lg lg:leading-[155%]"
+                        className="w-full lg:text-lg lg:leading"
                       >
                         <Link href={"/cart"}>View Cart</Link>
                       </Button>
                       <Button
                         size={"sm"}
                         asChild
-                        className="w-full py-[11px] lg:text-lg lg:leading-[155%] mt-3"
+                        className="w-full lg:text-lg lg:leading mt-3"
                       >
                         <Link href={"/checkout"}>Check Out</Link>
                       </Button>
