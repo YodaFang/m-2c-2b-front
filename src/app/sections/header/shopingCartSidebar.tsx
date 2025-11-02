@@ -39,7 +39,7 @@ const ShoppingCartSidebar = () => {
         className="text-gray-1-foreground relative"
       >
         <ShopCart className="size-8" />
-        <span className="w-[20px] h-[20px] bg-primary rounded-full flex items-center justify-center text-xs text-white absolute -right-[3px] -top-[3px]">
+        <span className="w-[20px] h-[20px] bg-primary rounded-full flex items-center justify-center text-xs text-white font-medium absolute -right-[3px] -top-[3px]">
           {totalProducts}
         </span>
       </DrawerTrigger>

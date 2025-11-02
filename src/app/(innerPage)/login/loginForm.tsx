@@ -3,54 +3,25 @@ import React, { useActionState } from 'react'
 import Image from 'next/image'
 import { AppLink } from "@/components/custom-ui/link"
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
-    Field,
-    FieldDescription,
     FieldGroup,
-    FieldLabel,
-    FieldSet,
-    FieldError,
-} from "@/components/ui/field"
-import { loginUser } from './actions'
-
+    TextField,
+    CheckboxField,
+} from "@/components/custom-ui/field"
 
 const LoginForm = () => {
-    const [state, formAction] = useActionState(loginUser, null);
-
     return (
         <div className='container lg:pt-25 lg:pb-25 pt-15 pb-15'>
             <div className='grid lg:grid-cols-[47.2%_auto] grid-cols-1 bg-home-bg-1'>
                 <div className='xl:p-15 p-8'>
-                    <FieldSet>
-                        <FieldGroup>
-                            <Field>
-                                <FieldLabel htmlFor="username" requiredMark>Email</FieldLabel>
-                                <Input id="username" type="email" className='border-[#999796] border-[1.5px] placeholder:text-[#999796] text-gray-1-foreground' />
-                                <FieldError errors={[{ message: "" }]} />
-                            </Field>
-                            <Field>
-                                <FieldLabel htmlFor="password" requiredMark>Password</FieldLabel>
-                                <FieldDescription>
-                                    Must be at least 8 characters long.
-                                </FieldDescription>
-                                <Input id="password" type="password" className='border-[#999796] border-[1.5px] placeholder:text-[#999796] text-gray-1-foreground' />
-                            </Field>
-                            <Field orientation="horizontal">
-                                <Checkbox id="terms" className="rounded-[4px] mb-1 border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white" />
-                                <FieldLabel
-                                    htmlFor="terms"
-                                    className="text-base self-end"
-                                >
-                                    Remember me
-                                </FieldLabel>
-                            </Field>
-                            <Button className='w-full lg:py-[11px] text-lg mt-3'>Sign In</Button>
-                            <AppLink href={"#"} className='text-base text-gray-1-foreground text-center' underline>Am uitat parola</AppLink>
-                        </FieldGroup>
-                    </FieldSet>
+                    <FieldGroup>
+                        <TextField type='email' name='username' label='Email' requiredMark />
+                        <TextField type='password' name='password' label='Password' requiredMark description='Must be at least 8 characters long.' />
+                        <CheckboxField label='Remember me' name='remember' />
+                        <Button className='w-full lg:py-[11px] text-lg mt-3'>Sign In</Button>
+                        <AppLink href={"#"} className='text-base text-gray-1-foreground text-center' underline>Am uitat parola</AppLink>
+                    </FieldGroup>
                     <Separator className='mt-3 border-[1.5px]' />
                     <p className='text-center mt-3 text-base text-gray-1-foreground'>Or Login With</p>
                     <div className='flex md:flex-row flex-col justify-between gap-5 mt-5'>

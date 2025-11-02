@@ -2,8 +2,9 @@
 
 import { useMemo } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-
 import { cn } from "@/lib/utils"
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 
@@ -231,10 +232,35 @@ function FieldError({
     <div
       role="alert"
       data-slot="field-error"
-      className={cn("text-destructive text-sm font-normal pl-1", className)}
+      className={cn("text-destructive text-sm font-normal -mt-1 pl-1", className)}
       {...props}
     >
       {content}
+    </div>
+  )
+}
+
+function TextField({ name, label, description, error, requiredMark, className, ...props }: React.ComponentProps<typeof Input> & { label?: string, description?: string, error?: string | undefined, requiredMark?: boolean }) {
+  return (
+    <Field className={cn(className)}>
+      {label && <FieldLabel htmlFor={name} requiredMark={requiredMark}>{label}</FieldLabel>}
+      {description && <FieldDescription>{description}</FieldDescription>}
+      <Input id={name} name={name} type="email" className='border-[#999796] border-[1.5px] placeholder:text-[#999796] text-gray-1-foreground' {...props} />
+      <FieldError errors={[{ message: error }]} />
+    </Field>
+  )
+}
+
+function CheckboxField({ name, label, error, requiredMark, className, ...props }: React.ComponentProps<typeof Checkbox> & { label?: string, error?: string | undefined, requiredMark?: boolean }) {
+  return (
+    <div>
+      <Field orientation="horizontal" className={cn(className)}>
+        <Checkbox id={name} name={name} className="rounded-[4px] mb-1 border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white" {...props} />
+        <FieldLabel htmlFor={name} className="text-sm font-medium self-end" requiredMark={requiredMark}>
+          {label}
+        </FieldLabel>
+      </Field>
+      <FieldError className='-mt-2 pl-0' errors={[{ message: error }]} />
     </div>
   )
 }
@@ -250,4 +276,6 @@ export {
   FieldSet,
   FieldContent,
   FieldTitle,
+  TextField,
+  CheckboxField,
 }
