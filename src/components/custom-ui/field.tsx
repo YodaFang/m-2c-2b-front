@@ -232,7 +232,7 @@ function FieldError({
     <div
       role="alert"
       data-slot="field-error"
-      className={cn("text-destructive text-sm font-normal -mt-1 pl-1", className)}
+      className={cn("text-destructive text-sm font-normal pl-1", className)}
       {...props}
     >
       {content}
@@ -242,7 +242,7 @@ function FieldError({
 
 function TextField({ name, label, description, error, requiredMark, className, ...props }: React.ComponentProps<typeof Input> & { label?: string, description?: string, error?: string | undefined, requiredMark?: boolean }) {
   return (
-    <Field className={cn(className)}>
+    <Field className={cn("gap-0", className)}>
       {label && <FieldLabel htmlFor={name} requiredMark={requiredMark}>{label}</FieldLabel>}
       {description && <FieldDescription>{description}</FieldDescription>}
       <Input id={name} name={name} type="email" className='border-[#999796] border-[1.5px] placeholder:text-[#999796] text-gray-1-foreground' {...props} />
@@ -260,7 +260,7 @@ function CheckboxField({ name, label, error, requiredMark, className, ...props }
           {label}
         </FieldLabel>
       </Field>
-      <FieldError className='-mt-2 pl-0' errors={[{ message: error }]} />
+      <FieldError className='-mt-1 pl-0' errors={[{ message: error }]} />
     </div>
   )
 }

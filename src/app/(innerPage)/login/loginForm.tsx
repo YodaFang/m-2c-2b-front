@@ -1,25 +1,21 @@
 'use client'
-import React, { useActionState } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import { AppLink } from "@/components/custom-ui/link"
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import {
-    FieldGroup,
-    TextField,
-    CheckboxField,
-} from "@/components/custom-ui/field"
+import { FieldGroup, } from "@/components/custom-ui/field"
+import { useGeneratedFields, loginSchema } from "./actions"
 
 const LoginForm = () => {
+    const { inputFields, validate } = useGeneratedFields(loginSchema);
     return (
         <div className='container lg:pt-25 lg:pb-25 pt-15 pb-15'>
             <div className='grid lg:grid-cols-[47.2%_auto] grid-cols-1 bg-home-bg-1'>
                 <div className='xl:p-15 p-8'>
                     <FieldGroup>
-                        <TextField type='email' name='username' label='Email' requiredMark />
-                        <TextField type='password' name='password' label='Password' requiredMark description='Must be at least 8 characters long.' />
-                        <CheckboxField label='Remember me' name='remember' />
-                        <Button className='w-full lg:py-[11px] text-lg mt-3'>Sign In</Button>
+                        {inputFields}
+                        <Button className='w-full lg:py-[11px] text-lg mt-3' onClick={validate}>Sign In</Button>
                         <AppLink href={"#"} className='text-base text-gray-1-foreground text-center' underline>Am uitat parola</AppLink>
                     </FieldGroup>
                     <Separator className='mt-3 border-[1.5px]' />
