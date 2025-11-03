@@ -1,11 +1,20 @@
 
 'use client'
+
 import React, { useState } from "react";
 import { atom, useAtom } from "jotai";
-import { z, ZodObject, ZodTypeAny, ZodError } from "zod";
+import { z, ZodObject, ZodTypeAny, ZodError, ZodEffects } from "zod";
 import { TextField, CheckboxField, } from "@/components/custom-ui/field"
 
-export function extractSchemaDesc(schema: ZodObject<any>): Record<string, string>[] {
+export function extractSchemaDesc(schema: ZodObject<any> | ZodEffects<any>): Record<string, string>[] {
+  while (schema instanceof ZodEffects) {
+    schema = schema._def.schema;
+  }
+
+  if (!(schema instanceof ZodObject)) {
+    throw new Error("Provided schema is not a ZodObject");
+  }
+
   const shape = schema.shape;
   const result: Record<string, any>[] = [];
 
@@ -86,7 +95,7 @@ export function zodValidate<T>(schema: z.ZodType<T>, data: unknown) {
 
 const errorsAtom = atom<Record<string, string>>({});
 
-export function useGeneratedFields(schema: ZodObject<any>) {
+export function useGeneratedFields(schema: ZodObject<any> | ZodEffects<any>) {
   const fieldDescs = extractSchemaDesc(schema);
   const [formData, setFormDataRaw] = useState<any>(() => {
     return fieldDescs.reduce((acc, field) => {
@@ -133,22 +142,3 @@ export function useGeneratedFields(schema: ZodObject<any>) {
 
   return { formData, inputFields, clearAllErrors, validate }
 }
-
-export const loginSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address.' }).describe(JSON.stringify({
-    default: "",
-    label: "Email",
-    type: "email",
-    required: true,
-    description: "",
-    classNmae: "",
-  })),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }).describe(JSON.stringify({
-    default: "",
-    label: "Password",
-    type: "password",
-    required: true,
-    description: "",
-    classNmae: "",
-  })),
-});

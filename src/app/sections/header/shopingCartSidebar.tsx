@@ -43,7 +43,7 @@ const ShoppingCartSidebar = () => {
           {totalProducts}
         </span>
       </DrawerTrigger>
-      <DrawerContent className="w-full h-[100vh]">
+      <DrawerContent className="w-full h-[100vh]" aria-describedby={undefined}>
         <DrawerHeader className="border-b-[1px] border-b-primary">
           <DrawerTitle className="w-full flex justify-between"><span>{currencyFormatter.format(totalPrice, {})} Lei</span> <span>{totalProducts} items </span> </DrawerTitle>
         </DrawerHeader>

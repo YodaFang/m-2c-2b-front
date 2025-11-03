@@ -55,19 +55,17 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
   return updateRes
 }
 
-export async function signup(formData: any) {
-  const password = formData.get("password") as string
+export async function signup(data: Record<string, any>) {
+  const email = data.email as string;
+  const password = data.password as string;
   const customerForm = {
-    email: formData.get("email") as string,
-    first_name: formData.get("first_name") as string,
-    last_name: formData.get("last_name") as string,
-    phone: formData.get("phone") as string,
-    company_name: formData.get("company_name") as string,
+    email,
+    first_name: data.first_name as string,
   }
 
   try {
     const token = await sdk.auth.register("customer", "emailpass", {
-      email: customerForm.email,
+      email: email,
       password: password,
     })
 
@@ -88,11 +86,10 @@ export async function signup(formData: any) {
 
     const cacheTag = await getCacheTag("customers")
     revalidateTag(cacheTag)
-
-    return createdCustomer;
+    return { success: true, customer: createdCustomer };
   } catch (error: any) {
     console.log("error", error)
-    return error.toString()
+    return { success: false, message: error.message };
   }
 }
 

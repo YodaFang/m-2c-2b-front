@@ -5,35 +5,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Cart, AddCartItem, retrieveCart, createCart, updateCart, addItemToCart, addToCartBulk, updateLineItem, deleteLineItem } from "@/api/cart";
 
 /**
- * Hook: 获取当前购物车
- */
-export const useGetCart = () => {
-  const [cartId, setCartId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const syncCartId = () => {
-      const storedId = getCartId();
-      setCartId(storedId);
-    };
-    syncCartId(); // 初始化执行
-    return;
-  }, []);
-
-  const query = useQuery<Cart | null, Error>({
-    queryKey: ["useGetCart", cartId],
-    queryFn: async () => {
-      if (!cartId) return null;
-      return await retrieveCart(cartId);
-    },
-    enabled: !!cartId,
-    staleTime: 60_000,
-    refetchOnWindowFocus: true,
-  });
-
-  return query;
-};
-
-/**
  * Hook: 创建购物车（可选添加商品）
  */
 export const useCreateCart = () => {

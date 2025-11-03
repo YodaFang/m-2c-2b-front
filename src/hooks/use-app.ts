@@ -3,113 +3,152 @@
 import { useCallback, useRef, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast, showErrorToast, showConfirmToast } from "@/components/custom-ui/toast";
+import { showLoadingOverlay, hideLoadingOverlay } from "@/components/custom-ui/loading-overlay";
 import { Customer, retrieveCustomer, login, signup, signout } from "@/api/customer"
-import { Cart, AddCartItem, retrieveCart, createCart, updateCart, addItemToCart, addToCartBulk, updateLineItem, deleteLineItem } from "@/api/cart";
-import { useAddToCart, useCreateCart, useUpdateCartItem, useDeleteCartItem } from "./use-cart"
+import { Cart, retrieveCart, createCart, updateCart, addItemToCart, addToCartBulk, updateLineItem, deleteLineItem } from "@/api/cart";
 
 const useApp = () => {
   const queryClient = useQueryClient();
   const { data: customer } = useGetCustomer();
   const { data: cart } = useGetCart();
-  const { handler: createCart } = useCreateCart();
-  const { handler: addCartItem } = useAddToCart();
-  const { handler: updateCartItem } = useUpdateCartItem();
-  const { handler: deleteCartItem } = useDeleteCartItem();
   const creatingPromiseRef = useRef<Promise<any> | null>(null);
 
   const loginHandler = useCallback(
     async (username: string, password: string) => {
-      const result = await login(username, password);
-      if(!result.success){
-        showErrorToast("Login Failed", result.message);
-      } else {
-        queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
+      try {
+        showLoadingOverlay();
+        const result = await login(username, password);
+        if (!result.success) {
+          showErrorToast("Login Failed", result.message || "");
+        } else {
+          queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
+        }
+      } finally {
+        hideLoadingOverlay();
       }
     },
     [login],
   );
 
-  const logout = useCallback(
+  const signupHandler = useCallback(
+    async (data: Record<string, any>) => {
+      try {
+        showLoadingOverlay();
+        const result = await signup(data);
+        if (!result.success) {
+          showErrorToast("Login Failed", result.message || "");
+        } else {
+          queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
+        }
+      } finally {
+        hideLoadingOverlay();
+      }
+    },
+    [signup],
+  );
+
+  const logoutHandler = useCallback(
     async () => {
-      // TODO: Cart
-      return true;
-    },
-    [],
-  );
-
-  const increaseItem = useCallback(
-    async (itemId: string, count: number = 1) => {
-      const item = cart?.items?.find((e) => e.id === itemId);
-      if (!item) return false;
-      await updateCartItem({ itemId: item.id, quantity: count + item.quantity });
-      return true;
-    },
-    [cart, updateCartItem],
-  );
-
-  const deleteItem = useCallback(
-    async (itemId: string) => {
-      const item = cart?.items?.find((e) => e.id === itemId);
-      if (!item) return false;
-      const ok = await showConfirmToast({
-        title: "Delete below item from cart?",
-        description: `<b>${item.product_title}</b> <br/> (${item.variant_title})`,
-        confirmText: "Delete",
-        cancelText: "Cancel",
-      });
-      if (!ok) return false;
-      await deleteCartItem({ itemId: item.id });
-      return true;
-    },
-    [cart, deleteCartItem],
-  );
-
-  const addItem = useCallback(async (variantId: string, count = 1) => {
-    if (!cart) {
-      if (!creatingPromiseRef.current) {
-        creatingPromiseRef.current = createCart({ variant_id: variantId, quantity: count })
-          .finally(() => {
-            creatingPromiseRef.current = null;
-            toast.success('Add To Cart Successfully');
-          });
-        return true;
+      try {
+        showLoadingOverlay();
+        await signout();
+      } finally {
+        hideLoadingOverlay();
+        setCartId("");
+        queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
+        queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
       }
-      const newCart = await creatingPromiseRef.current;
-      const exists = newCart?.items?.some((i: any) => i.variant_id === variantId);
-      if (exists) {
-        return true;
-      } else {
-        await addCartItem({ variant_id: variantId, quantity: count });
-        toast.success('Add To Cart Successfully');
-        return true
-      }
-    }
+    },
+    [signout],
+  );
 
-    const exists = cart?.items?.find(i => i.variant_id === variantId);
-    if (exists) {
-      await increaseItem(exists.id, count);
-    } else {
-      await addCartItem({ variant_id: variantId, quantity: count });
-    }
-    toast.success('Add To Cart Successfully');
+  const increaseItemHandler = async (itemId: string, count: number = 1) => {
+    const item = cart?.items?.find((e) => e.id === itemId);
+    if (!cart || !item) return false;
+    await updateLineItem(cart.id, item.id, count + item.quantity);
+    queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
     return true;
-  }, [cart, createCart, addCartItem, increaseItem, creatingPromiseRef]);
+  }
 
-  const decreaseItem = useCallback(
-    async (itemId: string, count: number = 1) => {
-      const item = cart?.items?.find((e) => e.id === itemId);
-      if (!item || count <= 0) return false;
-      if (count >= item.quantity) {
-        await deleteItem(item.id);
-      } else {
-        await updateCartItem({ itemId: item.id, quantity: item.quantity - count });
+  const deleteItemHandler = async (itemId: string) => {
+    const item = cart?.items?.find((e) => e.id === itemId);
+    if (!cart || !item) return false;
+    const ok = await showConfirmToast({
+      title: "Delete below item from cart?",
+      description: `<b>${item.product_title}</b> <br/> (${item.variant_title})`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+    });
+    if (!ok) return false;
+    await deleteLineItem(cart.id, item.id);
+    queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+    toast.success('Item Removed Successfully');
+    return true;
+  }
+
+  const addItemHandler = async (variantId: string, count = 1) => {
+    if (!cart) {
+      try {
+        showLoadingOverlay();
+        if (!creatingPromiseRef.current) {
+          creatingPromiseRef.current = createCart([{ variant_id: variantId, quantity: count }])
+            .finally(() => {
+              creatingPromiseRef.current = null;
+              toast.success('Add To Cart Successfully');
+            });
+          return true;
+        }
+        const newCart = await creatingPromiseRef.current;
+        if (newCart) {
+          setCartId(newCart.id);
+          const exists = newCart?.items?.some((i: any) => i.variant_id === variantId);
+          if (!exists) {
+            await addItemToCart(newCart.id, { variant_id: variantId, quantity: count });
+            toast.success('Add To Cart Successfully');
+          }
+          queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+          return true;
+        }
+      } finally {
+        hideLoadingOverlay();
       }
+      return false;
+    } else {
+      const exists = cart?.items?.find(i => i.variant_id === variantId);
+      if (exists) {
+        await increaseItemHandler(exists.id, count);
+      } else {
+        await addItemToCart(cart.id, { variant_id: variantId, quantity: count });
+      }
+      queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+      toast.success('Add To Cart Successfully');
       return true;
-    },
-    [cart, deleteItem, updateCartItem],
-  );
+    }
+  }
 
-  return { customer, login: loginHandler, logout, signup, cartItems: cart?.items ?? [], addItem, increaseItem, decreaseItem, deleteItem }
+  const decreaseItemHandler = async (itemId: string, count: number = 1) => {
+    const item = cart?.items?.find((e) => e.id === itemId);
+    if (!cart || !item || count <= 0) return false;
+    if (count >= item.quantity) {
+      await deleteItemHandler(item.id);
+    } else {
+      await updateLineItem(cart.id, item.id, item.quantity - count);
+    }
+    queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+    return true;
+  }
+
+  return {
+    customer,
+    cartItems: cart?.items ?? [],
+    login: loginHandler,
+    logout: logoutHandler,
+    signup: signupHandler,
+    addItem: addItemHandler,
+    increaseItem: increaseItemHandler,
+    decreaseItem: decreaseItemHandler,
+    deleteItem: deleteItemHandler
+  }
 }
 
 export default useApp;

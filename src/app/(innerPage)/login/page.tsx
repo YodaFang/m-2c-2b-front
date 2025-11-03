@@ -1,6 +1,6 @@
 import React from 'react'
 import PageHeader from '@/app/sections/pageHeader'
-import LoginForm from './loginForm'
+import LoginForm from './auth-dialog'
 import Newsletter from '@/app/sections/newsletter'
 import InstagramGallery from '@/app/sections/instagramGallery'
 import { Metadata } from 'next'
