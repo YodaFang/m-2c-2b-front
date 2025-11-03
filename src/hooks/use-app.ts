@@ -1,17 +1,41 @@
 'use client'
 
-import { useCallback, useRef } from "react";
-import { toast } from "@/components/custom-ui/toast";
-import { useAddToCart, useCreateCart, useGetCart, useUpdateCartItem, useDeleteCartItem } from "./use-cart"
+import { useCallback, useRef, useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast, showErrorToast, showConfirmToast } from "@/components/custom-ui/toast";
+import { Customer, retrieveCustomer, login, signup, signout } from "@/api/customer"
+import { Cart, AddCartItem, retrieveCart, createCart, updateCart, addItemToCart, addToCartBulk, updateLineItem, deleteLineItem } from "@/api/cart";
+import { useAddToCart, useCreateCart, useUpdateCartItem, useDeleteCartItem } from "./use-cart"
 
 const useApp = () => {
+  const queryClient = useQueryClient();
+  const { data: customer } = useGetCustomer();
   const { data: cart } = useGetCart();
   const { handler: createCart } = useCreateCart();
   const { handler: addCartItem } = useAddToCart();
   const { handler: updateCartItem } = useUpdateCartItem();
   const { handler: deleteCartItem } = useDeleteCartItem();
-
   const creatingPromiseRef = useRef<Promise<any> | null>(null);
+
+  const loginHandler = useCallback(
+    async (username: string, password: string) => {
+      const result = await login(username, password);
+      if(!result.success){
+        showErrorToast("Login Failed", result.message);
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
+      }
+    },
+    [login],
+  );
+
+  const logout = useCallback(
+    async () => {
+      // TODO: Cart
+      return true;
+    },
+    [],
+  );
 
   const increaseItem = useCallback(
     async (itemId: string, count: number = 1) => {
@@ -27,13 +51,13 @@ const useApp = () => {
     async (itemId: string) => {
       const item = cart?.items?.find((e) => e.id === itemId);
       if (!item) return false;
-      const ok = await (window as any).confirm({
+      const ok = await showConfirmToast({
         title: "Delete below item from cart?",
         description: `<b>${item.product_title}</b> <br/> (${item.variant_title})`,
         confirmText: "Delete",
         cancelText: "Cancel",
       });
-      if(!ok) return false;
+      if (!ok) return false;
       await deleteCartItem({ itemId: item.id });
       return true;
     },
@@ -85,7 +109,55 @@ const useApp = () => {
     [cart, deleteItem, updateCartItem],
   );
 
-  return { cartItems: cart?.items ?? [], addItem, increaseItem, decreaseItem, deleteItem }
+  return { customer, login: loginHandler, logout, signup, cartItems: cart?.items ?? [], addItem, increaseItem, decreaseItem, deleteItem }
 }
 
 export default useApp;
+
+/**
+ * Hook: 获取当前登录客户信息
+ */
+export const useGetCustomer = () => {
+  const query = useQuery<Customer | null, Error>({
+    queryKey: ["useGetCustomer"],
+    queryFn: async () => {
+      return await retrieveCustomer();
+    },
+    staleTime: 90_000,
+    refetchOnWindowFocus: true,
+  });
+
+  return query;
+};
+
+const getCartId = () => localStorage.getItem("common::cart_id");
+const setCartId = (cartId: string) => localStorage.setItem("common::cart_id", cartId);
+
+/**
+ * Hook: 获取当前购物车
+ */
+export const useGetCart = () => {
+  const [cartId, setCartId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const syncCartId = () => {
+      const storedId = getCartId();
+      setCartId(storedId);
+    };
+    syncCartId(); // 初始化执行
+    return;
+  }, []);
+
+  const query = useQuery<Cart | null, Error>({
+    queryKey: ["useGetCart", cartId],
+    queryFn: async () => {
+      if (!cartId) return null;
+      return await retrieveCart(cartId);
+    },
+    enabled: !!cartId,
+    staleTime: 60_000,
+    refetchOnWindowFocus: true,
+  });
+
+  return query;
+};

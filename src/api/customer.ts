@@ -3,7 +3,6 @@
 import { sdk } from "@/lib/medusaClient"
 import { HttpTypes } from "@medusajs/types"
 import { revalidateTag } from "next/cache"
-import { redirect } from "next/navigation"
 import {
   getAuthHeaders,
   getCacheOptions,
@@ -11,6 +10,9 @@ import {
   removeAuthToken,
   setAuthToken,
 } from "./cookies"
+
+export interface Customer extends HttpTypes.StoreCustomer { };
+
 
 export const retrieveCustomer = async (): Promise<HttpTypes.StoreCustomer | null> => {
   const authHeaders = await getAuthHeaders()
@@ -53,7 +55,7 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
   return updateRes
 }
 
-export async function signup(_currentState: unknown, formData: any) {
+export async function signup(formData: any) {
   const password = formData.get("password") as string
   const customerForm = {
     email: formData.get("email") as string,
@@ -94,12 +96,9 @@ export async function signup(_currentState: unknown, formData: any) {
   }
 }
 
-export async function login(_currentState: unknown, formData: any) {
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-
+export async function login(email: string, password: string) {
   try {
-    await sdk.auth
+    return sdk.auth
       .login("customer", "emailpass", { email, password })
       .then(async (token) => {
         setAuthToken(token as string)
@@ -114,17 +113,17 @@ export async function login(_currentState: unknown, formData: any) {
         revalidateTag(customerCacheTag)
         revalidateTag(productsCacheTag)
         revalidateTag(cartsCacheTag)
-      })
+        return { success: true, message: "login successfully" };
+      }).catch((err) => {
+        return { success: false, message: err.message };
+      });
   } catch (error: any) {
-    return error.toString()
+    return { success: false, message: error.message };
   }
 }
 
-export async function signout(countryCode: string, customerId: string) {
+export async function signout() {
   try {
-    const headers = {
-    ...(await getAuthHeaders()),
-  }
     await sdk.auth.logout();
   } catch (error: any) {
     console.log("signout error: ");
@@ -144,8 +143,6 @@ export async function signout(countryCode: string, customerId: string) {
   revalidateTag(customerCacheTag)
   revalidateTag(productsCacheTag)
   revalidateTag(cartsCacheTag)
-
-  redirect(`/${countryCode}/account`)
 }
 
 export async function transferCart(cartId: string) {

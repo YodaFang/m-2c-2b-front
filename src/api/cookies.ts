@@ -3,7 +3,7 @@
 import { cookies as nextCookies } from "next/headers"
 
 export const getAuthHeaders = async (): Promise<
-  { authorization: string } | {}
+  { authorization: string } | null
 > => {
   try {
     const cookies = await nextCookies()
@@ -13,9 +13,9 @@ export const getAuthHeaders = async (): Promise<
       return { authorization: `Bearer ${token}` }
     }
 
-    return {}
+    return null;
   } catch (error) {
-    return {}
+    return null;
   }
 }
 

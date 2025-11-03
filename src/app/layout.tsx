@@ -3,7 +3,6 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import QueryProvider from "./query-provider";
-import ConfirmDialogProvider from "./confirm-provider";
 import { Toaster } from "@/components/custom-ui/toast";
 import {
   generateOrganizationJsonLd,
@@ -87,8 +86,7 @@ export default function RootLayout({
             <StoreProvider>
               {children}
             </StoreProvider>
-            <Toaster position="top-right" />
-            <ConfirmDialogProvider />
+            <Toaster position="top-right" richColors closeButton/>
           </QueryProvider>
         </ThemeProvider>
       </body>

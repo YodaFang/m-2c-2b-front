@@ -1,5 +1,6 @@
 
-import React, { useState, useMemo } from "react";
+'use client'
+import React, { useState } from "react";
 import { atom, useAtom } from "jotai";
 import { z, ZodObject, ZodTypeAny, ZodError } from "zod";
 import { TextField, CheckboxField, } from "@/components/custom-ui/field"
