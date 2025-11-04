@@ -18,8 +18,9 @@ import currencyFormatter from "currency-formatter";
 import Thumbnail from "@/components/custom-ui/thumbnail";
 import useApp from "@/hooks/use-app";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { CartItem } from "./cart-item"
 
-const ShoppingCartSidebar = () => {
+const SidebarCart = () => {
   const pathName = usePathname();
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
@@ -49,54 +50,11 @@ const ShoppingCartSidebar = () => {
         </DrawerHeader>
         <div className="flex-col flex-1 pl-1 pr-4 overflow-y-auto">
           {cartItems.length ? (
-            cartItems.map(({ id, unit_price: price, quantity, thumbnail, product_title: title, variant_title }) => (
-              <div key={id} className="flex items-center py-2 border-b-[1px]">
-                <div className="bg-white shrink-0">
-                  <Thumbnail
-                    className="w-[90]"
-                    thumbnail={thumbnail!}
-                    size="square"
-                    type="preview"
-                  />
-                </div>
-                <div className="flex flex-col shrink">
-                  <b className="text-sm leading-tight line-clamp-2">{title}</b>
-                  <div className="flex justify-between">
-                    <span className="text-secondary-foreground text-sm">{variant_title}</span>
-                    <span className="text-secondary-foreground text-sm">${price.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="flex items-center gap-2.5 px-1.5 py-1">
-                      <button
-                        className="text-neutral-500"
-                        onClick={() => decreaseItem(id)}
-                      >
-                        <MinusCircle size="21" />
-                      </button>
-                      <input
-                        value={quantity}
-                        readOnly
-                        className="outline-none max-w-4 text-center text-base"
-                      />
-                      <button
-                        className="text-neutral-500"
-                        onClick={() => increaseItem(id)}
-                      >
-                        <PlusCircle size="21" />
-                      </button>
-                    </div>
-                    <button
-                      onClick={() => deleteItem(id)}
-                      className="text-neutral-500 text-sm underline"
-                    >
-                      <Trash2Icon size="18" />
-                    </button>
-                  </div>
-                </div>
-              </div>
+            cartItems.map((item) => (
+              <CartItem key={item.id} item={item} decreaseItem={decreaseItem} increaseItem={increaseItem} deleteItem={decreaseItem} />
             ))
           ) : (
-            <p className="capitalize text-secondary-foreground text-sm">
+            <p className="capitalize text-secondary-foreground text-base">
               No Product in cart
             </p>
           )}
@@ -104,33 +62,31 @@ const ShoppingCartSidebar = () => {
         <DrawerFooter className="flex-col border-t-[1px] border-t-primary w-full">
           {cartItems.length ? (
             <>
-              <div className="px-5">
+              <div className="px-3">
                 <span className="text-gray-1-foreground text-base">
                   Add{" "}
                   <span className="text-secondary-foreground">$436.00</span>{" "}
-                  to cart and get{" "}
+                  to  get{" "}
                   <span className="text-secondary-foreground">
                     Free shipping!
                   </span>
                 </span>
-                <div className="mt-1.5 w-full h-2 bg-[#F5F5F5] overflow-hidden">
+                <div className="mt-1 w-full h-2 bg-[#F5F5F5] overflow-hidden">
                   <div className="h-full bg-stripes w-4/5 animate-stripes"></div>
                 </div>
-                <div className="mt-5">
+                <div className="my-5 flex flex-col gap-5">
                   <Button
-                    variant={"outline"}
-                    size={"sm"}
                     asChild
                     className="w-full lg:text-lg lg:leading"
                   >
-                    <Link href={"/cart"}>View Cart</Link>
+                    <Link href={"/checkout"}>Check Out</Link>
                   </Button>
                   <Button
-                    size={"sm"}
-                    asChild
-                    className="w-full lg:text-lg lg:leading mt-3"
+                    variant={"outline"}
+                    className="w-full lg:text-lg lg:leading"
+                    onClick={() => setOpen(false)}
                   >
-                    <Link href={"/checkout"}>Check Out</Link>
+                    Close
                   </Button>
                 </div>
               </div>
@@ -150,4 +106,4 @@ const ShoppingCartSidebar = () => {
   );
 };
 
-export default ShoppingCartSidebar;
+export default SidebarCart;

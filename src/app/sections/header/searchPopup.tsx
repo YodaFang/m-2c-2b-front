@@ -67,7 +67,7 @@ const SearchPopup = ({ data }: { data: Product[] }) => {
         onClick={() => setIsOpen(!isOpen)}
         className={cn("text-gray-1-foreground -rotate-90 cursor-pointer")}
       >
-        <Search />
+        <Search className="size-8" />
       </button>
       {isOpen && (
         <div

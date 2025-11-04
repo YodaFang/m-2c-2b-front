@@ -3,10 +3,10 @@ import { listProducts } from "@/api/products"
 import { User } from '@/lib/icon'
 import Image from 'next/image'
 import Link from 'next/link'
-import HeaderExtraInfo from './headerExtraInfo'
+import AuthDialog from '@/app/sections/auth-dialog'
 import Navbar from './navbar'
 import SearchPopup from './searchPopup'
-import ShopingCartSidebar from './shopingCartSidebar'
+import ShopingCartSidebar from '../cart/sidebar-cart'
 import StickyHeader from './stickyHeader'
 import TopHeader from './topHeader'
 
@@ -23,18 +23,9 @@ const Header = async () => {
                     <Link href={"/"} className='shrink-0'>
                         <Image width={60} height={40} src={"/images/logo.png"} alt='logo' />
                     </Link>
-                    <div className='flex items-center justify-end gap-5 w-full'>
+                    <div className='flex items-center justify-end gap-8 w-full'>
                         <SearchPopup data={featuredProducts}/>
-                        <div className='lg:block hidden'>
-                            <HeaderExtraInfo />
-                        </div>
-                        <Link
-                            aria-label='user'
-                            href={'/login'}
-                            className='text-gray-1-foreground cursor-pointer lg:block hidden'
-                        >
-                            <User />
-                        </Link>
+                        <AuthDialog />
                         <ShopingCartSidebar />
                     </div>
                 </div>

@@ -19,7 +19,7 @@ const useApp = () => {
         showLoadingOverlay();
         const result = await login(username, password);
         if (!result.success) {
-          showErrorToast("Login Failed", result.message || "");
+          showErrorToast("Login Failed", result.message || "Invalid email or password, you can use 'forgot password' to resee your password");
         } else {
           queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
         }
