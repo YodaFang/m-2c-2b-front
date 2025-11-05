@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import { atom, useAtom } from "jotai";
 import { z, ZodObject, ZodTypeAny, ZodError, ZodEffects } from "zod";
-import { TextField, CheckboxField, } from "@/components/custom-ui/field"
+import { TextField, CheckboxField, FloatingLabelField } from "@/components/custom-ui/field"
 
 export function extractSchemaDesc(schema: ZodObject<any> | ZodEffects<any>): Record<string, string>[] {
   while (schema instanceof ZodEffects) {
@@ -41,21 +41,22 @@ function renderInputField(
   updateValFunc: (key: string, val: any) => void,
   formError?: any
 ) {
+  const inputType = fieldDesc.inputType;
+  const type = fieldDesc.type;
   const label = fieldDesc.label;
   const key = fieldDesc.zodkey;
+  const placeholder = fieldDesc.placeholder;
   const name = `auto-field-${label}`
   const error = formError[key] ?? '';
   const val = formData[key] ?? '';
   const onChange = (e: any) => updateValFunc(key, e.target.value);
 
-  if (fieldDesc.type === "checkbox") {
-    return (
-      <CheckboxField key={name} label={label} name={name} error={error} value={val} onChange={onChange} />
-    );
+  if (inputType === "checkbox") {
+    return <CheckboxField key={name} label={label} name={name} error={error} value={val} onChange={onChange} />;
+  } else if (inputType === "floating_label_field") {
+    return <FloatingLabelField key={name} type={type} label={label} name={name} placeholder={placeholder} error={error} value={val} onChange={onChange} requiredMark={fieldDesc.required} />;
   } else {
-    return (
-      <TextField key={name} type={fieldDesc.type} label={label} name={name} error={error} value={val} onChange={onChange} requiredMark={fieldDesc.required} />
-    );
+    return <TextField key={name} type={type} label={label} name={name} placeholder={placeholder} error={error} value={val} onChange={onChange} requiredMark={fieldDesc.required} />;
   }
 }
 

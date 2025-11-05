@@ -47,7 +47,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-group"
       className={cn(
-        "group/field-group @container/field-group flex w-full flex-col gap-4 data-[slot=checkbox-group]:gap-2 [&>[data-slot=field-group]]:gap-3",
+        "group/field-group @container/field-group flex w-full flex-col gap-3 data-[slot=checkbox-group]:gap-2 [&>[data-slot=field-group]]:gap-2",
         className
       )}
       {...props}
@@ -240,12 +240,22 @@ function FieldError({
   )
 }
 
-function TextField({ name, label, description, error, requiredMark, className, ...props }: React.ComponentProps<typeof Input> & { label?: string, description?: string, error?: string | undefined, requiredMark?: boolean }) {
+function TextField({ name, label, type, description, error, requiredMark, className, ...props }: React.ComponentProps<typeof Input> & { label?: string, description?: string, error?: string | undefined, requiredMark?: boolean }) {
   return (
     <Field className={cn("gap-0", className)}>
       {label && <FieldLabel htmlFor={name} requiredMark={requiredMark}>{label}</FieldLabel>}
       {description && <FieldDescription>{description}</FieldDescription>}
-      <Input id={name} name={name} type="email" className='border-[#999796] border-[1.5px] placeholder:text-[#999796] text-gray-1-foreground' {...props} />
+      <Input id={name} name={name} type={type} className={cn('border-[#999796] border-[1.5px] placeholder:text-[#999796] text-gray-1-foreground', { "border-destructive": error })} {...props} />
+      <FieldError errors={[{ message: error }]} />
+    </Field>
+  )
+}
+
+function FloatingLabelField({ name, label, type, error, requiredMark, className, ...props }: React.ComponentProps<typeof Input> & { label: string, error?: string | undefined, requiredMark?: boolean }) {
+  return (
+    <Field className={cn("relative", className)}>
+      <Input id={name} name={name} type={type} className={cn('px-3 py-[1px] pt-4 h-11 border-[#999796] border-[1.5px] placeholder:text-[#999796] text-gray-1-foreground', { "border-destructive": error })}  {...props} />
+      <FieldLabel htmlFor={name} requiredMark={requiredMark} className='text-xs italic px-2.5 py-1 absolute left-[3px] top-[1px]'>{label}</FieldLabel>
       <FieldError errors={[{ message: error }]} />
     </Field>
   )
@@ -278,4 +288,5 @@ export {
   FieldTitle,
   TextField,
   CheckboxField,
+  FloatingLabelField,
 }

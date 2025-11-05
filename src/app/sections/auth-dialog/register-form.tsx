@@ -8,6 +8,7 @@ import useApp from "@/hooks/use-app"
 
 const registerSchema = z.object({
     first_name: z.string().min(3, { message: 'At least 3 charecters.' }).describe(JSON.stringify({
+        inputType: "floating_label_field",
         default: "",
         label: "Name",
         type: "text",
@@ -16,6 +17,7 @@ const registerSchema = z.object({
         classNmae: "",
     })),
     email: z.string().email({ message: 'Invalid email address.' }).describe(JSON.stringify({
+        inputType: "floating_label_field",
         default: "",
         label: "Email",
         type: "email",
@@ -24,6 +26,7 @@ const registerSchema = z.object({
         classNmae: "",
     })),
     password: z.string().min(6, { message: 'Password must be at least 6 characters.' }).describe(JSON.stringify({
+        inputType: "floating_label_field",
         default: "",
         label: "Password",
         type: "password",
@@ -32,11 +35,12 @@ const registerSchema = z.object({
         classNmae: "",
     })),
     passwordConfirm: z.string().describe(JSON.stringify({
+        inputType: "floating_label_field",
         default: "",
         label: "Password Confirm",
         type: "password",
         required: true,
-        description: "",
+        placeholder: "Must be the same with [Password]",
         classNmae: "",
     })),
 }).refine((data) => data.password === data.passwordConfirm, {
