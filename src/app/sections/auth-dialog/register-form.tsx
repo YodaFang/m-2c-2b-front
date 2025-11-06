@@ -49,7 +49,8 @@ const registerSchema = z.object({
 });
 
 const RegsiterForm = () => {
-    const { inputFields, validate } = useGeneratedFields(registerSchema);
+    const { inputFields, inputFieldsMap, validate } = useGeneratedFields(registerSchema);
+    console.log(inputFieldsMap);
     const { signup } = useApp();
     const handlerSignup = async () => {
         const data = validate();

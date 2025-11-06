@@ -18,10 +18,11 @@ const useApp = () => {
       try {
         showLoadingOverlay();
         const result = await login(username, password);
-        if (!result.success) {
-          showErrorToast("Login Failed", result.message || "Invalid email or password, you can use 'forgot password' to resee your password");
-        } else {
+        if (result.success) {
           queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
+          toast.success(<><b>Sign In Sucessfully</b><br/><p>Welcome back {customer?.first_name}!</p></>);
+        } else {
+          showErrorToast("Login Failed", result.message || "Invalid email or password, you can use 'forgot password' to resee your password");
         }
       } finally {
         hideLoadingOverlay();

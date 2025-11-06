@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { MinusCircle, PlusCircle, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -15,7 +14,6 @@ import {
 } from "@/components/ui/drawer";
 import { ShopCart } from "@/lib/icon";
 import currencyFormatter from "currency-formatter";
-import Thumbnail from "@/components/custom-ui/thumbnail";
 import useApp from "@/hooks/use-app";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CartItem } from "./cart-item"
@@ -51,7 +49,7 @@ const SidebarCart = () => {
         <div className="flex-col flex-1 pl-1 pr-4 overflow-y-auto">
           {cartItems.length ? (
             cartItems.map((item) => (
-              <CartItem key={item.id} item={item} decreaseItem={decreaseItem} increaseItem={increaseItem} deleteItem={decreaseItem} />
+              <CartItem key={item.id} item={item} decreaseItem={decreaseItem} increaseItem={increaseItem} deleteItem={deleteItem} />
             ))
           ) : (
             <p className="capitalize text-secondary-foreground text-base">

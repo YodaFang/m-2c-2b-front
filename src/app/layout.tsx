@@ -80,7 +80,7 @@ export default function RootLayout({
         {jsonLdScript(breadcrumbJson)}
         {jsonLdScript(productJson)}
       </head>
-      <body className="min-h-screen bg-home-bg-1 text-foreground antialiased">
+      <body className="flex flex-col min-h-screen bg-home-bg-1 text-foreground antialiased">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <QueryProvider>
             <StoreProvider>

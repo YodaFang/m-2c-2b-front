@@ -2,7 +2,6 @@
 'use client'
 
 import React, { useState } from "react";
-import { atom, useAtom } from "jotai";
 import { z, ZodObject, ZodTypeAny, ZodError, ZodEffects } from "zod";
 import { TextField, CheckboxField, FloatingLabelField } from "@/components/custom-ui/field"
 
@@ -94,19 +93,17 @@ export function zodValidate<T>(schema: z.ZodType<T>, data: unknown) {
   };
 }
 
-const errorsAtom = atom<Record<string, string>>({});
-
 export function useGeneratedFields(schema: ZodObject<any> | ZodEffects<any>) {
   const fieldDescs = extractSchemaDesc(schema);
   const [formData, setFormDataRaw] = useState<any>(() => {
     return fieldDescs.reduce((acc, field) => {
-      acc[field.zodkey] = field.default ?? null;
+      acc[field.zodkey] = field.default ?? undefined;
       return acc;
     }, {});
   });
-  const [fieldErrors, setFieldErrors] = useAtom(errorsAtom);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const updateField = (field: string, value: any) => {
+  const updateFieldVal = (field: string, value: any) => {
     setFormDataRaw((prev: any) => ({
       ...prev,
       [field]: value,
@@ -139,7 +136,13 @@ export function useGeneratedFields(schema: ZodObject<any> | ZodEffects<any>) {
     }
   };
 
-  const inputFields = fieldDescs?.map((fd: any) => renderInputField(fd, formData, updateField, fieldErrors));
+  const inputFields: React.JSX.Element[] = [];
+  const inputFieldsMap: Record<string, React.JSX.Element> = {};
+  fieldDescs?.forEach((fd) => {
+    const field = renderInputField(fd, formData, updateFieldVal, fieldErrors);
+    inputFields.push(field);
+    inputFieldsMap[fd.zodkey] = field;
+  });
 
-  return { formData, inputFields, clearAllErrors, validate }
+  return { formData, updateFieldVal, inputFields, inputFieldsMap, clearAllErrors, validate }
 }

@@ -13,10 +13,15 @@ import { AppLink } from "@/components/custom-ui/link"
 import { User } from '@/lib/icon'
 import LoginForm from './login-form'
 import RegisterForm from './register-form'
+import useApp from "@/hooks/use-app"
 
 const AuthDialog = () => {
+    const { customer } = useApp();
     const [open, setOpen] = useState(false);
     const [isLogin, setIslogin] = useState(true);
+    if(customer){
+        return <AppLink href="/account" ><User className="size-8" /></AppLink>;
+    }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>

@@ -36,7 +36,7 @@ export const retrieveCustomer = async (): Promise<HttpTypes.StoreCustomer | null
       headers,
       next,
     })
-    .then(({ customer }) => customer as HttpTypes.StoreCustomer)
+    .then(({ customer }) => customer)
     .catch(() => null)
 }
 
