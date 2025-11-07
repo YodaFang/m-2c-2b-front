@@ -3,7 +3,7 @@ import { listProducts } from "@/api/products"
 import { User } from '@/lib/icon'
 import Image from 'next/image'
 import Link from 'next/link'
-import AuthDialog from '@/app/sections/auth-dialog'
+import AuthDialog from '@/app/sections/auth'
 import Navbar from './navbar'
 import SearchPopup from './searchPopup'
 import ShopingCartSidebar from '../cart/sidebar-cart'

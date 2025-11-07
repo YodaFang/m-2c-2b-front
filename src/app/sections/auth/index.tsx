@@ -13,12 +13,12 @@ import { AppLink } from "@/components/custom-ui/link"
 import { User } from '@/lib/icon'
 import LoginForm from './login-form'
 import RegisterForm from './register-form'
+import { LoginRegister } from "./login-register"
 import useApp from "@/hooks/use-app"
 
 const AuthDialog = () => {
     const { customer } = useApp();
     const [open, setOpen] = useState(false);
-    const [isLogin, setIslogin] = useState(true);
     if(customer){
         return <AppLink href="/account" ><User className="size-8" /></AppLink>;
     }
@@ -31,15 +31,9 @@ const AuthDialog = () => {
             >
                 <User className="size-8" />
             </DialogTrigger>
-            <DialogContent className="w-full" aria-describedby={undefined}>
-                <DialogHeader>
-                    <DialogTitle className="text-center">{ isLogin ? "Sign In" : "Sign Up" }</DialogTitle>
-                    <DialogDescription className="text-center text-base">
-                        { isLogin ? <> New Customer? <AppLink href="#" onClick={() => setIslogin(false)} className='text-secondary-foreground font-medium' underline>Sign Up</AppLink></> : 
-                        <> Already Have Account ? <AppLink href="#" onClick={() => setIslogin(true)} className='text-secondary-foreground font-medium' underline>Sign In</AppLink></> }
-                    </DialogDescription>
-                </DialogHeader>
-                { isLogin ? <LoginForm /> : <RegisterForm /> }
+            <DialogContent className="w-full py-8 lg:px-8 px-2"  aria-describedby={undefined}>
+                <DialogTitle hidden></DialogTitle>
+                <LoginRegister className="w-full p-0 m-0 border-0 shadow-none" />
             </DialogContent>
         </Dialog>
     );

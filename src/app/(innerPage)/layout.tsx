@@ -7,7 +7,9 @@ const InnerLayout = ({ children }: { children: ReactNode }) => {
     return (
         <>
             <Header />
-            {children}
+            <main className="flex-1 flex">
+                {children}
+            </main>
             <Footer />
             <MobileNavbar />
         </>
