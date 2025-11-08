@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { FieldGroup, } from "@/components/custom-ui/field"
 import { useGeneratedFields } from "@/hooks/use-zod-fields"
-import useApp from "@/hooks/use-app"
+import { useActions } from "@/hooks/use-app"
 
 const loginSchema = z.object({
     email: z.string().email({ message: 'Invalid email address.' }).describe(JSON.stringify({
@@ -29,7 +29,7 @@ const loginSchema = z.object({
 
 const LoginForm = () => {
     const { inputFields, validate } = useGeneratedFields(loginSchema);
-    const { login } = useApp();
+    const { login } = useActions();
     const handlerLogin = async () => {
         const data = validate();
         if (data && Object.keys(data).length) {

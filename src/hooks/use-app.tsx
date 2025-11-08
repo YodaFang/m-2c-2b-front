@@ -6,11 +6,12 @@ import { toast, showErrorToast, showConfirmToast } from "@/components/custom-ui/
 import { showLoadingOverlay, hideLoadingOverlay } from "@/components/custom-ui/loading-overlay";
 import { Customer, retrieveCustomer, login, signup, signout } from "@/api/customer"
 import { Cart, retrieveCart, createCart, updateCart, addItemToCart, addToCartBulk, updateLineItem, deleteLineItem } from "@/api/cart";
+import { CartItem } from "@/app/sections/cart/cart-item";
 
-const useApp = () => {
+export const useActions = () => {
   const queryClient = useQueryClient();
   const { data: customer } = useGetCustomer();
-  const { data: cart } = useGetCart();
+  const { cart, cartItems } = useGetCart();
   const creatingPromiseRef = useRef<Promise<any> | null>(null);
 
   const loginHandler = useCallback(
@@ -20,7 +21,7 @@ const useApp = () => {
         const result = await login(username, password);
         if (result.success) {
           queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
-          toast.success(<><b>Sign In Sucessfully</b><br/><p>Welcome back {customer?.first_name}!</p></>);
+          toast.success(<><b>Sign In Sucessfully</b><br /><p>Welcome back {customer?.first_name}!</p></>);
         } else {
           showErrorToast("Login Failed", result.message || "Invalid email or password, you can use 'forgot password' to resee your password");
         }
@@ -53,18 +54,18 @@ const useApp = () => {
       try {
         showLoadingOverlay();
         await signout();
-      } finally {
-        hideLoadingOverlay();
         setCartId("");
         queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
         queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+      } finally {
+        hideLoadingOverlay();
       }
     },
     [signout],
   );
 
   const increaseItemHandler = async (itemId: string, count: number = 1) => {
-    const item = cart?.items?.find((e) => e.id === itemId);
+    const item = cartItems.find((e) => e.id === itemId);
     if (!cart || !item) return false;
     await updateLineItem(cart.id, item.id, count + item.quantity);
     queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
@@ -72,7 +73,7 @@ const useApp = () => {
   }
 
   const deleteItemHandler = async (itemId: string) => {
-    const item = cart?.items?.find((e) => e.id === itemId);
+    const item = cartItems.find((e) => e.id === itemId);
     if (!cart || !item) return false;
     const ok = await showConfirmToast({
       title: "Delete below item from cart?",
@@ -115,7 +116,7 @@ const useApp = () => {
       }
       return false;
     } else {
-      const exists = cart?.items?.find(i => i.variant_id === variantId);
+      const exists = cartItems.find(i => i.variant_id === variantId);
       if (exists) {
         await increaseItemHandler(exists.id, count);
       } else {
@@ -128,7 +129,7 @@ const useApp = () => {
   }
 
   const decreaseItemHandler = async (itemId: string, count: number = 1) => {
-    const item = cart?.items?.find((e) => e.id === itemId);
+    const item = cartItems.find((e) => e.id === itemId);
     if (!cart || !item || count <= 0) return false;
     if (count >= item.quantity) {
       await deleteItemHandler(item.id);
@@ -140,8 +141,6 @@ const useApp = () => {
   }
 
   return {
-    customer,
-    cartItems: cart?.items ?? [],
     login: loginHandler,
     logout: logoutHandler,
     signup: signupHandler,
@@ -151,8 +150,6 @@ const useApp = () => {
     deleteItem: deleteItemHandler
   }
 }
-
-export default useApp;
 
 /**
  * Hook: 获取当前登录客户信息
@@ -199,5 +196,5 @@ export const useGetCart = () => {
     refetchOnWindowFocus: true,
   });
 
-  return query;
+  return { cart: query.data, cartItems: query.data?.items ?? [] };
 };

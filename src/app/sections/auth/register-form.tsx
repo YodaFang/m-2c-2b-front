@@ -4,7 +4,7 @@ import { z } from "zod";
 import { Button } from '@/components/ui/button'
 import { FieldGroup, } from "@/components/custom-ui/field"
 import { useGeneratedFields } from "@/hooks/use-zod-fields"
-import useApp from "@/hooks/use-app"
+import { useActions } from "@/hooks/use-app"
 
 const registerSchema = z.object({
     first_name: z.string().min(3, { message: 'At least 3 charecters.' }).describe(JSON.stringify({
@@ -50,8 +50,7 @@ const registerSchema = z.object({
 
 const RegsiterForm = () => {
     const { inputFields, inputFieldsMap, validate } = useGeneratedFields(registerSchema);
-    console.log(inputFieldsMap);
-    const { signup } = useApp();
+    const { signup } = useActions();
     const handlerSignup = async () => {
         const data = validate();
         if (data && Object.keys(data).length) {

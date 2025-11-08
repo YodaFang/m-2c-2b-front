@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react"
-import { PackageIcon, LayoutDashboard, MapPinHouseIcon, LogOutIcon, TicketXIcon, RotateCcwKeyIcon } from "lucide-react"
+import { PackageIcon, LayoutDashboard, MapPinHouseIcon, LogOutIcon, TicketXIcon, EditIcon } from "lucide-react"
 import {
   Avatar,
   AvatarFallback,
@@ -16,10 +16,12 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { LoginRegister } from "@/app/sections/auth/login-register"
-import useApp from "@/hooks/use-app"
+import { useActions, useGetCustomer } from "@/hooks/use-app"
 
 export default function Account() {
-  const { customer } = useApp();
+  const { data: customer, isFetching } = useGetCustomer();
+  const { logout } = useActions();
+  if (isFetching) return null;
   if (customer) {
     return (
       <div className="container flex flex-row">
@@ -32,8 +34,8 @@ export default function Account() {
               </Avatar>
             </ItemMedia>
             <ItemContent className="w-full">
-              <ItemDescription className="text-center text-base text-primary font-bold">Test</ItemDescription>
-              <ItemDescription className="text-center">yodafang0121@gmail.com</ItemDescription>
+              <ItemDescription className="text-center text-base text-primary font-bold">{customer.first_name}</ItemDescription>
+              <ItemDescription className="text-center">{customer.email}</ItemDescription>
             </ItemContent>
           </Item>
           <Separator className="mb-3" />
@@ -81,20 +83,20 @@ export default function Account() {
           <Item size="sm" asChild>
             <a href="#" onClick={() => { }}>
               <ItemMedia>
-                <RotateCcwKeyIcon className="size-5" />
+                <EditIcon className="size-5" />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>Change Password</ItemTitle>
+                <ItemTitle>Edit Info / Password</ItemTitle>
               </ItemContent>
             </a>
           </Item>
           <Item size="sm" asChild>
-            <a href="#" onClick={() => { }}>
+            <a href="#" onClick={() => logout()}>
               <ItemMedia>
                 <LogOutIcon className="size-5" />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>Sign Out</ItemTitle>
+                <ItemTitle >Sign Out</ItemTitle>
               </ItemContent>
             </a>
           </Item>

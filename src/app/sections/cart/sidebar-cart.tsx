@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/drawer";
 import { ShopCart } from "@/lib/icon";
 import currencyFormatter from "currency-formatter";
-import useApp from "@/hooks/use-app";
+import { useActions, useGetCart } from "@/hooks/use-app"
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CartItem } from "./cart-item"
 
@@ -22,7 +22,8 @@ const SidebarCart = () => {
   const pathName = usePathname();
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
-  const { cartItems, increaseItem, decreaseItem, deleteItem } = useApp();
+  const { cartItems } = useGetCart();
+  const { increaseItem, decreaseItem, deleteItem } = useActions();
 
   const totalPrice = cartItems.reduce((total, item) => total + item.total, 0);
   const totalProducts = cartItems.reduce((total, item) => total + item.quantity, 0);

@@ -16,7 +16,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { FieldGroup, } from "@/components/custom-ui/field"
 import { useGeneratedFields } from "@/hooks/use-zod-fields"
-import useApp from "@/hooks/use-app"
+import { useActions } from "@/hooks/use-app"
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }).describe(JSON.stringify({
@@ -83,7 +83,7 @@ export function LoginRegister({ className }: { className?: string }) {
   const [isLogin, setIslogin] = useState(true);
   const { inputFields: loginFields, validate: validateLoginData } = useGeneratedFields(loginSchema);
   const { inputFields: regFields, validate: validateRegData } = useGeneratedFields(registerSchema);
-  const { login, signup } = useApp();
+  const { login, signup } = useActions();
   const handlerLogin = async () => {
     const data = validateLoginData();
     if (data && Object.keys(data).length) {

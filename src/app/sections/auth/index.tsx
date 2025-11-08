@@ -4,20 +4,16 @@ import { useState } from "react";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
-    DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { AppLink } from "@/components/custom-ui/link"
 import { User } from '@/lib/icon'
-import LoginForm from './login-form'
-import RegisterForm from './register-form'
 import { LoginRegister } from "./login-register"
-import useApp from "@/hooks/use-app"
+import { useGetCustomer } from "@/hooks/use-app"
 
 const AuthDialog = () => {
-    const { customer } = useApp();
+    const { data: customer } = useGetCustomer();
     const [open, setOpen] = useState(false);
     if(customer){
         return <AppLink href="/account" ><User className="size-8" /></AppLink>;

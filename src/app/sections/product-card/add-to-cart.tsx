@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LoadingButton } from "@/components/custom-ui/loading-button"
 import { ShoppingBag } from "@/lib/icon"
-import useApp from "@/hooks/use-app"
+import { useActions } from "@/hooks/use-app"
 
 const AddToCartItem = ({ product }: { product: any }) => {
-  const { addItem } = useApp();
+  const { addItem } = useActions();
 
   // 控制 Dropdown 的打开状态（可用于点击或悬浮逻辑）
   const [open, setOpen] = useState(false);
