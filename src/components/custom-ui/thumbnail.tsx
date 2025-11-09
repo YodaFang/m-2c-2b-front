@@ -49,8 +49,8 @@ const ImageOrPlaceholder = ({
       src={image}
       alt="Thumbnail"
       className={cn("absolute inset-0 object-contain", {
-        "p-4": type === "full",
-        "p-2": type === "preview",
+        "p-2": type === "full",
+        "p-0": type === "preview",
       })}
       draggable={false}
       quality={80}

@@ -1,6 +1,6 @@
 "use client";
 
-import { MinusCircle, PlusCircle, Trash2Icon } from "lucide-react";
+import { MinusCircle, PlusCircle, Trash2Icon, EditIcon } from "lucide-react";
 import Thumbnail from "@/components/custom-ui/thumbnail";
 
 interface CartItemProp {
@@ -14,10 +14,10 @@ export const CartItem = ({ item, decreaseItem, increaseItem, deleteItem }: CartI
     const { id, unit_price: price, quantity, thumbnail, product_title: title, variant_title } = item;
 
     return (
-        <div className="flex items-center py-2 border-b-[1px]">
+        <div className="flex items-center py-1 gap-1 border-b-[1px]">
             <div className="bg-white shrink-0">
                 <Thumbnail
-                    className="w-[90]"
+                    className="h-[90px]"
                     thumbnail={thumbnail!}
                     size="square"
                     type="preview"
@@ -26,7 +26,12 @@ export const CartItem = ({ item, decreaseItem, increaseItem, deleteItem }: CartI
             <div className="flex flex-col shrink">
                 <b className="text-sm leading-tight line-clamp-2">{title}</b>
                 <div className="flex justify-between">
-                    <span className="text-secondary-foreground text-sm">{variant_title}</span>
+                    <span className="flex flex-row gap-1 text-secondary-foreground text-sm">
+                        {variant_title}
+                        <button>
+                            <EditIcon size="17" />
+                        </button>
+                    </span>
                     <span className="text-secondary-foreground text-sm">${price.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
@@ -40,7 +45,7 @@ export const CartItem = ({ item, decreaseItem, increaseItem, deleteItem }: CartI
                         <input
                             value={quantity}
                             readOnly
-                            className="outline-none max-w-4 text-center text-base"
+                            className="outline-none max-w-5 text-center text-base"
                         />
                         <button
                             className="text-neutral-500"

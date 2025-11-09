@@ -14,21 +14,18 @@ import { useActions } from "@/hooks/use-app"
 const AddToCartItem = ({ product }: { product: any }) => {
   const { addItem } = useActions();
 
-  // 控制 Dropdown 的打开状态（可用于点击或悬浮逻辑）
   const [open, setOpen] = useState(false);
 
-  // 控制添加状态（loading）
   const [isAdding, setIsAdding] = useState(false);
 
-  const handleAddToCart = async (variantId: string) => {
+  const handleAddToCart = async (product: any, variant: any) => {
     if (isAdding) return;
     try {
       setIsAdding(true);
       setOpen(false);
-      await addItem(variantId, 1);
+      await addItem(product, variant, 1);
     } catch (err) {
       console.error("Add to cart failed", err);
-      // 你可以在这里 show toast
     } finally {
       setIsAdding(false);
       setOpen(false);
@@ -38,15 +35,13 @@ const AddToCartItem = ({ product }: { product: any }) => {
   const hasVariants = product?.variants && product.variants.length > 1;
   const singleVariant = product?.variants?.[0];
 
-  // 如果只有一个变体，直接按钮（不用 Dropdown）
   if (!hasVariants) {
     return (
       <LoadingButton
         className="rounded-full p-1 border-none shadow-none"
         onClick={(e) => {
           e.preventDefault();
-          // 直接调用 singleVariant.id（可能为 undefined，需要 guard）
-          if (singleVariant?.id) handleAddToCart(singleVariant.id);
+          if (singleVariant) handleAddToCart(product, singleVariant);
         }}
         isLoading={isAdding}
       >
@@ -74,7 +69,7 @@ const AddToCartItem = ({ product }: { product: any }) => {
             disabled={isAdding}
             onSelect={(e) => {
               e.preventDefault();
-              if (!isAdding) handleAddToCart(variant.id);
+              if (!isAdding) handleAddToCart(product, variant);
             }}
             className="flex items-center justify-between cursor-pointer"
           >

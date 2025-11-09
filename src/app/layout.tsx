@@ -86,7 +86,7 @@ export default function RootLayout({
             <StoreProvider>
               {children}
             </StoreProvider>
-            <Toaster position="top-right" richColors closeButton/>
+            <Toaster position="top-right" offset={{ top: '42px', right: "2px" }} mobileOffset={{ top: '52px' }} richColors closeButton />
           </QueryProvider>
         </ThemeProvider>
       </body>

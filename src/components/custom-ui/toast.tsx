@@ -138,4 +138,3 @@ export function showConfirmToast(options: ConfirmOptions = {}): Promise<boolean>
     );
   });
 }
-
