@@ -15,13 +15,13 @@ import {
 } from "@/components/ui/card"
 import Thumbnail from "@/components/custom-ui/thumbnail";
 import { Customer, retrieveCustomer, login, signup, signout, transferCart } from "@/api/customer"
-import { Cart, retrieveCart, createCart, addItemToCart, updateLineItem, deleteLineItem } from "@/api/cart";
+import { Cart, retrieveCart, createCart, addItemToCart, updateLineItem, deleteLineItem, setCartId } from "@/api/cart";
 
 export const useActions = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: customer } = useGetCustomer();
-  const { cart, cartItems, setCartId } = useGetCart();
+  const { cart, cartItems } = useGetCart();
   const creatingPromiseRef = useRef<Promise<any> | null>(null);
 
   const loginHandler = useCallback(
@@ -110,7 +110,6 @@ export const useActions = () => {
         showLoadingOverlay();
         creatingPromiseRef.current = createCart([{ variant_id: variant.id, quantity: count }])
           .then((cart) => {
-            setCartId(cart.id);
             queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
             showAddCartToast(product, variant);
             return cart;
@@ -157,6 +156,11 @@ export const useActions = () => {
     return true;
   }
 
+  const addTest = async (product: any, variant: any, count = 1) => {
+    setCartId("");
+    queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+  }
+
   return {
     login: loginHandler,
     logout: logoutHandler,
@@ -188,43 +192,16 @@ export const useGetCustomer = () => {
  * Hook: 获取当前购物车
  */
 export const useGetCart = () => {
-  const queryClient = useQueryClient();
-  const [cartId, setCartIdRaw] = useState<string | null>(null);
-  const setCartId = async (newId: string | null) => {
-    if (cartId == newId) return;
-    setCartIdRaw(newId);
-    localStorage.setItem("common::cart_id", newId || '');
-  }
-
-  useEffect(() => {
-    const syncCartId = () => {
-      const storedId = localStorage.getItem("common::cart_id");
-      setCartIdRaw(storedId);
-    };
-    syncCartId(); // 初始化执行
-    return;
-  }, []);
-
-  useEffect(() => {
-    queryClient.removeQueries({ queryKey: ["useGetCart"] });
-    return;
-  }, [cartId]);
-
   const query = useQuery<Cart | null, Error>({
     queryKey: ["useGetCart"],
     queryFn: async () => {
-      console.log("useGetCart (from queryKey) >>>>>>>>>>>> ", cartId);
-      if (!cartId) return null;
-      const result = await retrieveCart(cartId);
-      console.log("useGetCart >>>>>>>>>>>> result", result)
-      return result;
+      return await retrieveCart();
     },
     staleTime: 60_000,
     refetchOnWindowFocus: true,
-    enabled: !!cartId,
   });
 
-  return { cart: query.data, cartItems: query.data?.items ?? [], setCartId };
+  return { cart: query.data, cartItems: query.data?.items ?? [] };
 };
 
 export function showAddCartToast(p: any, v: any) {

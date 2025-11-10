@@ -1,8 +1,7 @@
-"use server"
+'use client'
 
 import { sdk } from "@/lib/medusaClient"
 import { HttpTypes } from "@medusajs/types"
-import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import {
   getAuthHeaders,
@@ -10,9 +9,16 @@ import {
   getCacheTag,
 } from "./cookies"
 
-export async function retrieveCart(cartId: string) {
+const getCartId = () => localStorage.getItem("common::cart_id") || "";
+export const setCartId = (newId: string) => localStorage.setItem("common::cart_id", newId || '');
+
+export async function retrieveCart(cartId?: string) {
   const headers = {
     ...(await getAuthHeaders()),
+  }
+
+  if(!cartId){
+    cartId = getCartId();
   }
 
   const next = {
@@ -42,14 +48,14 @@ export async function createCart(items?: AddCartItem[]) {
     ...(await getAuthHeaders()),
   }
 
-  const cartResp = await sdk.store.cart.create({ items: items ?? [] }, {
+  const cart = await sdk.store.cart.create({ items: items ?? [] }, {
     fields:
       "*items, +items.thumbnail, +items.metadata, *promotions, *customer, +completed_at"
-  }, headers)
-  const cartCacheTag = await getCacheTag("carts")
-  revalidateTag(cartCacheTag)
-
-  return mapMedusaCartToCart(cartResp.cart);
+  }, headers).then(({ cart }) => {
+    setCartId(cart.id);
+    return cart;
+  });
+  return mapMedusaCartToCart(cart);
 }
 
 
@@ -65,10 +71,6 @@ export async function updateCart(cartId: string, data: HttpTypes.StoreUpdateCart
   return sdk.store.cart
     .update(cartId, data, {}, headers)
     .then(async ({ cart }) => {
-      const fullfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fullfillmentCacheTag)
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
       return mapMedusaCartToCart(cart);
     })
 }
@@ -96,10 +98,6 @@ export async function addItemToCart(cartId: string, {
       headers
     )
     .then(async ({ cart }) => {
-      const fullfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fullfillmentCacheTag)
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
       return mapMedusaCartToCart(cart);
     })
 }
@@ -124,10 +122,6 @@ export async function addToCartBulk(cartId: string, items: AddCartItem[]) {
     }
   )
     .then(async () => {
-      const fullfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fullfillmentCacheTag)
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
     })
 }
 
@@ -143,10 +137,6 @@ export async function updateLineItem(
   await sdk.store.cart
     .updateLineItem(cartId, lineId, { quantity }, {}, headers)
     .then(async () => {
-      const fullfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fullfillmentCacheTag)
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
     })
 }
 
@@ -158,10 +148,6 @@ export async function deleteLineItem(cartId: string, lineId: string) {
   await sdk.store.cart
     .deleteLineItem(cartId, lineId, {}, headers)
     .then(async () => {
-      const fullfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fullfillmentCacheTag)
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
     })
 }
 
@@ -174,9 +160,6 @@ export async function emptyCart(cartId: string) {
   for (const item of cart.items || []) {
     await deleteLineItem(cart.id, item.id)
   }
-
-  const cartCacheTag = await getCacheTag("carts")
-  revalidateTag(cartCacheTag)
 }
 
 export async function setShippingMethod({
@@ -193,8 +176,6 @@ export async function setShippingMethod({
   return sdk.store.cart
     .addShippingMethod(cartId, { option_id: shippingMethodId }, {}, headers)
     .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
     })
 }
 
@@ -212,8 +193,6 @@ export async function initiatePaymentSession(
   return sdk.store.payment
     .initiatePaymentSession(cart, data, {}, headers)
     .then(async (resp) => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
       return resp
     })
 }
@@ -225,10 +204,6 @@ export async function applyPromotions(cartId: string, codes: string[]) {
 
   await updateCart(cartId, { promo_codes: codes })
     .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
-      const fullfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fullfillmentCacheTag)
     })
 }
 
@@ -339,16 +314,11 @@ export async function placeOrder(
     return response
   }
 
-  revalidateTag(cartsTag)
-  revalidateTag(ordersTag)
-  revalidateTag(approvalsTag)
-
   redirect(
     `/${response.order.shipping_address?.country_code?.toLowerCase()}/order/confirmed/${response.order.id
     }`
   )
 }
-
 
 function mapMedusaCartToCart(medusaCart: HttpTypes.StoreCart): Cart {
   return {

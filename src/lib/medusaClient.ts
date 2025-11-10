@@ -1,4 +1,3 @@
-import 'server-only';
 import Medusa from "@medusajs/js-sdk"
 
 // Defaults to standard port for Medusa server
