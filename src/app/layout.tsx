@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
-import StoreProvider from "./StoreProvider";
-import QueryProvider from "./query-provider";
 import { Toaster } from "@/components/custom-ui/toast";
 import {
   generateOrganizationJsonLd,
@@ -12,6 +10,8 @@ import {
   ProductInfo,
   BreadcrumbItem,
 } from "@/lib/seo";
+import QueryProvider from "./query-provider";
+import { GlobalFeedbackListener } from "./global-feedback-listener"
 
 export const metadata: Metadata = {
   title: "Furnisy - E-Commerce Template",
@@ -83,11 +83,10 @@ export default function RootLayout({
       <body className="flex flex-col min-h-screen bg-home-bg-1 text-foreground antialiased">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <QueryProvider>
-            <StoreProvider>
               {children}
-            </StoreProvider>
-            <Toaster position="top-right" offset={{ top: '42px', right: "2px" }} mobileOffset={{ top: '52px' }} richColors closeButton />
           </QueryProvider>
+          <Toaster position="top-center" offset={{ top: '42px', right: "2px" }} mobileOffset={{ top: '52px' }} richColors closeButton />
+          <GlobalFeedbackListener />
         </ThemeProvider>
       </body>
     </html>

@@ -1,16 +1,9 @@
-'use client'
+'use server'
 
 import { sdk } from "@/lib/medusaClient"
 import { HttpTypes } from "@medusajs/types"
 import { redirect } from "next/navigation"
-import {
-  getAuthHeaders,
-  getCacheOptions,
-  getCacheTag,
-} from "./cookies"
-
-const getCartId = () => localStorage.getItem("common::cart_id") || "";
-export const setCartId = (newId: string) => localStorage.setItem("common::cart_id", newId || '');
+import { getAuthHeaders, getCartId, setCartId } from "./cookies"
 
 export async function retrieveCart(cartId?: string) {
   const headers = {
@@ -18,11 +11,7 @@ export async function retrieveCart(cartId?: string) {
   }
 
   if(!cartId){
-    cartId = getCartId();
-  }
-
-  const next = {
-    ...(await getCacheOptions("carts")),
+    cartId = await getCartId();
   }
 
   return sdk.client
@@ -33,7 +22,6 @@ export async function retrieveCart(cartId?: string) {
           "*items, +items.thumbnail, +items.metadata, *promotions, *customer, +completed_at",
       },
       headers,
-      next,
     })
     .then(({ cart }) => {
       return mapMedusaCartToCart(cart);
@@ -269,7 +257,6 @@ export async function setBillingAddress(cartId: string, formData: FormData) {
 
 export async function setContactDetails(
   cartId: string,
-  currentState: unknown,
   formData: FormData
 ) {
   try {
@@ -302,10 +289,6 @@ export async function placeOrder(
   const headers = {
     ...(await getAuthHeaders()),
   }
-
-  const cartsTag = await getCacheTag("carts")
-  const ordersTag = await getCacheTag("orders")
-  const approvalsTag = await getCacheTag("approvals")
 
   const response = await sdk.store.cart
     .complete(cartId, {}, headers)

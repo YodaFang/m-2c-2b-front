@@ -12,7 +12,6 @@ import {
   Plus,
   Twitter,
 } from "@/lib/icon";
-import { useAppDispatch } from "@/lib/reduxHooks";
 import currencyFormatter from "currency-formatter";
 import Link from "next/link";
 import { useState } from "react";
@@ -22,7 +21,6 @@ const colors = ["#E56F45", "#B4CBBB", "#CDA477", "#EADDC9", "#E5E2E1"];
 const sizes = ["s", "m", "l"];
 
 const ProductShortInfo = ({ product }: { product: Product }) => {
-  const dispatch = useAppDispatch();
   const [selectSize, setSelectSize] = useState("m");
   const [selectColor, setSelectColor] = useState("#E56F45");
   const [productQuantity, setProductQuantity] = useState(1);
@@ -127,12 +125,10 @@ const ProductShortInfo = ({ product }: { product: Product }) => {
           size={"xm"}
           className="lg:leading-[166%] py-1.5"
           onClick={() =>
-            dispatch(
               addToCart({
                 variantId: product.id,
                 quantity: productQuantity,
               })
-            )
           }
         >
           Add To Cart
@@ -141,9 +137,7 @@ const ProductShortInfo = ({ product }: { product: Product }) => {
       <div className="flex gap-4 mt-[22px]">
         <div
           onClick={() =>
-            dispatch(
               addToWishlist(product)
-            )
           }
           className="flex items-center gap-2 text-gray-1-foreground cursor-pointer hover:text-secondary-foreground transition-all duration-500"
         >

@@ -19,37 +19,6 @@ export const getAuthHeaders = async (): Promise<
   }
 }
 
-export const getCacheTag = async (tag: string): Promise<string> => {
-  try {
-    const cookies = await nextCookies()
-    const cacheId = cookies.get("_medusa_cache_id")?.value
-
-    if (!cacheId) {
-      return ""
-    }
-
-    return `${tag}-${cacheId}`
-  } catch (error) {
-    return ""
-  }
-}
-
-export const getCacheOptions = async (
-  tag: string
-): Promise<{ tags: string[] } | {}> => {
-  if (typeof window !== "undefined") {
-    return {}
-  }
-
-  const cacheTag = await getCacheTag(tag)
-
-  if (!cacheTag) {
-    return {}
-  }
-
-  return { tags: [`${cacheTag}`] }
-}
-
 export const setAuthToken = async (token: string) => {
   const cookies = await nextCookies()
 
@@ -67,3 +36,36 @@ export const removeAuthToken = async () => {
   cookies.delete("_medusa_jwt")
 }
 
+/**
+ * 获取购物车 ID
+ */
+export const getCartId = async (): Promise<string | undefined> => {
+  try {
+    const cookies = await nextCookies()
+    return cookies.get("_cart_id")?.value ?? undefined
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * 设置购物车 ID
+ */
+export const setCartId = async (cartId: string) => {
+  const cookies = await nextCookies()
+
+  cookies.set("_cart_id", cartId, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30, // 30天
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  })
+}
+
+/**
+ * 删除购物车 ID
+ */
+export const removeCartId = async () => {
+  const cookies = await nextCookies()
+  cookies.delete("_cart_id")
+}

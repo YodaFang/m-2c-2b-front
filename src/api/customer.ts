@@ -2,13 +2,11 @@
 
 import { sdk } from "@/lib/medusaClient"
 import { HttpTypes } from "@medusajs/types"
-import { revalidateTag } from "next/cache"
 import {
   getAuthHeaders,
-  getCacheOptions,
-  getCacheTag,
   removeAuthToken,
   setAuthToken,
+  removeCartId
 } from "./cookies"
 
 export interface Customer extends HttpTypes.StoreCustomer { };
@@ -19,22 +17,13 @@ export const retrieveCustomer = async (): Promise<HttpTypes.StoreCustomer | null
 
   if (!authHeaders) return null
 
-  const headers = {
-    ...authHeaders,
-  }
-
-  const next = {
-    ...(await getCacheOptions("customers")),
-  }
-
   return await sdk.client
     .fetch<{ customer: HttpTypes.StoreCustomer }>(`/store/customers/me`, {
       method: "GET",
       query: {
         fields: "*employee, *orders",
       },
-      headers,
-      next,
+      headers: authHeaders,
     })
     .then(({ customer }) => customer)
     .catch(() => null)
@@ -45,14 +34,9 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
     ...(await getAuthHeaders()),
   }
 
-  const updateRes = await sdk.store.customer
+  return sdk.store.customer
     .update(body, {}, headers)
     .then(({ customer }) => customer)
-
-  const cacheTag = await getCacheTag("customers")
-  revalidateTag(cacheTag)
-
-  return updateRes
 }
 
 export async function signup(data: Record<string, any>) {
@@ -83,9 +67,6 @@ export async function signup(data: Record<string, any>) {
     })
 
     setAuthToken(loginToken as string)
-
-    const cacheTag = await getCacheTag("customers")
-    revalidateTag(cacheTag)
     return { success: true, customer: createdCustomer };
   } catch (error: any) {
     console.log("error", error)
@@ -99,17 +80,6 @@ export async function login(email: string, password: string) {
       .login("customer", "emailpass", { email, password })
       .then(async (token) => {
         setAuthToken(token as string)
-
-        const [customerCacheTag, productsCacheTag, cartsCacheTag] =
-          await Promise.all([
-            getCacheTag("customers"),
-            getCacheTag("products"),
-            getCacheTag("carts"),
-          ])
-
-        revalidateTag(customerCacheTag)
-        revalidateTag(productsCacheTag)
-        revalidateTag(cartsCacheTag)
         return { success: true, message: "login successfully" };
       }).catch((err) => {
         return { success: false, message: err.message };
@@ -126,20 +96,8 @@ export async function signout() {
     console.log("signout error: ");
     console.log(error.toString());
   }
-  removeAuthToken()
-
-  const [authCacheTag, customerCacheTag, productsCacheTag, cartsCacheTag] =
-    await Promise.all([
-      getCacheTag("auth"),
-      getCacheTag("customers"),
-      getCacheTag("products"),
-      getCacheTag("carts"),
-    ])
-
-  revalidateTag(authCacheTag)
-  revalidateTag(customerCacheTag)
-  revalidateTag(productsCacheTag)
-  revalidateTag(cartsCacheTag)
+  removeAuthToken();
+  removeCartId();
 }
 
 export async function transferCart(cartId: string) {
@@ -152,11 +110,10 @@ export async function transferCart(cartId: string) {
     ...(await getAuthHeaders()),
   }
 
-  return sdk.store.cart.transferCart(cartId, {}, headers).then(async ({ cart }) => {
-    const cartCacheTag = await getCacheTag("carts")
-    revalidateTag(cartCacheTag)
-    return cart;
-  });
+  return sdk.store.cart.transferCart(cartId, {}, headers)
+    .then(async ({ cart }) => {
+      return cart;
+    });
 }
 
 export const addCustomerAddress = async (
@@ -183,8 +140,6 @@ export const addCustomerAddress = async (
   return sdk.store.customer
     .createAddress(address, {}, headers)
     .then(async () => {
-      const cacheTag = await getCacheTag("customers")
-      revalidateTag(cacheTag)
       return { success: true, error: null }
     })
     .catch((err) => {
@@ -202,8 +157,6 @@ export const deleteCustomerAddress = async (
   await sdk.store.customer
     .deleteAddress(addressId, headers)
     .then(async () => {
-      const cacheTag = await getCacheTag("customers")
-      revalidateTag(cacheTag)
       return { success: true, error: null }
     })
     .catch((err) => {
@@ -237,8 +190,6 @@ export const updateCustomerAddress = async (
   return sdk.store.customer
     .updateAddress(addressId, address, {}, headers)
     .then(async () => {
-      const cacheTag = await getCacheTag("customers")
-      revalidateTag(cacheTag)
       return { success: true, error: null }
     })
     .catch((err) => {
