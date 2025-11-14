@@ -5,15 +5,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "
 import currencyFormatter from 'currency-formatter';
 import { Button } from '@/components/custom-ui/button'
 import { Close } from '@/lib/icon'
-import { useAppSelector } from '@/lib/reduxHooks'
-import { addToCart } from '@/lib/features/AddToCartSlice';
-import { useDispatch } from 'react-redux';
-import { removeToWishlist } from '@/lib/features/AddToWishlistSlice';
 import Link from 'next/link';
 
 const WishlistProductsTable = () => {
-    const wishlist = useAppSelector((store) => store.addToWishlist.wishlist.filter((item) => item.product));
-    const dispatch = useDispatch();
+    const wishlist: any[] = [];
 
     return (
         <div className='container lg:pt-25 lg:pb-25 pt-15 pb-15' >
@@ -57,14 +52,14 @@ const WishlistProductsTable = () => {
                                             <TableCell className="px-0 py-5 ">
                                                 <div className='flex items-center gap-15'>
                                                     <Button
-                                                        onClick={() => dispatch(addToCart({ variantId: product.id, quantity: 1 }))}
+                                                        onClick={() => {}}
 
                                                         className='lg:py-3 lg:px-6 lg:text-lg'
                                                     >
                                                         Add To cart
                                                     </Button>
                                                     <p
-                                                        onClick={() => dispatch(removeToWishlist(id))}
+                                                        onClick={() => {}}
                                                         className='cursor-pointer text-gray-1-foreground flex justify-end hover:text-secondary-foreground transition-all duration-500'
                                                     >
                                                         <Close className='size-10' strokeWidth='1.5' />

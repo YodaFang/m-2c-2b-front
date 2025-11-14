@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const ShopOne = async () => {
     const {products} = await listProducts({});
     return (
-        <main>
+        <div className="container flex flex-col">
             <PageHeader pageTitle='Shop' currentPage='Shop' />
             <ProductsView
                 isCategoryShow={false}
@@ -26,7 +26,7 @@ const ShopOne = async () => {
             />
             <Newsletter />
             <InstagramGallery />
-        </main>
+        </div>
     )
 }
 

@@ -1,7 +1,7 @@
-"use server"
+import 'server-only';
 
 import { sdk } from "@/lib/medusaClient"
-import { getAuthHeaders, getCacheOptions } from "./cookies"
+import { getAuthHeaders } from "./cookies"
 import { HttpTypes, StorePrice } from "@medusajs/types"
 
 export type StoreFreeShippingPrice = StorePrice & {
@@ -15,10 +15,6 @@ export const listCartShippingMethods = async (cartId: string) => {
     ...(await getAuthHeaders()),
   }
 
-  const next = {
-    ...(await getCacheOptions("fulfillment")),
-  }
-
   return sdk.client
     .fetch<HttpTypes.StoreShippingOptionListResponse>(
       `/store/shipping-options`,
@@ -26,7 +22,6 @@ export const listCartShippingMethods = async (cartId: string) => {
         method: "GET",
         query: { cart_id: cartId },
         headers,
-        next,
         cache: "force-cache",
       }
     )
@@ -43,10 +38,6 @@ export const listCartFreeShippingPrices = async (
     ...(await getAuthHeaders()),
   }
 
-  const next = {
-    ...(await getCacheOptions("freeShipping")),
-  }
-
   return sdk.client
     .fetch<{
       prices: StoreFreeShippingPrice[]
@@ -54,7 +45,6 @@ export const listCartFreeShippingPrices = async (
       method: "GET",
       query: { cart_id: cartId },
       headers,
-      next,
       cache: "force-cache",
     })
     .then((data) => data.prices)

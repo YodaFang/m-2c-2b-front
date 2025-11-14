@@ -23,7 +23,7 @@ export const getProductByHandle = unstable_cache(
   },
   ['cache-medusa-get-products-by-handle'],
   {
-    revalidate: 30,
+    revalidate: 180,
   }
 );
 
@@ -67,7 +67,7 @@ export const listProducts = unstable_cache(
   },
   ['cache-medusa-list-products'],
   {
-    revalidate: 600, // 10 分钟
+    revalidate: 300, // 10 分钟
   }
 );
 
@@ -111,7 +111,7 @@ export const listCollectionsProducts = unstable_cache(
   },
   ['cache-medusa-list-collections-products'],
   {
-    revalidate: 600,
+    revalidate: 330,
   }
 )
 
@@ -138,7 +138,7 @@ export const getProductsByIds = unstable_cache(
   },
   ['cache-medusa-get-products-by-ids'],
   {
-    revalidate: 30,
+    revalidate: 210,
   }
 );
 

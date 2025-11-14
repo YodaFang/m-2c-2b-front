@@ -5,16 +5,11 @@ import currencyFormatter from 'currency-formatter';
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
 import { Close } from '@/lib/icon'
 import { Button } from '@/components/custom-ui/button'
-import { useAppSelector } from '@/lib/reduxHooks'
 import calcluteDiscount from '@/lib/utils'
-import { useDispatch } from 'react-redux';
-import { addToCart } from '@/lib/features/AddToCartSlice';
 import Link from 'next/link';
-import { removeToWishlist } from '@/lib/features/AddToWishlistSlice';
 
 const WishlistPopup = () => {
-    const products = useAppSelector((product) => product.addToWishlist.products)
-    const dispatch = useDispatch()
+    const products: any[] = [];
     return (
         <Dialog>
             <DialogTrigger className='text-primary-foreground'>Wishlist</DialogTrigger>
@@ -38,7 +33,7 @@ const WishlistPopup = () => {
                                             return (
                                                 <div key={id} className='px-7.5 py-5 flex items-center gap-5  border-b-[1.5px] border-[#E5E2E1]'>
                                                     <p
-                                                        onClick={() => dispatch(removeToWishlist(id))}
+                                                        onClick={() => {}}
                                                         className='text-gray-1-foreground cursor-pointer hover:text-secondary-foreground transition-all duration-500'
                                                     >
                                                         <Close className='size-7.5' />
@@ -56,7 +51,7 @@ const WishlistPopup = () => {
                                                     </div>
                                                     <Button
                                                         variant={"outline"}
-                                                        onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
+                                                        onClick={() => {}}
                                                         className='lg:py-3 lg:px-6 lg:text-lg text-gray-1-foreground border-gray-1 ml-auto'
                                                     >
                                                         Add To cart

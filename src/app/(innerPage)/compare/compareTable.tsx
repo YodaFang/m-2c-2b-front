@@ -7,15 +7,9 @@ import { Button } from '@/components/custom-ui/button'
 import ProductQuickView, { ProductQuickViewType } from '@/app/sections/shopDetails/productQuickView'
 import calcluteDiscount from '@/lib/utils'
 import currencyFormatter from 'currency-formatter';
-import { useAppDispatch, useAppSelector } from '@/lib/reduxHooks'
-import { addToCart } from '@/lib/features/AddToCartSlice'
-import { ProductShortInfoPropsType } from '@/app/sections/shopDetails/productShortInfo'
-import { useDispatch } from 'react-redux'
-import { removeToCompare } from '@/lib/features/CompareProductsSlice'
 
 const CompareTable = () => {
-    const products = useAppSelector((data) => data.productCompare.products)
-    const dispatch = useAppDispatch()
+    const products: any[] = [];
     return (
         <div className='container lg:pt-25 lg:pb-25 pt-15 pb-15'>
             <div className='overflow-x-auto'>
@@ -65,7 +59,7 @@ const CompareTable = () => {
                                                     <p className='font-medium text-secondary-foreground lg:text-xl text-lg 2xl:w-[280px] lg:w-[200px] w-[160px]'>Add to cart</p>
                                                 }
                                                 <Button
-                                                    onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
+                                                    onClick={() => {}}
                                                     
                                                     size={'sm'}
                                                 >
@@ -97,13 +91,12 @@ type CardProps = {
     discountPercentage: number
 }
 const Card = ({ id, title, thumbnail, price, discountPercentage, stock }: CardProps) => {
-    const dispatch = useDispatch()
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [product, setProduct] = useState<ProductShortInfoPropsType>({ id: 0, thumbnail: "", title: "", price: 0, discountPercentage: 0, stock: 0 })
+    const [product, setProduct] = useState<any>({ id: 0, thumbnail: "", title: "", price: 0, discountPercentage: 0, stock: 0 })
 
     return (
         <div>
-            <p onClick={() => dispatch(removeToCompare(id))} className='text-gray-3-foreground leading-[150%] text-base flex items-center gap-1.5 cursor-pointer hover:text-secondary-foreground transition-all duration-500'>
+            <p onClick={() => {}} className='text-gray-3-foreground leading-[150%] text-base flex items-center gap-1.5 cursor-pointer hover:text-secondary-foreground transition-all duration-500'>
                 <Close className='size-4 inline' /> Remove
             </p>
             <div className='bg-home-bg-1 mt-3 xl:w-[230px] 2xl:h-[230px] w-[210px] h-[220px] rounded-xl'>
