@@ -6,15 +6,15 @@ import * as EventManager from "@/lib/eventManager";
 type ActionEvents = {
   'customer:login-start': { data?: any };
   'customer:login-end': { data?: any };
-  'customer:login-success': { data?: any };
+  'customer:login-success': { };
   'customer:login-failure': { message: string };
   'customer:logout-start': { data?: any };
   'customer:logout-end': { data?: any };
-  'customer:logout-success': { message?: string };
+  'customer:logout-success': { };
   'customer:logout-failure': { message: string };
   'customer:signup-start': { data?: any };
   'customer:signup-end': { data?: any };
-  'customer:signup-success': { data?: any };
+  'customer:signup-success': { };
   'customer:signup-failure': { message: string };
 
   'cart:create-start': {};
@@ -43,7 +43,7 @@ export const event = {
 // 2. 实现 Listen Hook (useListenEvent 逻辑)
 // ----------------------------------------------------------------------
 
-type ListenHandler<N extends EventName> = (data: EventData<N>, eventName?: EventName) => void;
+type ListenHandler<N extends EventName> = (eventName: string, data: EventData<N>) => void;
 
 /**
  * Hook：用于在组件生命周期内订阅事件。
@@ -64,8 +64,8 @@ export const useEvent = <N extends EventName>(
 
   useEffect(() => {
     // 稳定包装函数，调用最新的 handlerRef
-    const listenerWrapper = (eventData: EventData<N>) => {
-      handlerRef.current(eventData);
+    const listenerWrapper = (eventName: string ,eventData: EventData<N>) => {
+      handlerRef.current(eventName, eventData);
     };
 
     // 存储所有添加的包装函数，用于清理

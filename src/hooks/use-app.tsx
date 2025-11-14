@@ -1,17 +1,14 @@
 'use client'
 
 import { useCallback, useRef } from "react";
-import { useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { showErrorToast, showConfirmToast } from "@/components/custom-ui/toast";
+import { showConfirmToast } from "@/components/custom-ui/toast";
 import { Customer, retrieveCustomer, login, signup, signout, transferCart } from "@/api/customer"
 import { Cart, retrieveCart, createCart, addItemToCart, updateLineItem, deleteLineItem } from "@/api/cart";
 import { event } from "@/hooks/use-event";
 
 export const useActions = () => {
-  const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: customer } = useGetCustomer();
   const { cart, cartItems } = useGetCart();
   const creatingPromiseRef = useRef<Promise<any> | null>(null);
 
@@ -45,7 +42,6 @@ export const useActions = () => {
           queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
         } else {
           event.emit('customer:signup-failure', result.message);
-          showErrorToast("Signup Failed", result.message || "");
         }
       } finally {
         event.emit('customer:signup-end');
@@ -59,8 +55,7 @@ export const useActions = () => {
       try {
         event.emit('customer:logout-start');
         await signout();
-        // 重定向到主页， 不然清空CartId后，cart items目前无法自动清空
-        router.push('/');
+        queryClient.invalidateQueries({ queryKey: ["useGetCustomer"] });
         event.emit('customer:logout-success');
       } finally {
         event.emit('customer:logout-end');

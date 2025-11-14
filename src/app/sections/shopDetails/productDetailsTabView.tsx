@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Rating from '@/components/ui/rating'
 import ReviewAddForm from '../reviewAddForm'
 
-const ProductDetailsTabView = ({ className }: { className?: string }) => {
+const ProductDetailsTabView = ({ product, className }: { product: any, className?: string }) => {
     return (
         <div className='lg:mt-25 mt-15'>
             <Tabs defaultValue="description">
@@ -16,18 +16,7 @@ const ProductDetailsTabView = ({ className }: { className?: string }) => {
                     <TabsTrigger value="review" className='data-[state=active]:text-secondary-foreground relative after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 data-[state=active]:after:bg-primary text-gray-3-foreground font-medium lg:text-xl pb-1'>Review (1)</TabsTrigger>
                 </TabsList>
                 <TabsContent value='description' className='mt-7.5'>
-                    <p className='text-gray-1-foreground'>Elevate your dining experience with the Tacoma Carver Dining Chair, a perfect blend of modern elegance and timeless craftsmanship. Designed to offer both comfort and style, this chair is an ideal addition to any dining room or living space. The Tacoma Carver Dining Chair combines aesthetic appeal with practical functionality, making it a versatile and valuable addition to any home.</p>
-                    <ul className='flex flex-col gap-5 mt-5'>
-                        <li className='relative after:absolute after:left-0 after:top-2.5 after:w-2 after:h-2 after:bg-primary after:rounded-full pl-6'>
-                            <p className='text-gray-1-foreground'><b className='font-medium'>Elegant Design:</b> The Tacoma Carver Dining Chair features a sleek, contemporary design that complements a variety of interior styles. Its clean lines and refined silhouette make it a standout piece in any room.</p>
-                        </li>
-                        <li className='relative after:absolute after:left-0 after:top-2.5 after:w-2 after:h-2 after:bg-primary after:rounded-full pl-6'>
-                            <p className='text-gray-1-foreground'><b className='font-medium'>Superior Comfort:</b> Designed with your comfort in mind, the chair boasts a generously padded seat and backrest. The ergonomic design supports your posture, ensuring you can enjoy long meals and conversations in comfort.</p>
-                        </li>
-                        <li className='relative after:absolute after:left-0 after:top-2.5 after:w-2 after:h-2 after:bg-primary after:rounded-full pl-6'>
-                            <p className='text-gray-1-foreground'><b className='font-medium'>High-Quality Materials:</b> Crafted from premium materials, the Tacoma Carver Dining Chair is built to last. The solid wood frame provides sturdy support, while the upholstered seat and backrest add a touch of luxury.</p>
-                        </li>
-                    </ul>
+                    <p className='text-gray-1-foreground'>{product.description}</p>
                 </TabsContent>
                 <TabsContent value='additional-information' className='mt-7.5'>
                     <p className='text-gray-1-foreground'>Elevate your dining experience with the Tacoma Carver Dining Chair, a perfect blend of modern elegance and timeless craftsmanship. Designed to offer both comfort and style, this chair is an ideal addition to any dining room or living space. The Tacoma Carver Dining Chair combines aesthetic appeal with practical functionality, making it a versatile and valuable addition to any home.</p>

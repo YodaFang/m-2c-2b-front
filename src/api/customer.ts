@@ -66,7 +66,7 @@ export async function signup(data: Record<string, any>) {
       password,
     })
 
-    setAuthToken(loginToken as string)
+    await setAuthToken(loginToken as string)
     return { success: true, customer: createdCustomer };
   } catch (error: any) {
     console.log("error", error)
@@ -79,7 +79,7 @@ export async function login(email: string, password: string) {
     return sdk.auth
       .login("customer", "emailpass", { email, password })
       .then(async (token) => {
-        setAuthToken(token as string)
+        await setAuthToken(token as string)
         return { success: true, message: "login successfully" };
       }).catch((err) => {
         return { success: false, message: err.message };
@@ -96,8 +96,8 @@ export async function signout() {
     console.log("signout error: ");
     console.log(error.toString());
   }
-  removeAuthToken();
-  removeCartId();
+  await removeAuthToken();
+  await removeCartId();
 }
 
 export async function transferCart(cartId: string) {

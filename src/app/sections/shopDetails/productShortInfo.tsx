@@ -1,29 +1,24 @@
 "use client";
+
+import { useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/custom-ui/button";
-import Rating from "@/components/ui/rating";
-import { addToCart } from "@/lib/features/AddToCartSlice";
-import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
 import {
   Facebook,
-  Heart,
   Instagram,
   Linkedin,
   Minus,
   Plus,
   Twitter,
 } from "@/lib/icon";
-import currencyFormatter from "currency-formatter";
-import Link from "next/link";
-import { useState } from "react";
-import { Product } from "@/lib/data";
+import { cn } from "@/lib/utils";
+import { useActions } from "@/hooks/use-app"
 
-const colors = ["#E56F45", "#B4CBBB", "#CDA477", "#EADDC9", "#E5E2E1"];
-const sizes = ["s", "m", "l"];
-
-const ProductShortInfo = ({ product }: { product: Product }) => {
-  const [selectSize, setSelectSize] = useState("m");
-  const [selectColor, setSelectColor] = useState("#E56F45");
+const ProductShortInfo = ({ product }: { product: any }) => {
+  const [selectVariant, setSelectVariant] = useState<any>(product.variants[0]);
   const [productQuantity, setProductQuantity] = useState(1);
+  const { addItem } = useActions();
+
 
   const handleProdcutQuantity = (type: string) => {
     if (type === "increment") {
@@ -36,67 +31,49 @@ const ProductShortInfo = ({ product }: { product: Product }) => {
     }
   };
 
-  const orgPrice = product.variants[0].price.original;
-  const calculatedPrice = product.variants[0].price.calculated;
+  const discounted = product.price < product.org_price;
+  const categoryNames = product.categories?.map((c: any) => c.name) || [];
 
   return (
     <div>
       <strong className="text-secondary-foreground lg:leading-[81%] lg:text-[32px] md:text-[28px] text-2xl font-semibold capitalize">
         {product.title}
       </strong>
-      <div className="flex gap-10 mt-4">
-        <div className="flex items-center gap-2">
-          <Rating star={5} iconSize="lg:size-[15px]" />
-          <span className="text-base text-gray-1-foreground leading-none">
-            (3)
+      <div className="flex flex-row mt-5 gap-1">
+        {discounted && (
+          <span
+            className="line-through text-xl text-destructive"
+            data-testid="original-price"
+          >
+            {product.org_price} Lei
           </span>
-        </div>
-        <p className="text-secondary-foreground text-base">
-          Stock: <span className="text-[#59994D]">In stock</span>
-        </p>
+        )}
+        <b
+          className={cn("text-xl lg:text-2xl xl:text-3xl xl:leading-[133%]", {
+            "text-destructive": discounted,
+            "text-important": !discounted,
+          })}
+          data-testid="price"
+        >
+          {product.price} Lei
+        </b>
       </div>
-      <p className="text-xl lg:text-2xl xl:text-3xl xl:leading-[133%] text-secondary-foreground mt-5">
-        {orgPrice > calculatedPrice ? (
-          <del className="text-gray-3-foreground">
-            {currencyFormatter.format(orgPrice, { code: "RON" })}
-          </del>
-        ) : null}{" "}
-        <span>{currencyFormatter.format(calculatedPrice, { code: "RON" })}</span>
-      </p>
       <p className="mt-5 text-gray-1-foreground">
         {product.subtitle}
       </p>
-
-      <div className="mt-7.5">
-        <p className="text-gray-1-foreground font-medium">Color:</p>
-        <ul className="flex gap-2.5 mt-2.5">
-          {colors.map((color, index) => (
-            <li
-              key={index}
-              onClick={() => setSelectColor(color)}
-              className={`w-5 h-5 rounded-full cursor-pointer transition-all duration-200
-              ${color === selectColor
-                  ? "ring-2 ring-offset-3 ring-primary scale-110"
-                  : "hover:scale-105"
-                }`}
-              style={{ backgroundColor: color }}
-            ></li>
-          ))}
-        </ul>
-      </div>
       <div className="mt-5">
-        <p className="text-gray-1-foreground font-medium">Size:</p>
+        <p className="text-gray-1-foreground font-medium">Options:</p>
         <ul className="flex gap-2.5 mt-2.5">
-          {sizes.map((size, index) => (
+          {product.variants.map((v: any) => (
             <li
-              key={index}
-              onClick={() => setSelectSize(size)}
-              className={`w-7 h-7 rounded-[4px] cursor-pointer border border-[#E5E2E1] uppercase flex justify-center items-center text-sm leading-[171%] ${size === selectSize
+              key={v.id}
+              onClick={() => setSelectVariant(v)}
+              className={`h-7 px-2 rounded-[4px] cursor-pointer border border-[#E5E2E1] uppercase flex justify-center items-center text-sm leading-[171%] ${v.id === selectVariant?.id
                 ? "bg-primary text-white"
                 : "text-gray-1-foreground"
                 }`}
             >
-              {size}
+              {v.title}
             </li>
           ))}
         </ul>
@@ -124,26 +101,10 @@ const ProductShortInfo = ({ product }: { product: Product }) => {
         <Button
           size={"xm"}
           className="lg:leading-[166%] py-1.5"
-          onClick={() =>
-              addToCart({
-                variantId: product.id,
-                quantity: productQuantity,
-              })
-          }
+          onClick={() => addItem(product, selectVariant, productQuantity)}
         >
           Add To Cart
         </Button>
-      </div>
-      <div className="flex gap-4 mt-[22px]">
-        <div
-          onClick={() =>
-              addToWishlist(product)
-          }
-          className="flex items-center gap-2 text-gray-1-foreground cursor-pointer hover:text-secondary-foreground transition-all duration-500"
-        >
-          <Heart className="size-4" />
-          <p>Add to wishlist</p>
-        </div>
       </div>
       <div className="mt-10 flex flex-col gap-2.5">
         <p className="text-gray-1-foreground">
@@ -152,7 +113,7 @@ const ProductShortInfo = ({ product }: { product: Product }) => {
         <p className="text-gray-1-foreground">
           Categories:{" "}
           <span className="text-gray-1-foreground text-base">
-            Furniture, Chair
+            {categoryNames.join(', ')}
           </span>
         </p>
         <p className="text-gray-1-foreground">

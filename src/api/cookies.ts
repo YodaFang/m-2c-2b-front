@@ -1,4 +1,4 @@
-"use server"
+import 'server-only';
 
 import { cookies as nextCookies } from "next/headers"
 
@@ -39,12 +39,12 @@ export const removeAuthToken = async () => {
 /**
  * 获取购物车 ID
  */
-export const getCartId = async (): Promise<string | undefined> => {
+export const getCartId = async (): Promise<string> => {
   try {
     const cookies = await nextCookies()
-    return cookies.get("_cart_id")?.value ?? undefined
+    return cookies.get("_cart_id")?.value ?? '';
   } catch {
-    return undefined
+    return '';
   }
 }
 

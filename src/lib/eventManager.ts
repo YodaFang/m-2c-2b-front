@@ -22,12 +22,12 @@ export const emitEvent = <N extends EventName>(
  */
 export const addListener = <N extends EventName>(
   eventName: N,
-  handler: (data?: EventData) => void
+  handler: (eventName: string, data?: EventData) => void
 ) => {
   // EventTarget 的 handler 需要一个 Event 对象，我们用一个 Wrapper 适配
   const wrapper = (event: Event) => {
     const customEvent = event as CustomEvent<EventData>;
-    handler(customEvent.detail);
+    handler(eventName, customEvent.detail);
   };
 
   // 使用 eventEmitter.addEventListener 注册

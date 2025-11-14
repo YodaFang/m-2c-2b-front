@@ -21,38 +21,39 @@ import Thumbnail from "@/components/custom-ui/thumbnail";
 export function GlobalFeedbackListener() {
 
   // --- 1. Customer/Auth Events ---
-  const handleShowLoading = useCallback((_: any) => {
+  const handleShowLoading = useCallback((eventName: string) => {
+    console.log("GlobalFeedbackListener >>>>>>>>> handleShowLoading >>>>>>>>>>> eventName", eventName)
     showLoadingOverlay();
   }, []);
   useEvent(['customer:login-start', 'customer:logout-start', 'customer:signup-start', 'cart:create-start'], handleShowLoading);
-  const handleHideLoading = useCallback((_: any) => {
+  const handleHideLoading = useCallback((eventName: string) => {
     hideLoadingOverlay();
   }, []);
   useEvent(['customer:login-end', 'customer:logout-start', 'customer:signup-start', 'cart:create-start'], handleHideLoading);
 
   // 监听登录成功
-  const handleLoginSuccess = useCallback(({ data }: ActionEvents['customer:login-success']) => {
-    toast.success(<><b>Sign In Sucessfully</b><br /><p>Welcome back {data?.first_name || ''}!</p></>);
+  const handleLoginSuccess = useCallback(() => {
+    toast.success(<><b>Sign In Sucessfully</b><br /><p>Welcome back!</p></>);
   }, []);
   useEvent('customer:login-success', handleLoginSuccess);
 
   // 监听登录失败
-  const handleLoginFailure = useCallback(({ message }: ActionEvents['customer:login-failure']) => {
-    showErrorToast("Login Failed", message);
+  const handleLoginFailure = useCallback((_: string, { message }: ActionEvents['customer:login-failure']) => {
+    showErrorToast("Login Failed", message || 'Please check your email and password.');
   }, []);
   useEvent('customer:login-failure', handleLoginFailure);
 
   // 监听登出成功
-  const handleLogoutSuccess = useCallback(({ message }: ActionEvents['customer:logout-success']) => {
-    toast.success(message || "Signed out successfully.");
+  const handleLogoutSuccess = useCallback(() => {
+    toast.success("Signed out successfully.");
   }, []);
   useEvent('customer:logout-success', handleLogoutSuccess);
 
   // 监听登出失败
-  const handleLogoutFailure = useCallback(({ message }: ActionEvents['customer:logout-failure']) => {
-    showErrorToast("Logout Failed", message);
-  }, []);
-  useEvent('customer:logout-failure', handleLogoutFailure);
+  // const handleLogoutFailure = useCallback(({ message }: ActionEvents['customer:logout-failure']) => {
+  //   showErrorToast("Logout Failed", message);
+  // }, []);
+  // useEvent('customer:logout-failure', handleLogoutFailure);
 
   // 监听注册成功
   const handleSignupSuccess = useCallback(() => {
@@ -61,7 +62,7 @@ export function GlobalFeedbackListener() {
   useEvent('customer:signup-success', handleSignupSuccess);
 
   // 监听注册失败
-  const handleSignupFailure = useCallback(({ message }: ActionEvents['customer:signup-failure']) => {
+  const handleSignupFailure = useCallback((_: string, { message }: ActionEvents['customer:signup-failure']) => {
     showErrorToast("Sign Up Failed", message);
   }, []);
   useEvent('customer:signup-failure', handleSignupFailure);
@@ -69,7 +70,7 @@ export function GlobalFeedbackListener() {
   // --- 2. Cart Events ---
 
   // 监听添加购物车成功
-  const handleItemAdded = useCallback(({ product, variant }: ActionEvents['cart:add-success']) => {
+  const handleItemAdded = useCallback((_: string, { product, variant }: ActionEvents['cart:add-success']) => {
     if (product && variant) {
       showAddCartToast(product, variant);
     } else {

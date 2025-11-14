@@ -14,6 +14,10 @@ export async function retrieveCart(cartId?: string) {
     cartId = await getCartId();
   }
 
+  if(!cartId){
+    return null;
+  }
+
   return sdk.client
     .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${cartId}`, {
       method: "GET",
@@ -27,7 +31,7 @@ export async function retrieveCart(cartId?: string) {
       return mapMedusaCartToCart(cart);
     })
     .catch(() => {
-      return null
+      return null;
     })
 }
 
@@ -39,8 +43,8 @@ export async function createCart(items?: AddCartItem[]) {
   const cart = await sdk.store.cart.create({ items: items ?? [] }, {
     fields:
       "*items, +items.thumbnail, +items.metadata, *promotions, *customer, +completed_at"
-  }, headers).then(({ cart }) => {
-    setCartId(cart.id);
+  }, headers).then(async ({ cart }) => {
+    await setCartId(cart.id);
     return cart;
   });
   return mapMedusaCartToCart(cart);

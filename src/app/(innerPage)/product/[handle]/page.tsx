@@ -59,18 +59,15 @@ const ProductDetail = async (props: Props) => {
     notFound()
   }
   return (
-    <main>
-      <div className="container">
-        <div className="grid lg:grid-cols-[40.9%_auto] md:grid-cols-2 grid-cols-1 xl:gap-15 gap-10 lg:mt-25 mt-15">
-          <ProductPreview />
-          <ProductShortInfo
-            product={product}
-          />
+    <main className="container">
+      <div >
+        <div className="grid lg:grid-cols-[40.9%_auto] md:grid-cols-2 grid-cols-1 xl:gap-15 gap-10 mt-8">
+          <ProductPreview product={product} />
+          <ProductShortInfo product={product} />
         </div>
-        <ProductDetailsTabView />
+        <ProductDetailsTabView product={product} />
       </div>
       <RelatedProducts />
-      <Newsletter />
       <InstagramGallery />
     </main>
   );

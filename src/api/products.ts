@@ -16,7 +16,7 @@ export const getProductByHandle = unstable_cache(
         handle,
         region_id: regionId || "",
         fields:
-          "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags",
+          "*variants.calculated_price,+variants.inventory_quantity,+metadata,*categories,*tags,",
       },
       headers,
     ).then(({ products }) => products.length && transformMedusaProduct(products[0]));
@@ -169,6 +169,12 @@ export interface Product {
   }[],
   variants: Variant[],
   options?: ProductOption[],
+  categories: {
+    id: number | string,
+    name: string,
+    handle: string,
+    description: string,
+  }[],
   tags: {
     id: number | string,
     value: string,
@@ -288,6 +294,13 @@ function transformMedusaProduct(medusaProduct: HttpTypes.StoreProduct): Product 
             id: val.id,
             value: val.value,
           })) || [],
+      })) || [],
+    categories:
+      medusaProduct.categories?.map((c) => ({
+        id: c.id,
+        name: c.name,
+        description: c.description,
+        handle: c.handle,
       })) || [],
     tags:
       medusaProduct.tags?.map((tag) => ({
