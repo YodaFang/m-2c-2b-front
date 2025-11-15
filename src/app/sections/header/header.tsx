@@ -24,8 +24,8 @@ const Header = async () => {
                         <Image width={60} height={40} src={"/images/logo.png"} alt='logo' />
                     </Link>
                     <div className='flex items-center justify-end gap-8 w-full'>
-                        <SearchPopup data={featuredProducts}/>
-                        <AuthDialog />
+                        <SearchPopup data={featuredProducts} />
+                        <AuthDialog nullIfLogin={false}> <User className="size-8" /> </AuthDialog>
                         <ShopingCartSidebar />
                     </div>
                 </div>

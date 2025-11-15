@@ -27,8 +27,13 @@ function AccordionItem({
 function AccordionTrigger({
   className,
   children,
+  plusIcon,
+  minusIcon,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger> & {
+  plusIcon?: React.ReactNode
+  minusIcon?: React.ReactNode
+}) {
   return (
     <AccordionPrimitive.Header className="flex">
       <AccordionPrimitive.Trigger
@@ -40,13 +45,17 @@ function AccordionTrigger({
         {...props}
       >
         {children}
-        <span className="text-secondary-foreground plus"><Plus className="size-6" /></span>
-        <span className="text-secondary-foreground hidden minus"><Minus className="size-5" /></span>
-        {/* <ChevronDown className="size-4 shrink-0 text-gray-1-foreground transition-transform duration-200" /> */}
+        <span className="text-secondary-foreground plus">
+          {plusIcon ?? <Plus className="size-6" />}
+        </span>
+        <span className="text-secondary-foreground hidden minus">
+          {minusIcon ?? <Minus className="size-5" />}
+        </span>
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )
 }
+
 
 function AccordionContent({
   className,

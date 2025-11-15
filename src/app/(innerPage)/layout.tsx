@@ -7,7 +7,7 @@ const InnerLayout = ({ children }: { children: ReactNode }) => {
     return (
         <>
             <Header />
-            <main className="flex-1 flex">
+            <main className="flex-1 flex container">
                 {children}
             </main>
             <Footer />

@@ -13,8 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Separator } from '@/components/ui/separator'
-import { FieldGroup, } from "@/components/custom-ui/field"
+import { FieldGroup, FieldSeparator } from "@/components/custom-ui/field"
 import { useGeneratedFields } from "@/hooks/use-zod-fields"
 import { useActions } from "@/hooks/use-app"
 
@@ -116,8 +115,11 @@ export function LoginRegister({ className }: { className?: string }) {
         <CardFooter className="flex-col gap-2">
           <Button className='w-full lg:py-[11px] text-lg mt-3' onClick={handlerLogin}>Sign In</Button>
           <AppLink href={"#"} className='text-base text-gray-1-foreground text-center' underline>Am uitat parola</AppLink>
-          <Separator className='mt-3 border-[1.5px]' />
-          <p className='text-center mt-1 text-base text-gray-1-foreground'>Or Login With</p>
+          <div className='w-full flex items-center text-center mt-3 text-base font-medium text-secondary-foreground'>
+            <span className='block w-full h-px bg-[#999796]'></span>
+            <span className="w-full whitespace-nowrap px-2">Or Login With</span>
+            <span className='block w-full h-px bg-[#999796]'></span>
+          </div>
           <div className='w-full flex flex-row justify-between gap-5 mt-3'>
             <div className='border-[1.5px] border-[#999796] flex justify-center items-center gap-3 cursor-pointer w-full py-1 rounded-lg'>
               <img src="/images/google.png" alt="google" />

@@ -15,8 +15,8 @@ const ProductDetailsTabView = ({ product, className }: { product: any, className
                     <TabsTrigger value="additional-information" className='data-[state=active]:text-secondary-foreground relative after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 data-[state=active]:after:bg-primary text-gray-3-foreground font-medium lg:text-xl pb-1'>Additional Information</TabsTrigger>
                     <TabsTrigger value="review" className='data-[state=active]:text-secondary-foreground relative after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 data-[state=active]:after:bg-primary text-gray-3-foreground font-medium lg:text-xl pb-1'>Review (1)</TabsTrigger>
                 </TabsList>
-                <TabsContent value='description' className='mt-7.5'>
-                    <p className='text-gray-1-foreground'>{product.description}</p>
+                <TabsContent value='description' className='mt-5'>
+                    <div dangerouslySetInnerHTML={{ __html: product.description }} />
                 </TabsContent>
                 <TabsContent value='additional-information' className='mt-7.5'>
                     <p className='text-gray-1-foreground'>Elevate your dining experience with the Tacoma Carver Dining Chair, a perfect blend of modern elegance and timeless craftsmanship. Designed to offer both comfort and style, this chair is an ideal addition to any dining room or living space. The Tacoma Carver Dining Chair combines aesthetic appeal with practical functionality, making it a versatile and valuable addition to any home.</p>

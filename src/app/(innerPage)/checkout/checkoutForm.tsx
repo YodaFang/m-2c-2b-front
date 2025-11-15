@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/custom-ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import RegisterForm from "./registerForm";
+import AuthDialog from '@/app/sections/auth'
 
 const CheckoutForm = () => {
   const submitForm = async (formData: FormData) => {
@@ -17,40 +17,11 @@ const CheckoutForm = () => {
 
   return (
     <div>
-      <form action={submitForm} className="mt-10">
+      <div className="text-gray-1-foreground inline">
+        Returning customer? <AuthDialog nullIfLogin><span className="pl-2 underline" >Click here to login</span> </AuthDialog>
+      </div>
+      <form action={submitForm} className="mt-6">
         <div className="flex flex-col gap-7.5">
-          <div className="flex sm:flex-row flex-col justify-between gap-x-[22px] gap-y-7.5">
-            <label
-              htmlFor="first_name"
-              className="text-gray-1-foreground w-full text-base"
-            >
-              First name<span className="text-red-400">*</span>
-              <Input
-                className={
-                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
-                }
-                type={"text"}
-                name={"first_name"}
-                id="first_name"
-                required
-              />
-            </label>
-            <label
-              htmlFor="last_name"
-              className="text-gray-1-foreground w-full text-base"
-            >
-              Last name<span className="text-red-400">*</span>
-              <Input
-                className={
-                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
-                }
-                type={"text"}
-                name={"last_name"}
-                id="last_name"
-                required
-              />
-            </label>
-          </div>
           <div className="flex sm:flex-row flex-col justify-between gap-x-[22px] gap-y-7.5">
             <label
               htmlFor="email"
@@ -64,6 +35,27 @@ const CheckoutForm = () => {
                 type={"email"}
                 name={"email"}
                 id="email"
+                required
+              />
+            </label>
+          </div>
+          <div className='w-full flex flex-row items-center mt-3 text-base font-medium text-secondary-foreground '>
+            <span className="whitespace-nowrap pr-3">Shiping Address</span>
+            <span className='block w-full h-px bg-black'></span>
+          </div>
+          <div className="flex sm:flex-row flex-col justify-between gap-x-[22px] gap-y-7.5">
+            <label
+              htmlFor="first_name"
+              className="text-gray-1-foreground w-full text-base"
+            >
+              name<span className="text-red-400">*</span>
+              <Input
+                className={
+                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
+                }
+                type={"text"}
+                name={"first_name"}
+                id="first_name"
                 required
               />
             </label>
@@ -82,33 +74,6 @@ const CheckoutForm = () => {
                 required
               />
             </label>
-          </div>
-          <div>
-            <label
-              htmlFor="country"
-              className="text-gray-1-foreground text-base"
-            >
-              Country/Region<span className="text-red-400">*</span>
-            </label>
-            <Select name="country" required>
-              <SelectTrigger
-                id="country"
-                className="h-12.5 py-2.5 border-[1.5px] border-[#999796] text-base text-gray-1-foreground mt-2.5"
-              >
-                <SelectValue placeholder="Select a country" />
-              </SelectTrigger>
-              <SelectContent className="py-[14px] bg-background ">
-                <SelectItem value="united-states" className="cursor-pointer">
-                  United States
-                </SelectItem>
-                <SelectItem value="united-kingdom" className="cursor-pointer">
-                  United Kingdom
-                </SelectItem>
-                <SelectItem value="bangladesh" className="cursor-pointer">
-                  Bangladesh
-                </SelectItem>
-              </SelectContent>
-            </Select>
           </div>
           <div>
             <label
@@ -175,9 +140,6 @@ const CheckoutForm = () => {
             />
           </label>
         </div>
-        <RegisterForm />
-        {/* <Button type="submit"  className="w-full mt-5 lg:px-6 lg:py-3 lg:text-lg">Submit Order</Button> */}
-        {/* {state?.message && <p className="mt-4 text-green-600 text-center">{state.message}</p>} */}
       </form>
     </div>
   );

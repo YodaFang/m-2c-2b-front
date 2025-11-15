@@ -33,6 +33,7 @@ const ProductShortInfo = ({ product }: { product: any }) => {
 
   const discounted = product.price < product.org_price;
   const categoryNames = product.categories?.map((c: any) => c.name) || [];
+  const tags = product.tags?.map((c: any) => c.name) || [];
 
   return (
     <div>
@@ -119,7 +120,7 @@ const ProductShortInfo = ({ product }: { product: any }) => {
         <p className="text-gray-1-foreground">
           Tag:{" "}
           <span className="text-gray-1-foreground text-base">
-            Chair, Table, Furniture, Decor,
+            {tags.join(', ')}
           </span>
         </p>
         <div className="text-gray-1-foreground flex items-center gap-2.5">

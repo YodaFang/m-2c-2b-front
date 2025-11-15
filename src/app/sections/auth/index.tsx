@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -8,26 +8,24 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { AppLink } from "@/components/custom-ui/link"
-import { User } from '@/lib/icon'
 import { LoginRegister } from "./login-register"
 import { useGetCustomer } from "@/hooks/use-app"
 
-const AuthDialog = () => {
+export default function AuthDialog({ children, nullIfLogin }: { children: ReactNode, nullIfLogin: boolean }) {
     const { data: customer } = useGetCustomer();
     const [open, setOpen] = useState(false);
-    if(customer){
-        return <AppLink href="/account" ><User className="size-8" /></AppLink>;
+    if (customer) {
+        return nullIfLogin ? null : <AppLink href="/account" >{children}</AppLink>;
     }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger
                 aria-label="auth-dialog"
-                className="text-gray-1-foreground relative"
             >
-                <User className="size-8" />
+                {children}
             </DialogTrigger>
-            <DialogContent className="w-full py-8 lg:px-8 px-2"  aria-describedby={undefined}>
+            <DialogContent className="w-full py-8 lg:px-8 px-2" aria-describedby={undefined}>
                 <DialogTitle hidden></DialogTitle>
                 <LoginRegister className="w-full p-0 m-0 border-0 shadow-none" />
             </DialogContent>
@@ -35,4 +33,3 @@ const AuthDialog = () => {
     );
 };
 
-export default AuthDialog;
