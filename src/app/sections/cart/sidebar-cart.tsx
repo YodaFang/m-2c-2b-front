@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -15,25 +14,23 @@ import {
 import { ShopCart } from "@/lib/icon";
 import currencyFormatter from "currency-formatter";
 import { useActions, useGetCart } from "@/hooks/use-app"
+import { useSidebarCartVar } from "@/hooks/use-global-vars";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CartItem } from "./cart-item"
 
 const SidebarCart = () => {
+  const {sidebarCartOpen, setSidebarCartOpen} = useSidebarCartVar();
+
   const pathName = usePathname();
   const isMobile = useIsMobile();
-  const [open, setOpen] = useState(false);
   const { cartItems } = useGetCart();
   const { increaseItem, decreaseItem, deleteItem } = useActions();
 
   const totalPrice = cartItems.reduce((total, item) => total + item.total, 0);
   const totalProducts = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathName]);
-
   return (
-    <Drawer direction={isMobile ? "bottom" : "right"} open={open} onOpenChange={setOpen}>
+    <Drawer direction={isMobile ? "bottom" : "left"} open={sidebarCartOpen} onOpenChange={setSidebarCartOpen}>
       <DrawerTrigger
         aria-label="shopping-cart"
         className="text-gray-1-foreground relative"
@@ -43,7 +40,7 @@ const SidebarCart = () => {
           {totalProducts}
         </span>
       </DrawerTrigger>
-      <DrawerContent className="w-full h-[100vh]" aria-describedby={undefined}>
+      <DrawerContent aria-describedby={undefined}>
         <DrawerHeader className="border-b-[1px] border-b-primary">
           <DrawerTitle className="w-full flex justify-between"><span>{currencyFormatter.format(totalPrice, {})} Lei</span> <span>{totalProducts} items </span> </DrawerTitle>
         </DrawerHeader>
@@ -75,7 +72,6 @@ const SidebarCart = () => {
                 </div>
                 <div className="my-5 flex flex-col gap-5">
                   <Button
-                    asChild
                     className="w-full lg:text-lg lg:leading"
                   >
                     <Link href={"/checkout"}>Check Out</Link>
@@ -83,7 +79,7 @@ const SidebarCart = () => {
                   <Button
                     variant={"outline"}
                     className="w-full lg:text-lg lg:leading"
-                    onClick={() => setOpen(false)}
+                    onClick={() => setSidebarCartOpen(false)}
                   >
                     Close
                   </Button>

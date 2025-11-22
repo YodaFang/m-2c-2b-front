@@ -41,6 +41,7 @@ function renderInputField(
   formError?: any
 ) {
   const inputType = fieldDesc.inputType;
+  const autoFocus = !!fieldDesc.autoFocus;
   const type = fieldDesc.type;
   const label = fieldDesc.label;
   const key = fieldDesc.zodkey;
@@ -51,11 +52,32 @@ function renderInputField(
   const onChange = (e: any) => updateValFunc(key, e.target.value);
 
   if (inputType === "checkbox") {
-    return <CheckboxField key={name} label={label} name={name} error={error} value={val} onChange={onChange} />;
+    return <CheckboxField key={name} autoFocus={autoFocus} label={label} name={name} error={error} value={val} onChange={onChange} />;
   } else if (inputType === "floating_label_field") {
-    return <FloatingLabelField key={name} type={type} label={label} name={name} placeholder={placeholder} error={error} value={val} onChange={onChange} requiredMark={fieldDesc.required} />;
+    return <FloatingLabelField
+      key={name}
+      autoFocus={autoFocus}
+      type={type}
+      label={label}
+      name={name}
+      placeholder={placeholder}
+      error={error} value={val}
+      onChange={onChange}
+      requiredMark={fieldDesc.required}
+    />;
   } else {
-    return <TextField key={name} type={type} label={label} name={name} placeholder={placeholder} error={error} value={val} onChange={onChange} requiredMark={fieldDesc.required} />;
+    return <TextField
+      key={name}
+      autoFocus={autoFocus}
+      type={type}
+      label={label}
+      name={name}
+      placeholder={placeholder}
+      error={error}
+      value={val}
+      onChange={onChange}
+      requiredMark={fieldDesc.required}
+    />;
   }
 }
 
@@ -145,4 +167,51 @@ export function useGeneratedFields(schema: ZodObject<any> | ZodEffects<any>) {
   });
 
   return { formData, updateFieldVal, inputFields, inputFieldsMap, clearAllErrors, validate }
+}
+
+export function useZodFormData(schema: ZodObject<any> | ZodEffects<any>, init?: any) {
+  const fieldDescs = extractSchemaDesc(schema);
+  const [formData, setFormDataRaw] = useState<any>(() => {
+    return fieldDescs.reduce((acc, field) => {
+      acc[field.zodkey] = init ? init[field.zodkey] : (field.default ?? '');
+      return acc;
+    }, {});
+  });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const updateFieldVal = (field: string, value: any) => {
+    setFormDataRaw((prev: any) => ({
+      ...prev,
+      [field]: value,
+    }));
+    clearFieldError(field);
+  };
+
+  const clearFieldError = (key: string) => {
+    if (key in fieldErrors) {
+      setFieldErrors((prev) => {
+        const { [key]: _, ...rest } = prev;
+        return rest;
+      });
+    }
+  };
+
+  const clearAllErrors = () => {
+    if (Object.keys(fieldErrors).length > 0) {
+      setFieldErrors({});
+    }
+  };
+
+  const validate = () => {
+    const result = zodValidate(schema, formData);
+    console.log("validate >>>>>>>>> result:", result)
+    if (result.success) {
+      return result.data;
+    } else {
+      setFieldErrors(result.errors as any);
+      return null;
+    }
+  };
+
+  return { formData, updateFieldVal, fieldErrors, clearAllErrors, validate }
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+
 import { EditIcon } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@/components/custom-ui/accordion"
 import { Input } from "@/components/ui/input";
@@ -59,24 +60,6 @@ const FaqSection = async () => {
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent>
-                                <div className="text-base text-gray-1-foreground mb-1">
-                                    <AuthDialog nullIfLogin><span className="px-1 underline" >Login</span> </AuthDialog>
-                                    or login with G or F<br /> Or 输入email 以guest checkout
-                                </div>
-                                <div className="flex w-full items-center gap-2">
-                                    <Input
-                                        className={
-                                            "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-2"
-                                        }
-                                        type={"email"}
-                                        name={"email"}
-                                        id="email"
-                                        required
-                                    />
-                                    <Button className="py-[5px] lg:py-[6px] text-base lg:text-base px-3">
-                                        Next
-                                    </Button>
-                                </div>
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>

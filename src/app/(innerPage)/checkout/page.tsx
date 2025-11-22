@@ -1,9 +1,8 @@
+
 import CheckoutForm from "@/app/(innerPage)/checkout/checkoutForm";
-import CheckoutPayment from "@/app/(innerPage)/checkout/checkoutPayment";
-import InstagramGallery from "@/app/sections/instagramGallery";
-import Newsletter from "@/app/sections/newsletter";
-import PageHeader from "@/app/sections/pageHeader";
+import { HomeIcon, ChevronRight } from "lucide-react"
 import { Metadata } from "next";
+
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -12,21 +11,17 @@ export const metadata: Metadata = {
 
 const Checkout = () => {
   return (
-    <main>
-      <PageHeader
-        currentPage="Checkout"
-        pageTitle="Checkout"
-        breadcrumbLink="/shop"
-        breadcrumbLabel="Shop"
-      />
-      <div className="container lg:pt-25 lg:pb-30 pt-15 pb-15">
-        <div className="grid lg:grid-cols-[auto_48.6%] grid-cols-1 gap-7.5">
-          <CheckoutForm />
-          <CheckoutPayment />
-        </div>
+    <main className="w-full bg-white px-2">
+      <div className="flex items-center gap-1 overflow-hidden py-2">
+        <span>
+          <HomeIcon className="size-5 text-slate-600" />
+        </span>
+        <span >
+          <ChevronRight className="size-4" />
+        </span>
+        <span className="flex items-center space-x-1 text-slate-600 text-base font-semibold">Checkout</span>
       </div>
-      <Newsletter />
-      <InstagramGallery />
+      <CheckoutForm />
     </main>
   );
 };

@@ -3,7 +3,7 @@ import 'server-only';
 import { cookies as nextCookies } from "next/headers"
 
 export const getAuthHeaders = async (): Promise<
-  { authorization: string } | null
+  { authorization: string } | undefined
 > => {
   try {
     const cookies = await nextCookies()
@@ -13,9 +13,9 @@ export const getAuthHeaders = async (): Promise<
       return { authorization: `Bearer ${token}` }
     }
 
-    return null;
+    return undefined;
   } catch (error) {
-    return null;
+    return undefined;
   }
 }
 

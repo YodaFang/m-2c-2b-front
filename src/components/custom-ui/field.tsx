@@ -254,8 +254,8 @@ function TextField({ name, label, type, description, error, requiredMark, classN
 function FloatingLabelField({ name, label, type, error, requiredMark, className, ...props }: React.ComponentProps<typeof Input> & { label: string, error?: string | undefined, requiredMark?: boolean }) {
   return (
     <Field className={cn("relative", className)}>
-      <Input id={name} name={name} type={type} className={cn('px-3 py-[1px] pt-4 h-11 border-[#999796] border-[1.5px] placeholder:text-[#999796] text-gray-1-foreground', { "border-destructive": error })}  {...props} />
-      <FieldLabel htmlFor={name} requiredMark={requiredMark} className='text-xs italic px-2.5 py-1 absolute left-[3px] top-[1px]'>{label}</FieldLabel>
+      <Input id={name} name={name} type={type} className={cn('px-3 py-[1px] pt-4 h-11 bg-white border-[#999796] border-[1.5px] md:text-base  placeholder:text-[#999796]', { "border-destructive": error })}  {...props} />
+      <FieldLabel htmlFor={name} requiredMark={requiredMark} className='text-xs text-gray-1-foreground italic px-2.5 py-1 absolute left-[3px] top-[1px]'>{label}</FieldLabel>
       <FieldError errors={[{ message: error }]} />
     </Field>
   )
@@ -265,7 +265,7 @@ function CheckboxField({ name, label, error, requiredMark, className, ...props }
   return (
     <div>
       <Field orientation="horizontal" className={cn(className)}>
-        <Checkbox id={name} name={name} className="rounded-[4px] mb-1 border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white" {...props} />
+        <Checkbox id={name} name={name} className="rounded-[4px] mb-1 bg-white border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white" {...props} />
         <FieldLabel htmlFor={name} className="text-sm font-medium self-end" requiredMark={requiredMark}>
           {label}
         </FieldLabel>

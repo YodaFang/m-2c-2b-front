@@ -30,9 +30,7 @@ export const retrieveCustomer = async (): Promise<HttpTypes.StoreCustomer | null
 }
 
 export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   return sdk.store.customer
     .update(body, {}, headers)
@@ -106,9 +104,7 @@ export async function transferCart(cartId: string) {
     return
   }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   return sdk.store.cart.transferCart(cartId, {}, headers)
     .then(async ({ cart }) => {
@@ -117,25 +113,9 @@ export async function transferCart(cartId: string) {
 }
 
 export const addCustomerAddress = async (
-  _currentState: unknown,
-  formData: FormData
+  address: HttpTypes.StoreCreateCustomerAddress
 ): Promise<any> => {
-  const address = {
-    first_name: formData.get("first_name") as string,
-    last_name: formData.get("last_name") as string,
-    company: formData.get("company") as string,
-    address_1: formData.get("address_1") as string,
-    address_2: formData.get("address_2") as string,
-    city: formData.get("city") as string,
-    postal_code: formData.get("postal_code") as string,
-    province: formData.get("province") as string,
-    country_code: formData.get("country_code") as string,
-    phone: formData.get("phone") as string,
-  }
-
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   return sdk.store.customer
     .createAddress(address, {}, headers)
@@ -150,9 +130,7 @@ export const addCustomerAddress = async (
 export const deleteCustomerAddress = async (
   addressId: string
 ): Promise<void> => {
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   await sdk.store.customer
     .deleteAddress(addressId, headers)
@@ -183,9 +161,7 @@ export const updateCustomerAddress = async (
     phone: formData.get("phone") as string,
   }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   return sdk.store.customer
     .updateAddress(addressId, address, {}, headers)

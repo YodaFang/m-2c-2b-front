@@ -19,6 +19,7 @@ import { useActions } from "@/hooks/use-app"
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }).describe(JSON.stringify({
+    autoFocus: true,
     default: "",
     label: "Email",
     type: "email",
@@ -39,6 +40,7 @@ const loginSchema = z.object({
 const registerSchema = z.object({
   first_name: z.string().min(3, { message: 'At least 3 charecters.' }).describe(JSON.stringify({
     inputType: "floating_label_field",
+    autoFocus: true,
     default: "",
     label: "Name",
     type: "text",

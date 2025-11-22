@@ -6,15 +6,13 @@ import { redirect } from "next/navigation"
 import { getAuthHeaders, getCartId, setCartId } from "./cookies"
 
 export async function retrieveCart(cartId?: string) {
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
-  if(!cartId){
+  if (!cartId) {
     cartId = await getCartId();
   }
 
-  if(!cartId){
+  if (!cartId) {
     return null;
   }
 
@@ -36,9 +34,7 @@ export async function retrieveCart(cartId?: string) {
 }
 
 export async function createCart(items?: AddCartItem[]) {
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   const cart = await sdk.store.cart.create({ items: items ?? [] }, {
     fields:
@@ -56,9 +52,7 @@ export async function updateCart(cartId: string, data: HttpTypes.StoreUpdateCart
     throw new Error("No existing cart found, please create one before updating")
   }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   return sdk.store.cart
     .update(cartId, data, {}, headers)
@@ -75,9 +69,7 @@ export async function addItemToCart(cartId: string, {
     throw new Error("Missing variant ID when adding to cart")
   }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   return await sdk.store.cart
     .createLineItem(
@@ -95,10 +87,7 @@ export async function addItemToCart(cartId: string, {
 }
 
 export async function addToCartBulk(cartId: string, items: AddCartItem[]) {
-  const headers = {
-    "Content-Type": "application/json",
-    ...(await getAuthHeaders()),
-  } as Record<string, any>
+  const headers = await getAuthHeaders() as any;
 
   if (process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY) {
     headers["x-publishable-api-key"] =
@@ -122,9 +111,7 @@ export async function updateLineItem(
   lineId: string,
   quantity: number,
 ) {
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   await sdk.store.cart
     .updateLineItem(cartId, lineId, { quantity }, {}, headers)
@@ -133,9 +120,7 @@ export async function updateLineItem(
 }
 
 export async function deleteLineItem(cartId: string, lineId: string) {
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   await sdk.store.cart
     .deleteLineItem(cartId, lineId, {}, headers)
@@ -161,9 +146,7 @@ export async function setShippingMethod({
   cartId: string
   shippingMethodId: string
 }) {
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   return sdk.store.cart
     .addShippingMethod(cartId, { option_id: shippingMethodId }, {}, headers)
@@ -178,9 +161,7 @@ export async function initiatePaymentSession(
     context?: Record<string, unknown>
   }
 ) {
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
   return sdk.store.payment
     .initiatePaymentSession(cart, data, {}, headers)
@@ -201,30 +182,16 @@ export async function applyPromotions(cartId: string, codes: string[]) {
 
 
 // TODO: Pass a POJO instead of a form entity here
-export async function setShippingAddress(cartId: string, formData: FormData) {
+export async function setCartShippingAddress(email: string, shipping_address: HttpTypes.StoreAddAddress) {
   try {
-    if (!formData) {
-      throw new Error("No form data found when setting addresses")
-    }
+    const cartId = await getCartId();
     if (!cartId) {
       throw new Error("No existing cart found when setting addresses")
     }
 
     const data = {
-      shipping_address: {
-        first_name: formData.get("shipping_address.first_name"),
-        last_name: formData.get("shipping_address.last_name"),
-        address_1: formData.get("shipping_address.address_1"),
-        address_2: "",
-        company: formData.get("shipping_address.company"),
-        postal_code: formData.get("shipping_address.postal_code"),
-        city: formData.get("shipping_address.city"),
-        country_code: formData.get("shipping_address.country_code"),
-        province: formData.get("shipping_address.province"),
-        phone: formData.get("shipping_address.phone"),
-      },
-      // customer_id: customer?.id,
-      email: formData.get("email"),
+      shipping_address,
+      email: email,
     } as any
     await updateCart(cartId, data)
   } catch (e: any) {
@@ -232,26 +199,16 @@ export async function setShippingAddress(cartId: string, formData: FormData) {
   }
 }
 
-export async function setBillingAddress(cartId: string, formData: FormData) {
+export async function setBillingAddress(billing_address: HttpTypes.StoreAddAddress) {
   try {
+    const cartId = await getCartId();
     if (!cartId) {
-      throw new Error("No existing cart found when setting billing address")
+      throw new Error("No existing cart found when setting addresses")
     }
 
     const data = {
-      billing_address: {
-        first_name: formData.get("billing_address.first_name"),
-        last_name: formData.get("billing_address.last_name"),
-        address_1: formData.get("billing_address.address_1"),
-        address_2: "",
-        company: formData.get("billing_address.company"),
-        postal_code: formData.get("billing_address.postal_code"),
-        city: formData.get("billing_address.city"),
-        country_code: formData.get("billing_address.country_code"),
-        province: formData.get("billing_address.province"),
-        phone: formData.get("billing_address.phone"),
-      },
-    } as any
+      billing_address,
+    };
 
     await updateCart(cartId, data)
   } catch (e: any) {
@@ -259,13 +216,11 @@ export async function setBillingAddress(cartId: string, formData: FormData) {
   }
 }
 
-export async function setContactDetails(
-  cartId: string,
-  formData: FormData
-) {
+export async function setContactDetails(formData: FormData) {
   try {
+    const cartId = await getCartId();
     if (!cartId) {
-      throw new Error("No existing cart found when setting contact details")
+      throw new Error("No existing cart found when setting addresses")
     }
     const data = {
       email: formData.get("email") as string,
@@ -279,26 +234,22 @@ export async function setContactDetails(
     }
     await updateCart(cartId, data)
   } catch (e: any) {
-    return e.message
+    return e.message;
   }
 }
 
-export async function placeOrder(
-  cartId: string
-): Promise<HttpTypes.StoreCompleteCartResponse> {
+export async function placeOrder(): Promise<HttpTypes.StoreCompleteCartResponse> {
+  const cartId = await getCartId();
   if (!cartId) {
-    throw new Error("No existing cart found when placing an order")
+    throw new Error("No existing cart found when setting addresses")
   }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = await getAuthHeaders();
 
-  const response = await sdk.store.cart
-    .complete(cartId, {}, headers)
+  const response = await sdk.store.cart.complete(cartId, {}, headers);
 
   if (response.type === "cart") {
-    return response
+    return response;
   }
 
   redirect(

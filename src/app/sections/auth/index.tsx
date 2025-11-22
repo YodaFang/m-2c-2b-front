@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import {
     Dialog,
     DialogContent,
@@ -10,16 +10,17 @@ import {
 import { AppLink } from "@/components/custom-ui/link"
 import { LoginRegister } from "./login-register"
 import { useGetCustomer } from "@/hooks/use-app"
+import { useAuthDialogVars } from "@/hooks/use-global-vars";
 
 export default function AuthDialog({ children, nullIfLogin }: { children: ReactNode, nullIfLogin: boolean }) {
     const { data: customer } = useGetCustomer();
-    const [open, setOpen] = useState(false);
+    const { authDialogOpen, setAuthDialogOpen } = useAuthDialogVars();
     if (customer) {
         return nullIfLogin ? null : <AppLink href="/account" >{children}</AppLink>;
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
             <DialogTrigger
                 aria-label="auth-dialog"
             >
