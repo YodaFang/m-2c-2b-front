@@ -173,7 +173,7 @@ export function useZodFormData(schema: ZodObject<any> | ZodEffects<any>, init?: 
   const fieldDescs = extractSchemaDesc(schema);
   const [formData, setFormDataRaw] = useState<any>(() => {
     return fieldDescs.reduce((acc, field) => {
-      acc[field.zodkey] = init ? init[field.zodkey] : (field.default ?? '');
+      acc[field.zodkey] = init ? ((init[field.zodkey] || field.default) ?? '') : (field.default ?? '');
       return acc;
     }, {});
   });
@@ -204,10 +204,11 @@ export function useZodFormData(schema: ZodObject<any> | ZodEffects<any>, init?: 
 
   const validate = () => {
     const result = zodValidate(schema, formData);
-    console.log("validate >>>>>>>>> result:", result)
     if (result.success) {
       return result.data;
     } else {
+      console.log("validate >>>>>>>>> data:", formData)
+      console.log("validate >>>>>>>>> result:", result)
       setFieldErrors(result.errors as any);
       return null;
     }

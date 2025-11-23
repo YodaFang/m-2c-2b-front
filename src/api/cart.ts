@@ -180,40 +180,38 @@ export async function applyPromotions(cartId: string, codes: string[]) {
     })
 }
 
-
-// TODO: Pass a POJO instead of a form entity here
-export async function setCartShippingAddress(email: string, shipping_address: HttpTypes.StoreAddAddress) {
-  try {
-    const cartId = await getCartId();
-    if (!cartId) {
-      throw new Error("No existing cart found when setting addresses")
-    }
-
-    const data = {
-      shipping_address,
-      email: email,
-    } as any
-    await updateCart(cartId, data)
-  } catch (e: any) {
-    throw new Error(e)
+export async function setCartEmail(email: string) {
+  const cartId = await getCartId();
+  if (!cartId) {
+    throw new Error("No existing cart found when setting addresses")
   }
+
+  const data = {
+    email: email,
+  };
+  await updateCart(cartId, data);
+}
+
+export async function setShippingAddress(shipping_address: HttpTypes.StoreAddAddress) {
+  const cartId = await getCartId();
+  if (!cartId) {
+    throw new Error("No existing cart found when setting addresses")
+  }
+  const data = {
+    shipping_address,
+  };
+  await updateCart(cartId, data);
 }
 
 export async function setBillingAddress(billing_address: HttpTypes.StoreAddAddress) {
-  try {
-    const cartId = await getCartId();
-    if (!cartId) {
-      throw new Error("No existing cart found when setting addresses")
-    }
-
-    const data = {
-      billing_address,
-    };
-
-    await updateCart(cartId, data)
-  } catch (e: any) {
-    return e.message
+  const cartId = await getCartId();
+  if (!cartId) {
+    throw new Error("No existing cart found when setting addresses")
   }
+  const data = {
+    billing_address,
+  };
+  await updateCart(cartId, data);
 }
 
 export async function setContactDetails(formData: FormData) {

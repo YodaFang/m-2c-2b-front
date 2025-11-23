@@ -4,13 +4,12 @@ import { useCallback, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { showConfirmToast } from "@/components/custom-ui/toast";
 import { Customer, retrieveCustomer, login, signup, signout, transferCart } from "@/api/customer"
-import { Cart, retrieveCart, createCart, addItemToCart, updateLineItem, deleteLineItem } from "@/api/cart";
+import { Cart, retrieveCart, createCart, addItemToCart, updateLineItem, deleteLineItem, setCartEmail, setShippingAddress, setBillingAddress } from "@/api/cart";
 import { event } from "@/hooks/use-event";
 
-export const useActions = () => {
+export const useCustomerActions = () => {
   const queryClient = useQueryClient();
-  const { cart, cartItems } = useGetCart();
-  const creatingPromiseRef = useRef<Promise<any> | null>(null);
+  const { cart } = useGetCart();
 
   const loginHandler = async (username: string, password: string) => {
     try {
@@ -63,6 +62,18 @@ export const useActions = () => {
     },
     [signout],
   );
+
+  return {
+    login: loginHandler,
+    logout: logoutHandler,
+    signup: signupHandler,
+  }
+}
+
+export const useCartActions = () => {
+  const queryClient = useQueryClient();
+  const { cart, cartItems } = useGetCart();
+  const creatingPromiseRef = useRef<Promise<any> | null>(null);
 
   const increaseItemHandler = async (itemId: string, count: number = 1) => {
     const item = cartItems.find((e) => e.id === itemId);
@@ -140,14 +151,32 @@ export const useActions = () => {
     return true;
   }
 
+  const setCartEmailHandler = async (email: string) => {
+    await setCartEmail(email);
+    queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+    return true;
+  }
+
+  const setCartShippingAddrHandler = async (shippingAddr: any) => {
+    await setShippingAddress(shippingAddr);
+    queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+    return true;
+  }
+
+  const setCartBillingAddrHandler = async (billingAddr: any) => {
+    await setBillingAddress(billingAddr);
+    queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+    return true;
+  }
+
   return {
-    login: loginHandler,
-    logout: logoutHandler,
-    signup: signupHandler,
     addItem: addItemHandler,
     increaseItem: increaseItemHandler,
     decreaseItem: decreaseItemHandler,
-    deleteItem: deleteItemHandler
+    deleteItem: deleteItemHandler,
+    setCartEmail: setCartEmailHandler,
+    setCartShippingAddr: setCartShippingAddrHandler,
+    setCartBillingAddr: setCartBillingAddrHandler,
   }
 }
 
@@ -164,7 +193,7 @@ export const useGetCustomer = () => {
     refetchOnWindowFocus: true,
   });
 
-  return query;
+  return { query, customer: query.data };
 };
 
 /**
@@ -180,6 +209,6 @@ export const useGetCart = () => {
     refetchOnWindowFocus: true,
   });
 
-  return { cart: query.data, cartItems: query.data?.items ?? [] };
+  return { cart: query.data, cartItems: query.data?.items ?? [], isLoading: query.isLoading };
 };
 

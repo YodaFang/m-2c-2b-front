@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/drawer";
 import { ShopCart } from "@/lib/icon";
 import currencyFormatter from "currency-formatter";
-import { useActions, useGetCart } from "@/hooks/use-app"
+import { useCartActions, useGetCart } from "@/hooks/use-app"
 import { useSidebarCartVar } from "@/hooks/use-global-vars";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CartItem } from "./cart-item"
@@ -24,7 +24,7 @@ const SidebarCart = () => {
   const pathName = usePathname();
   const isMobile = useIsMobile();
   const { cartItems } = useGetCart();
-  const { increaseItem, decreaseItem, deleteItem } = useActions();
+  const { increaseItem, decreaseItem, deleteItem } = useCartActions();
 
   const totalPrice = cartItems.reduce((total, item) => total + item.total, 0);
   const totalProducts = cartItems.reduce((total, item) => total + item.quantity, 0);

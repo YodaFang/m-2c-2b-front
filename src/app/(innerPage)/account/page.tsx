@@ -16,11 +16,11 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { LoginRegister } from "@/app/sections/auth/login-register"
-import { useActions, useGetCustomer } from "@/hooks/use-app"
+import { useCustomerActions, useGetCustomer } from "@/hooks/use-app"
 
 export default function Account() {
   const { data: customer, isFetching } = useGetCustomer();
-  const { logout } = useActions();
+  const { logout } = useCustomerActions();
   if (isFetching) return null;
   if (customer) {
     return (

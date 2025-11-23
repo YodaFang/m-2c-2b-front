@@ -13,7 +13,7 @@ import { useGetCustomer } from "@/hooks/use-app"
 import { useAuthDialogVars } from "@/hooks/use-global-vars";
 
 export default function AuthDialog({ children, nullIfLogin }: { children: ReactNode, nullIfLogin: boolean }) {
-    const { data: customer } = useGetCustomer();
+    const { customer } = useGetCustomer();
     const { authDialogOpen, setAuthDialogOpen } = useAuthDialogVars();
     if (customer) {
         return nullIfLogin ? null : <AppLink href="/account" >{children}</AppLink>;

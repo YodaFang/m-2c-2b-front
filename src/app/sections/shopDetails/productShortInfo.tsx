@@ -12,12 +12,12 @@ import {
   Twitter,
 } from "@/lib/icon";
 import { cn } from "@/lib/utils";
-import { useActions } from "@/hooks/use-app"
+import { useCartActions } from "@/hooks/use-app"
 
 const ProductShortInfo = ({ product }: { product: any }) => {
   const [selectVariant, setSelectVariant] = useState<any>(product.variants[0]);
   const [productQuantity, setProductQuantity] = useState(1);
-  const { addItem } = useActions();
+  const { addItem } = useCartActions();
 
 
   const handleProdcutQuantity = (type: string) => {

@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LoadingButton } from "@/components/custom-ui/loading-button"
 import { ShoppingBag } from "@/lib/icon"
-import { useActions } from "@/hooks/use-app"
+import { useCartActions } from "@/hooks/use-app"
 
 const AddToCartItem = ({ product }: { product: any }) => {
-  const { addItem } = useActions();
+  const { addItem } = useCartActions();
 
   const [open, setOpen] = useState(false);
 

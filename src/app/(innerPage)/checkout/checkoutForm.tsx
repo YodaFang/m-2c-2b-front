@@ -2,55 +2,74 @@
 
 import React, { useState, useEffect } from "react";
 import Image from 'next/image';
-import { cn } from "@/lib/utils"
-import { Input } from "@/components/ui/input";
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { ChevronDownIcon, MapPinIcon, ArrowRightIcon, EditIcon, CheckCircleIcon } from "lucide-react"
-import { useSidebarCartVar, useAuthDialogVars } from "@/hooks/use-global-vars";
+import { MapPinIcon, ArrowRightIcon, EditIcon } from "lucide-react"
+import { useSidebarCartVar, useAuthDialogVars, useCheckoutAdressDialogOpen } from "@/hooks/use-global-vars";
+import { useGetCart } from "@/hooks/use-app"
+import { useAddressActions, AddressType } from "@/hooks/use-address"
+import { AddressForm } from "@/app/sections/address/address-form"
 
 const CheckoutForm = () => {
+
   const { setSidebarCartOpen } = useSidebarCartVar();
   const { showCheckoutAuthDialog } = useAuthDialogVars();
+  const { setDialogOpen: setAddressDialogOpen } = useCheckoutAdressDialogOpen();
+  const { cart, isLoading } = useGetCart();
+  const { saveShippingAddr, saveBillingAddr } = useAddressActions();
+  const shippingAddr = cart?.shipping_address;
+  const [showShippingAddrForm, setShowShippingAddrForm] = useState(false);
+  const [useShippingForBilling, setUseShippingForBilling] = useState(true);
 
-  const submitForm = async (formData: FormData) => {
-    console.log(formData);
+  const submitShipping = async (data: AddressType) => {
+    await saveShippingAddr(data);
+    setShowShippingAddrForm(false);
+    if (useShippingForBilling) {
+      await saveBillingAddr(data);
+    }
   };
 
   useEffect(() => showCheckoutAuthDialog(), []);
 
+  if (isLoading) return null;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 my-6 gap-6">
       <div className="col-span-1 lg:col-span-3 flex flex-col gap-6">
-        <div className="flex flex-col gap-2 border border-slate-300 rounded-lg p-3">
-          <div className="flex justify-between items-center gap-2">
-            <div className="text-slate-950 text-lg font-medium leading-7">
+        <div className="flex flex-col border border-slate-300 rounded-lg">
+          <div className="bg-slate-200 rounded-tl-lg rounded-tr-lg p-2 flex justify-between items-center">
+            <div className="text-slate-950 text-lg font-medium">
               Shipping Address
             </div>
-            <button className="pr-2 text-slate-950 text-base font-normal leading-normal underline">
+            <button onClick={() => setAddressDialogOpen(true)} className="pr-1 text-slate-950 text-base font-normal leading-normal underline">
               Select
             </button>
           </div>
-          <div className="w-full h-[0px] border-t border-dashed border-slate-300"></div>
-          <div className="w-full flex justify-between items-cneter">
-            <div className="flex items-cneter gap-2">
-              <div className="bg-slate-50 px-2 rounded-lg flex items-center shrink-0">
-                <MapPinIcon className="size-8 text-primary-600" />
-              </div>
-              <div className="overflow-hidden">
-                <div className="text-slate-950 text-md font-medium leading-normal tracking-tight">
-                  name - phone
+          {(!showShippingAddrForm && shippingAddr) ?
+            <div className="w-full p-2 flex justify-between items-cneter">
+              <div className="flex items-cneter gap-2">
+                <div className="bg-slate-50 px-2 rounded-lg flex items-center shrink-0">
+                  <MapPinIcon className="md:size-8 size-6 text-primary-600" />
                 </div>
-                <div className="text-slate-500 text-base font-normal leading-normal truncate">
-                  address?.flat_no address_line
+                <div className="overflow-hidden">
+                  <div className="text-slate-950 md:text-base text-sm font-medium">
+                    {shippingAddr.first_name} - {shippingAddr.phone}
+                  </div>
+                  <div className="text-slate-500 md:text-base text-sm font-normal max-w-[60vw] line-clamp-2">
+                    {shippingAddr.address_1}, {shippingAddr.city}, {shippingAddr.province}, {shippingAddr.postal_code}
+                  </div>
                 </div>
               </div>
+              <button className="px-1 rounded-lg flex items-end" onClick={() => setShowShippingAddrForm(true)}>
+                <EditIcon className="size-6" />
+              </button>
             </div>
-            <button className="px-2 rounded-lg flex items-end">
-              <EditIcon className="size-6" />
-            </button>
-          </div>
+            :
+            <div className="p-3">
+              <AddressForm initAddress={shippingAddr} submitHandler={submitShipping} cancelHandler={() => setShowShippingAddrForm(false)} />
+            </div>
+          }
         </div>
 
         <div className="flex flex-col gap-2 border border-slate-300 rounded-lg p-3">
@@ -59,7 +78,7 @@ const CheckoutForm = () => {
               Billing Address
             </div>
             <div className="flex items-center space-x-2">
-              <Switch id="use-shipping" checked={true} />
+              <Switch id="use-shipping" checked={useShippingForBilling} onCheckedChange={(val: boolean) => setUseShippingForBilling(val)} />
               <Label htmlFor="use-shipping">Use Shipping Address</Label>
             </div>
           </div>
