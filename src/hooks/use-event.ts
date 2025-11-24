@@ -4,6 +4,9 @@ import { useEffect, useRef } from "react";
 import * as EventManager from "@/lib/eventManager";
 
 type ActionEvents = {
+  'ui:loading-show': { };
+  'ui:loading-hide': { };
+
   'customer:login-start': { data?: any };
   'customer:login-end': { data?: any };
   'customer:login-success': { };

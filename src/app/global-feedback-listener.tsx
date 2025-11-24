@@ -20,16 +20,14 @@ import Thumbnail from "@/components/custom-ui/thumbnail";
  */
 export function GlobalFeedbackListener() {
 
-  // --- 1. Customer/Auth Events ---
-  const handleShowLoading = useCallback((eventName: string) => {
-    console.log("GlobalFeedbackListener >>>>>>>>> handleShowLoading >>>>>>>>>>> eventName", eventName)
+  const handleShowLoading = useCallback(() => {
     showLoadingOverlay();
   }, []);
-  useEvent(['customer:login-start', 'customer:logout-start', 'customer:signup-start', 'cart:create-start'], handleShowLoading);
-  const handleHideLoading = useCallback((eventName: string) => {
+  useEvent(['ui:loading-show', 'customer:login-start', 'customer:logout-start', 'customer:signup-start', 'cart:create-start'], handleShowLoading);
+  const handleHideLoading = useCallback(() => {
     hideLoadingOverlay();
   }, []);
-  useEvent(['customer:login-end', 'customer:logout-start', 'customer:signup-start', 'cart:create-start'], handleHideLoading);
+  useEvent(['ui:loading-hide', 'customer:login-end', 'customer:logout-start', 'customer:signup-start', 'cart:create-start'], handleHideLoading);
 
   // 监听登录成功
   const handleLoginSuccess = useCallback(() => {

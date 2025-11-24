@@ -3,7 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { listCartShippingMethods } from "@/api/fulfillment"
 import { listPaymentMethods } from "@/api/payment"
-import { setShippingMethod, initiatePaymentSession } from "@/api/cart";
+import { setShippingMethod, initiatePaymentSession, completeCart } from "@/api/cart";
 
 export const useCheckoutActions = () => {
   const queryClient = useQueryClient();
@@ -14,13 +14,21 @@ export const useCheckoutActions = () => {
     return true;
   }
 
-  const placeOrder = async (methodId: string) => {
+  const initPayment = async (cart: any, paymentId: string, context?: Record<string, unknown>) => {
+    await initiatePaymentSession(cart, { provider_id: paymentId, context });
+    queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
+    return true;
+  }
+
+  const placeOrder = async (cart: any) => {
+    await completeCart();
     queryClient.invalidateQueries({ queryKey: ["useGetCart"] });
     return true;
   }
 
   return {
     selectShippingMethod,
+    initPayment,
     placeOrder,
   }
 }

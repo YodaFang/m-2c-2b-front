@@ -3,7 +3,7 @@
 import { sdk } from "@/lib/medusaClient"
 import { HttpTypes } from "@medusajs/types"
 import { redirect } from "next/navigation"
-import { getAuthHeaders, getCartId, setCartId } from "./cookies"
+import { getAuthHeaders, getCartId, setCartId, removeCartId } from "./cookies"
 
 export async function retrieveCart(cartId?: string) {
   const headers = await getAuthHeaders();
@@ -236,24 +236,19 @@ export async function setContactDetails(formData: FormData) {
   }
 }
 
-export async function placeOrder(): Promise<HttpTypes.StoreCompleteCartResponse> {
-  const cartId = await getCartId();
+export async function completeCart(cartId?: string) {
+  cartId = await getCartId();
   if (!cartId) {
     throw new Error("No existing cart found when setting addresses")
   }
 
   const headers = await getAuthHeaders();
 
-  const response = await sdk.store.cart.complete(cartId, {}, headers);
-
-  if (response.type === "cart") {
-    return response;
-  }
-
-  redirect(
-    `/${response.order.shipping_address?.country_code?.toLowerCase()}/order/confirmed/${response.order.id
-    }`
-  )
+  return sdk.store.cart.complete(cartId, {}, headers)
+    .then(async () => {
+      await removeCartId();
+      return true;
+    });
 }
 
 function mapMedusaCartToCart(medusaCart: HttpTypes.StoreCart): Cart {
@@ -364,6 +359,7 @@ function mapMedusaShippingMethod(method: any): ShippingMethod {
 }
 
 function mapMedusaPaymentCollection(pc: any): PaymentCollection {
+  console.log("mapMedusaPaymentCollection >>>>>>>>>", pc)
   return {
     id: pc.id,
     currency_code: pc.currency_code,
@@ -372,6 +368,7 @@ function mapMedusaPaymentCollection(pc: any): PaymentCollection {
     captured_amount: pc.captured_amount,
     refunded_amount: pc.refunded_amount,
     status: pc.status,
+    payment_provider_id: pc.payment_sessions?.[0]?.provider_id,
     payment_providers: pc.payment_providers,
     payments: pc.payments,
     payment_sessions: pc.payment_sessions,
@@ -495,7 +492,7 @@ export interface PaymentCollection {
   captured_amount: number
   refunded_amount: number
   status: 'pending' | 'authorized' | 'canceled' | 'completed'
-
+  payment_provider_id?: string
   payment_providers?: { id: string }[]
   payments?: Payment[]
   payment_sessions?: PaymentSession[]

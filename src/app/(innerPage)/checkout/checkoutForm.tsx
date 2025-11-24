@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { MapPinIcon, ArrowRightIcon, EditIcon, TruckIcon } from "lucide-react"
+import { MapPinIcon, ArrowRightIcon, EditIcon, TruckIcon, MailboxIcon } from "lucide-react"
 import { useSidebarCartVar, useAuthDialogVars, useCheckoutAdressDialogOpen } from "@/hooks/use-global-vars";
 import { useGetCart } from "@/hooks/use-app"
 import { useAddressActions, AddressType } from "@/hooks/use-address"
@@ -13,7 +13,6 @@ import { useGetShippingMethods, useGetPaymentgMethods, useCheckoutActions } from
 import { AddressForm } from "@/app/sections/address/address-form"
 
 const CheckoutForm = () => {
-
   const { setSidebarCartOpen } = useSidebarCartVar();
   const { showCheckoutAuthDialog } = useAuthDialogVars();
   const { setDialogOpen: setAddressDialogOpen } = useCheckoutAdressDialogOpen();
@@ -21,13 +20,12 @@ const CheckoutForm = () => {
   const { saveShippingAddr, saveBillingAddr } = useAddressActions();
   const shippingAddr = cart?.shipping_address;
   const cartShippingMethods = cart?.shipping_methods;
+  const cartPayment = cart?.payment_collection;
   const [showShippingAddrForm, setShowShippingAddrForm] = useState(false);
   const [useShippingForBilling, setUseShippingForBilling] = useState(true);
   const { shippingMethods } = useGetShippingMethods();
   const { paymentMethods } = useGetPaymentgMethods(cart?.region_id);
-  const { selectShippingMethod } = useCheckoutActions();
-
-  console.log("cartShippingMethods >>>>>>>>>>>>", cartShippingMethods)
+  const { selectShippingMethod, initPayment, placeOrder } = useCheckoutActions();
 
   const submitShipping = async (data: AddressType) => {
     await saveShippingAddr(data);
@@ -76,12 +74,12 @@ const CheckoutForm = () => {
           }
         </div>
 
-        <div className="flex flex-col gap-2 border border-slate-300 rounded-lg p-3">
+        <div className="flex flex-col gap-2 border border-slate-300 rounded-lg p-2">
           <div className="flex justify-between items-center gap-2">
-            <div className="text-slate-950 text-lg font-medium leading-7">
-              Billing Address
+            <div className="flex items-center gap-1 text-slate-950 text-lg font-medium">
+              <MailboxIcon className="size-6 text-primary-600" /> Billing Address
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-1">
               <Switch id="use-shipping" checked={useShippingForBilling} onCheckedChange={(val: boolean) => setUseShippingForBilling(val)} />
               <Label htmlFor="use-shipping">Use Shipping Address</Label>
             </div>
@@ -100,11 +98,11 @@ const CheckoutForm = () => {
                 {
                   shippingMethods?.map((method, index) =>
                     <label key={index} className="flex items-center gap-3 xl:min-w-70">
-                      <input className="w-4 h-4 border appearance-none border-slate-500 rounded-full checked:bg-primary ring-primary checked:outline-1 outline-offset-1 checked:outline-primary checked:outline transition duration-100 ease-in-out m-0" 
+                      <input className="w-4 h-4 border appearance-none border-slate-500 rounded-full checked:bg-primary ring-primary checked:outline-1 outline-offset-1 checked:outline-primary checked:outline transition duration-100 ease-in-out m-0"
                         name="shippingMethods"
-                        onChange={(e) => selectShippingMethod(e.target.value)}
-                        type="radio" 
+                        type="radio"
                         value={method.id}
+                        onChange={(e) => selectShippingMethod(e.target.value)}
                         checked={cartShippingMethods?.[0]?.shipping_option_id == method.id}
                       />
                       <div className="">
@@ -159,7 +157,7 @@ const CheckoutForm = () => {
               Discount
             </div>
             <div className="text-slate-950 text-base font-normal leading-normal">
-              - {cart?.discount_total} Lei 
+              - {cart?.discount_total} Lei
             </div>
           </div>
 
@@ -199,24 +197,28 @@ const CheckoutForm = () => {
         </div>
         <div className="mt-1 p-3 flex flex-col gap-3 rounded-2xl border border-slate-300 w-full">
           <div className="flex justify-between">
-            <label className="flex items-center gap-3 xl:min-w-70">
-              <input id="cash" name="payment" type="radio" className="w-4 h-4 border appearance-none border-slate-500 rounded-full checked:bg-primary ring-primary checked:outline-1 outline-offset-1 checked:outline-primary checked:outline transition duration-100 ease-in-out m-0" value="cash" defaultChecked />
-              <div className="p-2 bg-white rounded-xl border border-slate-200">
-                <Image src="assets/icons/money-2.svg" alt="" width="12" height="12" className="w-7 h-7" />
-              </div>
-              <span className="text-slate-500 text-base font-normal leading-normal">Cash on delivery</span>
-            </label>
-            <label className="flex items-center gap-3 xl:min-w-70">
-              <input v-model="paymentType" id="card" name="payment" type="radio" className="w-4 h-4 border appearance-none border-slate-500 rounded-full checked:bg-primary ring-primary checked:outline-1 outline-offset-1 checked:outline-primary checked:outline transition duration-100 ease-in-out m-0" value="card" />
-              <div className="p-2 bg-white rounded-xl border border-slate-200">
-                <Image src="assets/icons/card.svg" width="12" height="12" alt="" className="w-7 h-7" />
-              </div>
-              <span className="text-slate-500 text-base font-normal leading-normal">
-                Credit or Debit Card
-              </span>
-            </label>
+            {paymentMethods?.map((payment, index) =>
+              <label key={index} className="flex items-center gap-3 xl:min-w-70">
+                <input className="w-4 h-4 border appearance-none border-slate-500 rounded-full checked:bg-primary ring-primary checked:outline-1 outline-offset-1 checked:outline-primary checked:outline transition duration-100 ease-in-out m-0"
+                  name="payment"
+                  type="radio"
+                  value={payment.id}
+                  onChange={(e) => initPayment(cart, e.target.value)}
+                  checked={cartPayment?.payment_provider_id == payment.id}
+                />
+                <div className="p-2 bg-white rounded-xl border border-slate-200">
+                  <Image src="assets/icons/money-2.svg" alt="" width="12" height="12" className="w-7 h-7" />
+                </div>
+                <span className="text-slate-500 text-base font-normal leading-normal">{payment.id == "pp_system_default" ? "Cash on Delivery" : payment.id}</span>
+              </label>
+            )}
           </div>
-          <Button className='w-full lg:py-[11px] text-lg mt-3'>Place Order</Button>
+          <Button
+            className='w-full lg:py-[11px] text-lg mt-3'
+            onClick={() => placeOrder(cart)}
+          >
+            Place Order
+          </Button>
         </div>
       </div>
 
