@@ -1,8 +1,8 @@
-import 'server-only';
+'use server'
 
 import { sdk } from "@/lib/medusaClient"
-import { getAuthHeaders } from "./cookies"
-import { HttpTypes, StorePrice } from "@medusajs/types"
+import { getAuthHeaders, getCartId } from "./cookies"
+import { StorePrice } from "@medusajs/types"
 
 export type StoreFreeShippingPrice = StorePrice & {
   target_reached: boolean
@@ -10,25 +10,18 @@ export type StoreFreeShippingPrice = StorePrice & {
   remaining_percentage: number
 }
 
-export const listCartShippingMethods = async (cartId: string) => {
-  const headers = {
-    ...(await getAuthHeaders()),
+export const listCartShippingMethods = async () => {
+  const headers = await getAuthHeaders();
+  const cartId = await getCartId();
+  if (!cartId) {
+    throw new Error("No existing cart found, please create one before updating");
   }
 
-  return sdk.client
-    .fetch<HttpTypes.StoreShippingOptionListResponse>(
-      `/store/shipping-options`,
-      {
-        method: "GET",
-        query: { cart_id: cartId },
-        headers,
-        cache: "force-cache",
-      }
-    )
+  return sdk.store.fulfillment.listCartOptions({ cart_id: cartId }, headers)
     .then(({ shipping_options }) => shipping_options)
     .catch(() => {
-      return null
-    })
+      return null;
+    });
 }
 
 export const listCartFreeShippingPrices = async (

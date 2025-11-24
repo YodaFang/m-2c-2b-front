@@ -5,10 +5,11 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { MapPinIcon, ArrowRightIcon, EditIcon } from "lucide-react"
+import { MapPinIcon, ArrowRightIcon, EditIcon, TruckIcon } from "lucide-react"
 import { useSidebarCartVar, useAuthDialogVars, useCheckoutAdressDialogOpen } from "@/hooks/use-global-vars";
 import { useGetCart } from "@/hooks/use-app"
 import { useAddressActions, AddressType } from "@/hooks/use-address"
+import { useGetShippingMethods, useGetPaymentgMethods, useCheckoutActions } from "@/hooks/use-checkout"
 import { AddressForm } from "@/app/sections/address/address-form"
 
 const CheckoutForm = () => {
@@ -16,11 +17,17 @@ const CheckoutForm = () => {
   const { setSidebarCartOpen } = useSidebarCartVar();
   const { showCheckoutAuthDialog } = useAuthDialogVars();
   const { setDialogOpen: setAddressDialogOpen } = useCheckoutAdressDialogOpen();
-  const { cart, isLoading } = useGetCart();
+  const { cart, cartItems, isLoading: isCartLoading } = useGetCart();
   const { saveShippingAddr, saveBillingAddr } = useAddressActions();
   const shippingAddr = cart?.shipping_address;
+  const cartShippingMethods = cart?.shipping_methods;
   const [showShippingAddrForm, setShowShippingAddrForm] = useState(false);
   const [useShippingForBilling, setUseShippingForBilling] = useState(true);
+  const { shippingMethods } = useGetShippingMethods();
+  const { paymentMethods } = useGetPaymentgMethods(cart?.region_id);
+  const { selectShippingMethod } = useCheckoutActions();
+
+  console.log("cartShippingMethods >>>>>>>>>>>>", cartShippingMethods)
 
   const submitShipping = async (data: AddressType) => {
     await saveShippingAddr(data);
@@ -32,15 +39,15 @@ const CheckoutForm = () => {
 
   useEffect(() => showCheckoutAuthDialog(), []);
 
-  if (isLoading) return null;
+  if (isCartLoading) return null;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 my-6 gap-6">
       <div className="col-span-1 lg:col-span-3 flex flex-col gap-6">
         <div className="flex flex-col border border-slate-300 rounded-lg">
           <div className="bg-slate-200 rounded-tl-lg rounded-tr-lg p-2 flex justify-between items-center">
-            <div className="text-slate-950 text-lg font-medium">
-              Shipping Address
+            <div className="flex items-center gap-2 text-slate-950 text-lg font-medium">
+              <MapPinIcon className="md:size-6 size-6 text-primary-600" /> Shipping Address
             </div>
             <button onClick={() => setAddressDialogOpen(true)} className="pr-1 text-slate-950 text-base font-normal leading-normal underline">
               Select
@@ -49,14 +56,11 @@ const CheckoutForm = () => {
           {(!showShippingAddrForm && shippingAddr) ?
             <div className="w-full p-2 flex justify-between items-cneter">
               <div className="flex items-cneter gap-2">
-                <div className="bg-slate-50 px-2 rounded-lg flex items-center shrink-0">
-                  <MapPinIcon className="md:size-8 size-6 text-primary-600" />
-                </div>
                 <div className="overflow-hidden">
                   <div className="text-slate-950 md:text-base text-sm font-medium">
                     {shippingAddr.first_name} - {shippingAddr.phone}
                   </div>
-                  <div className="text-slate-500 md:text-base text-sm font-normal max-w-[60vw] line-clamp-2">
+                  <div className="text-slate-500 md:text-base text-sm font-normal max-w-[65vw] line-clamp-2">
                     {shippingAddr.address_1}, {shippingAddr.city}, {shippingAddr.province}, {shippingAddr.postal_code}
                   </div>
                 </div>
@@ -84,34 +88,35 @@ const CheckoutForm = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 border border-slate-300 rounded-lg p-3">
-          <div className="flex justify-between items-center gap-2">
-            <span className="text-slate-950 text-xl font-medium leading-7">
-              Shipping Method
-            </span>
-          </div>
-          <div className="w-full h-[0px] border-t border-dashed border-slate-300"></div>
-          <div className="w-full flex gap-6 ">
-            <div className="flex flex-wrap justify-between gap-4">
-              <label className="flex items-center gap-3 xl:min-w-70">
-                <input id="cash" name="ship" type="radio" className="w-4 h-4 border appearance-none border-slate-500 rounded-full checked:bg-primary ring-primary checked:outline-1 outline-offset-1 checked:outline-primary checked:outline transition duration-100 ease-in-out m-0" value="cash" defaultChecked />
-                <div className="p-2 bg-white rounded-xl border border-slate-200">
-                  <Image src="assets/icons/money-2.svg" alt="" width="12" height="12" className="w-7 h-7" />
-                </div>
-                <span className="text-slate-500 text-base font-normal leading-normal">DPD</span>
-              </label>
-              <label className="flex items-center gap-3 xl:min-w-70">
-                <input v-model="paymentType" id="card" name="ship" type="radio" className="w-4 h-4 border appearance-none border-slate-500 rounded-full checked:bg-primary ring-primary checked:outline-1 outline-offset-1 checked:outline-primary checked:outline transition duration-100 ease-in-out m-0" value="card" />
-                <div className="p-2 bg-white rounded-xl border border-slate-200">
-                  <Image src="assets/icons/card.svg" width="12" height="12" alt="" className="w-7 h-7" />
-                </div>
-                <span className="text-slate-500 text-base font-normal leading-normal">
-                  Fan
-                </span>
-              </label>
+        {shippingMethods &&
+          <div className="flex flex-col border border-slate-300 rounded-lg">
+            <div className="bg-slate-200 rounded-tl-lg rounded-tr-lg p-2 flex justify-between items-center">
+              <div className="flex items-center gap-2 text-slate-950 text-lg font-medium">
+                <TruckIcon className="md:size-6 size-6 text-primary-600" /> Shipping Mehtod
+              </div>
+            </div>
+            <div className="w-full p-3 flex gap-6 ">
+              <div className="flex flex-wrap justify-between gap-4">
+                {
+                  shippingMethods?.map((method, index) =>
+                    <label key={index} className="flex items-center gap-3 xl:min-w-70">
+                      <input className="w-4 h-4 border appearance-none border-slate-500 rounded-full checked:bg-primary ring-primary checked:outline-1 outline-offset-1 checked:outline-primary checked:outline transition duration-100 ease-in-out m-0" 
+                        name="shippingMethods"
+                        onChange={(e) => selectShippingMethod(e.target.value)}
+                        type="radio" 
+                        value={method.id}
+                        checked={cartShippingMethods?.[0]?.shipping_option_id == method.id}
+                      />
+                      <div className="">
+                        <span className="text-slate-700 text-base font-normal leading-normal">{method.name} - {method.amount} Lei</span>
+                      </div>
+                    </label>
+                  )
+                }
+              </div>
             </div>
           </div>
-        </div>
+        }
 
         <div className="flex md:flex-row flex-col justify-between items-center p-3 gap-3 bg-slate-200 rounded-lg">
           <div className="relative md:w-[300px] w-full">
@@ -136,7 +141,7 @@ const CheckoutForm = () => {
               Order Summary
             </div>
             <button onClick={() => setSidebarCartOpen(true)} className="pr-2 text-slate-950 text-base font-medium underline">
-              2 items
+              {cartItems.length} items
             </button>
           </div>
           <div className="w-full my-3 h-[0px] border border-slate-500"></div>
@@ -145,7 +150,7 @@ const CheckoutForm = () => {
               Subtotal
             </div>
             <div className="text-slate-950 text-base font-normal leading-normal">
-              $110.0
+              {cart?.item_total} Lei
             </div>
           </div>
 
@@ -154,7 +159,7 @@ const CheckoutForm = () => {
               Discount
             </div>
             <div className="text-slate-950 text-base font-normal leading-normal">
-              - $10.0
+              - {cart?.discount_total} Lei 
             </div>
           </div>
 
@@ -165,7 +170,7 @@ const CheckoutForm = () => {
               Shipping Charge
             </div>
             <div className="text-slate-950 text-base font-normal leading-normal">
-              $5.0
+              {cart?.shipping_total} Lei
             </div>
           </div>
 
@@ -177,7 +182,7 @@ const CheckoutForm = () => {
               </span>
             </div>
             <div className="text-slate-950 text-base font-normal leading-normal">
-              $5.0
+              {cart?.tax_total} Lei
             </div>
           </div>
 
@@ -188,7 +193,7 @@ const CheckoutForm = () => {
               Total
             </div>
             <div className="text-slate-950 text-lg font-medium leading-normal tracking-tight">
-              $50.0
+              {cart?.total} Lei
             </div>
           </div>
         </div>

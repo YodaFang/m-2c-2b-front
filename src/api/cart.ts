@@ -139,19 +139,19 @@ export async function emptyCart(cartId: string) {
   }
 }
 
-export async function setShippingMethod({
-  cartId,
-  shippingMethodId,
-}: {
-  cartId: string
-  shippingMethodId: string
-}) {
+export async function setShippingMethod(shippingMethodId: string, cartId?: string) {
+  if (!cartId) {
+    cartId = await getCartId();
+  }
+  if (!cartId) {
+    throw new Error("No existing cart found, please create one before updating");
+  }
   const headers = await getAuthHeaders();
 
   return sdk.store.cart
     .addShippingMethod(cartId, { option_id: shippingMethodId }, {}, headers)
     .then(async () => {
-    })
+    });
 }
 
 export async function initiatePaymentSession(
@@ -260,6 +260,8 @@ function mapMedusaCartToCart(medusaCart: HttpTypes.StoreCart): Cart {
   return {
     id: medusaCart.id,
     customer_id: medusaCart.customer_id,
+    region_id: medusaCart.region_id,
+    sales_channel_id: medusaCart.sales_channel_id,
     email: medusaCart.email,
     currency_code: medusaCart.currency_code,
     shipping_address: medusaCart.shipping_address
@@ -384,6 +386,8 @@ export interface AddCartItem {
 export interface Cart {
   id: string,
   customer_id?: string
+  region_id?: string
+  sales_channel_id?: string
   email?: string
   currency_code?: string
   shipping_address?: Address
